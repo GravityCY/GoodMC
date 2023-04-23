@@ -1,0 +1,18 @@
+{
+  "filled_map.ancient_city": "Ancient City Map",
+
+  "key.select_light": "Select Light",
+
+  "enchantment.goodmc.shulker_recursion": "Shulker Recursion",
+  "enchantment.goodmc.shulker_affinity": "Shulker Affinity",
+
+  "text.autoconfig.goodmc.option.drop_amethyst_on_explode": "Drop Amethyst on Creeper Explosion",
+  "text.autoconfig.goodmc.option.piston_move_budding": "Pistons Move Budding Amethyst",
+  "text.autoconfig.goodmc.option.budding_hardness": "Budding Amethyst Hardness",
+  "text.autoconfig.goodmc.option.geode_compass": "Compass locates Geodes",
+  "text.autoconfig.goodmc.option.ancient_city_cartographer": "Cartographer locates Ancient City",
+  "text.autoconfig.goodmc.option.physical_lantern": "Lantern Realistic Wield",
+  "text.autoconfig.goodmc.option.lantern_toggle": "Lantern Wield Toggle",
+  "text.autoconfig.goodmc.option.animal_aging": "Animal Aging",
+  "text.autoconfig.goodmc.option.angry_mobs": "Angry Mobs"
+}
