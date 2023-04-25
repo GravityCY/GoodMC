@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.mixin.mixins.better_shulkers;
 
 import me.gravityio.goodmc.tweaks.better_shulkers.ShulkerUtils;
-import me.gravityio.random.NbtUtils;
+import me.gravityio.goodmc.random.NbtUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LootableContainerBlockEntity.class)
-public abstract class ItemStackPos extends LockableContainerBlockEntity {
-    protected ItemStackPos(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+public abstract class LootableContainerBlockEntityMixin extends LockableContainerBlockEntity {
+    protected LootableContainerBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
 

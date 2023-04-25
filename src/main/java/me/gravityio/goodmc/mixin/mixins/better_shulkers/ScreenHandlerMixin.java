@@ -1,8 +1,10 @@
 package me.gravityio.goodmc.mixin.mixins.better_shulkers;
 
+import me.gravityio.goodmc.random.TriFunction;
 import me.gravityio.goodmc.tweaks.better_shulkers.BetterShulkersRegistry;
 import me.gravityio.goodmc.tweaks.better_shulkers.ShulkerUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -20,15 +22,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 @Mixin(ScreenHandler.class)
-public class OpenNestedShulkerBox {
+public abstract class ScreenHandlerMixin {
 
-    private static final BiFunction<ItemStack, Integer, NamedScreenHandlerFactory> defScreenHandler = BetterShulkersRegistry.getScreenHandler(Items.SHULKER_BOX);
-
+    private static final TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> defScreenHandler = BetterShulkersRegistry.getScreenHandler(Items.SHULKER_BOX);
     @Shadow @Final public DefaultedList<Slot> slots;
     @Shadow @Final private @Nullable ScreenHandlerType<?> type;
+    @Shadow public abstract boolean canUse(PlayerEntity var1);
 
     @Inject(method="onSlotClick", at = @At("HEAD"), cancellable = true)
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
@@ -36,9 +38,13 @@ public class OpenNestedShulkerBox {
         int size = this.slots.size();
         ItemStack stack = slotIndex >= 0 && slotIndex < size - player.getInventory().main.size() ? this.slots.get(slotIndex).getStack() : ItemStack.EMPTY;
         if (stack.isEmpty() || !ShulkerUtils.isShulker(stack)) return;
-        BiFunction<ItemStack, Integer, NamedScreenHandlerFactory> onOpen = BetterShulkersRegistry.getScreenHandler(stack.getItem());
+        TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpen = BetterShulkersRegistry.getScreenHandler(stack.getItem());
         if (onOpen == null) onOpen = defScreenHandler;
-        player.openHandledScreen(onOpen.apply(stack, slotIndex));
+
+        Supplier<Boolean> booleanSupplier = () -> this.canUse(player);
+
+        player.openHandledScreen(onOpen.apply(stack, this.slots.get(slotIndex), booleanSupplier));
         ci.cancel();
     }
+
 }

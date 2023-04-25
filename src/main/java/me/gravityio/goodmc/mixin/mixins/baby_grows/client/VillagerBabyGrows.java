@@ -1,7 +1,6 @@
 package me.gravityio.goodmc.mixin.mixins.baby_grows.client;
 
 import me.gravityio.goodmc.GoodMC;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.VillagerEntityRenderer;

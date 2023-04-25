@@ -7,16 +7,12 @@
     "angry_mobs.ServerPacketSpawnMixin",
     "better_budding.BuddingAmethystBlockDrop",
     "better_budding.HarderBuddingAmethyst",
-    "better_shulkers.DontClose",
-    "better_shulkers.EnchantableShulkerBox",
-    "better_shulkers.EnchantedShulkerDrop",
-    "better_shulkers.EnchantmentHelperMixin",
-    "better_shulkers.ItemStackEnchantNBT",
-    "better_shulkers.ItemStackPos",
-    "better_shulkers.OpenNestedShulkerBox",
-    "better_shulkers.ShulkerAffinityImpl",
-    "better_shulkers.ShulkerBoxRecursiveness",
-    "better_shulkers.ShulkerBoxSlotRecursiveness"
+    "better_shulkers.SimpleNamedScreenHandlerFactoryMixin",
+    "better_shulkers.LootableContainerBlockEntityMixin",
+    "better_shulkers.ScreenHandlerMixin",
+    "better_shulkers.ShulkerBulletEntityMixin",
+    "better_shulkers.ShulkerBoxBlockEntityMixin",
+    "better_shulkers.ShulkerBoxSlotMixin"
   ],
   "client": [
     "ArmRenderableMixin",
@@ -25,9 +21,7 @@
     "angry_mobs.client.ClientPacketSpawnMixin",
     "baby_grows.client.AnimalBabyGrows",
     "baby_grows.client.VillagerBabyGrows",
-    "better_budding.client.CompassAmethyst",
-    "better_shulkers.client.EnchantableBlockRenderEnchants",
-    "better_shulkers.client.ShulkerBoxBlockEntityRendererMixin"
+    "better_budding.client.CompassAmethyst"
   ],
   "injectors": {
     "defaultRequire": 1

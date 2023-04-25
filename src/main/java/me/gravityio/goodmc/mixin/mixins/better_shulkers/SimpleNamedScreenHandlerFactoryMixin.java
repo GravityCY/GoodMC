@@ -5,7 +5,7 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(SimpleNamedScreenHandlerFactory.class)
-public abstract class DontClose implements NamedScreenHandlerFactory {
+public abstract class SimpleNamedScreenHandlerFactoryMixin implements NamedScreenHandlerFactory {
     @Override
     public boolean shouldCloseCurrentScreen() {
         return false;

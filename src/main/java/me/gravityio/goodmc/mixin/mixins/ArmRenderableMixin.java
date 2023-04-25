@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.mixin.mixins;
 
-import me.gravityio.random.ArmRenderable;
-import me.gravityio.random.ArmRenderableRegistry;
+import me.gravityio.goodmc.random.ArmRenderable;
+import me.gravityio.goodmc.random.ArmRenderableRegistry;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;

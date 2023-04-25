@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.random.ArmRenderable;
+import me.gravityio.goodmc.random.ArmRenderable;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;

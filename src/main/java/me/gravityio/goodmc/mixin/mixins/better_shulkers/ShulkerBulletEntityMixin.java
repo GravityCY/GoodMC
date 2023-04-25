@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ShulkerBulletEntity.class)
-public class ShulkerAffinityImpl {
+public class ShulkerBulletEntityMixin {
     @Inject(method="onEntityHit", at = @At(value="NEW", target="net/minecraft/entity/effect/StatusEffectInstance"), cancellable = true)
     private void onShulkerShellHit(EntityHitResult entityHitResult, CallbackInfo ci)
     {

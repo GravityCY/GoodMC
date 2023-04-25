@@ -1,4 +1,4 @@
-package me.gravityio.random;
+package me.gravityio.goodmc.random;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

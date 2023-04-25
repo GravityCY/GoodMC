@@ -1,8 +1,8 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
+import me.gravityio.enchantableblocks.mixins.interfaces.IEnchantableBlock;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.mixin.interfaces.IEnchantableBlockEntity;
-import me.gravityio.random.NbtInventory;
+import me.gravityio.goodmc.random.NbtInventory;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -56,7 +56,7 @@ public class ShulkerUtils {
      * @param blockEntity
      * @return {@link Boolean}
      */
-    public static boolean canInsert(ItemStack stack, IEnchantableBlockEntity blockEntity) {
+    public static boolean canInsert(ItemStack stack, IEnchantableBlock blockEntity) {
         int recursion = getRecursiveEnchant(blockEntity);
         int depth = getDepth(stack);
         return recursion >= depth;
@@ -170,11 +170,11 @@ public class ShulkerUtils {
     }
 
     /**
-     * Gets the level of {@link ShulkerRecursion} on an IEnchantableBlockEntity.
+     * Gets the level of {@link ShulkerRecursion} on an IEnchantableBlock.
      * @param blockEntity
      * @return
      */
-    private static int getRecursiveEnchant(IEnchantableBlockEntity blockEntity) {
+    private static int getRecursiveEnchant(IEnchantableBlock blockEntity) {
         int recursive = 0;
         Identifier id = EnchantmentHelper.getEnchantmentId(BetterShulkersTweak.SHULKER_RECURSION);
         NbtList enchants = blockEntity.getEnchantments();
@@ -195,7 +195,7 @@ public class ShulkerUtils {
      * @param <T>
      */
     private static <T extends BlockEntity> boolean shouldGlint(T blockEntity) {
-        if (!(blockEntity instanceof IEnchantableBlockEntity enchantableBlockEntity)) return false;
+        if (!(blockEntity instanceof IEnchantableBlock enchantableBlockEntity)) return false;
         return !enchantableBlockEntity.getEnchantments().isEmpty();
     }
 

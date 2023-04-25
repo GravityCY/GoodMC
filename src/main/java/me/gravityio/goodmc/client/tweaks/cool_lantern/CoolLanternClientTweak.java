@@ -2,7 +2,7 @@ package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import me.gravityio.random.ArmRenderableRegistry;
+import me.gravityio.goodmc.random.ArmRenderableRegistry;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;

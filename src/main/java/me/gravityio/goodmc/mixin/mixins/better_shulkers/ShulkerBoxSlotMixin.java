@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShulkerBoxSlot.class)
-public abstract class ShulkerBoxSlotRecursiveness extends Slot {
+public abstract class ShulkerBoxSlotMixin extends Slot {
     @Shadow public abstract boolean canInsert(ItemStack stack);
 
-    public ShulkerBoxSlotRecursiveness(Inventory inventory, int index, int x, int y) {
+    public ShulkerBoxSlotMixin(Inventory inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
     @Inject(method = "canInsert", at = @At("HEAD"), cancellable = true)

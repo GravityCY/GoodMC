@@ -1,4 +1,4 @@
-package me.gravityio.random;
+package me.gravityio.goodmc.random;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
