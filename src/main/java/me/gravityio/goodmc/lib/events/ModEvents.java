@@ -1,0 +1,41 @@
+package me.gravityio.goodmc.lib.events;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+
+public class ModEvents {
+
+    public static final Event<OnCraftEvent> ON_CRAFT = EventFactory.createArrayBacked(OnCraftEvent.class,
+        listeners -> (craftType, stack, player) -> {
+        for (OnCraftEvent onCraftEvent : listeners) {
+            ActionResult result = onCraftEvent.onCraft(craftType, stack, player);
+            if (result != ActionResult.PASS)
+                return result;
+        }
+        return ActionResult.PASS;
+    });
+
+    public static final Event<OnBeforeCraft> ON_BEFORE_CRAFT = EventFactory.createArrayBacked(OnBeforeCraft.class,
+        listeners -> (craftType, stack, player) -> {
+        for (OnBeforeCraft onCraftEvent : listeners) {
+            ActionResult result = onCraftEvent.onBeforeCraft(craftType, stack, player);
+            if (result != ActionResult.PASS)
+                return result;
+        }
+        return ActionResult.PASS;
+    });
+
+    public interface OnBeforeCraft {
+        ActionResult onBeforeCraft(OnCraftEvent.CraftType craftType, ItemStack copy, PlayerEntity player);
+    }
+
+    public interface OnCraftEvent {
+        ActionResult onCraft(CraftType craftType, ItemStack stack, PlayerEntity player);
+        enum CraftType {
+            ANY, SMITHING
+        }
+    }
+}

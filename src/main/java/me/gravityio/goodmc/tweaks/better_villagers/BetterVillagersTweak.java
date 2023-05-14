@@ -19,10 +19,11 @@ public class BetterVillagersTweak implements IServerTweak {
     @Override
     public void onInit() {
         if (!GoodMC.config.ancient_city_cartographer) return;
+        GoodMC.LOGGER.debug("<BetterVillagersTweak> Registering Villager Trade Offers");
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 3, factories -> factories.add(new TradeOffers.SellMapFactory(
                 64,
                 TagKey.of(RegistryKeys.STRUCTURE, new Identifier("minecraft:ancient_city")),
-                "filled_map.ancient_city",
+                "structure.minecraft.ancient_city",
                 MapIcon.Type.RED_X,
                 1,
                 3)));

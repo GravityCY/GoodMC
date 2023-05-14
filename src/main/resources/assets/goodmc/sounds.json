@@ -1,0 +1,8 @@
+{
+  "item.compass.located_structure": {
+    "subtitle": "subtitles.goodmc.located_structure",
+    "sounds": [
+      "goodmc:item/compass/located_structure"
+    ]
+  }
+}

@@ -23,14 +23,18 @@
     ],
     "modmenu": [
       "me.gravityio.goodmc.integration.ModMenuIntegration"
+    ],
+    "reinfshulker": [
+      "me.gravityio.goodmc.integration.ReinforcedShulkersIntegration"
     ]
   },
   "mixins": [
-    "goodmc.mixins.json"
+    "goodmc.mixins.json",
+    "lib.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.18",
-    "fabric-api": "*",
+    "fabric-api": ">=0.14.18",
     "minecraft": "~1.19.3",
     "cloth-config": ">=9.0.94",
     "java": ">=17"

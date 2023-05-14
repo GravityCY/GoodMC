@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.tweaks.better_shulkers.enchants;
 
-import me.gravityio.goodmc.tweaks.better_shulkers.BetterShulkersRegistry;
+import me.gravityio.goodmc.tweaks.better_shulkers.ShulkerUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -26,6 +26,6 @@ public class ShulkerRecursion extends Enchantment {
     }
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
-        return BetterShulkersRegistry.isShulker(stack);
+        return ShulkerUtils.isShulker(stack);
     }
 }

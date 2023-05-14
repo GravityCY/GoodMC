@@ -1,27 +1,28 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "me.gravityio.goodmc.mixin.mixins",
+  "package": "me.gravityio.goodmc.mixin.mod",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "angry_mobs.ServerPacketSpawnMixin",
+    "baby_grows.LivingEntityMixin",
+    "baby_grows.PassiveEntityMixin",
     "better_budding.BuddingAmethystBlockDrop",
     "better_budding.HarderBuddingAmethyst",
-    "better_shulkers.SimpleNamedScreenHandlerFactoryMixin",
-    "better_shulkers.LootableContainerBlockEntityMixin",
-    "better_shulkers.ScreenHandlerMixin",
-    "better_shulkers.ShulkerBulletEntityMixin",
-    "better_shulkers.ShulkerBoxBlockEntityMixin",
-    "better_shulkers.ShulkerBoxSlotMixin"
+    "better_shulkers.NoCloseCurrentScreenMixin",
+    "better_shulkers.OpenShulkerMixin",
+    "better_shulkers.ShulkerAffinityMixin",
+    "better_shulkers.ShulkerBlockEntityRecursionMixin",
+    "better_shulkers.ShulkerSlotRecursionMixin"
   ],
   "client": [
-    "ArmRenderableMixin",
     "angry_mobs.client.AngrySkeletonMixin",
     "angry_mobs.client.AngryZombieMixin",
     "angry_mobs.client.ClientPacketSpawnMixin",
-    "baby_grows.client.AnimalBabyGrows",
-    "baby_grows.client.VillagerBabyGrows",
-    "better_budding.client.CompassAmethyst"
+    "baby_grows.client.AnimalBabyGrowsMixin",
+    "baby_grows.client.VillagerBabyGrowsMixin",
+    "better_budding.client.UpdateAmethystCompassMixin",
+    "client.BetterSmithingScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

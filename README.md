@@ -7,11 +7,6 @@ A Fabric Mod that I basically just made to make Minecraft the way I like it with
 - Shulker box items inside a Shulker box can be right-clicked to open its inventory while your in the Other Shulker
 - Spawns in Bastion Treasure Chests (90%)
 
->There is one pretty bad flaw so far, but I'm sure I'll fix it eventually<br>
-
-> **This shouldn't affect people on single-player**<br>
-When you right-click a shulker item inside a shulker, the inventory is not synchronized between players in multiplayer meaning some nasty duping is possible in multiplayer
-
 ![shulker image](https://i.imgur.com/5sXOlCs.png)
 
 <br>
@@ -66,6 +61,12 @@ I'm pretty sure eventually I can make the server tell the client the age but for
 - Budding Amethyst is now slower to mine (Hardness of 20)
 - Compasses freak out whenever you're above or below a geode
 
+## Structure Locator
+### Compasses can now be used to locate structures
+Using a newly an item found in most structures (it will always spawn 1 per structure)
+in a smithing table with a compass will randomly roll a structure the compass will be 
+pointing to
+
 <br>
 
 ## Things I want to add...
@@ -73,8 +74,8 @@ I'm pretty sure eventually I can make the server tell the client the age but for
 
 > Better Mob Aging 
 
-> Make a library for Enchantable Blocks <br>
+> Make a library for Enchantable Blocks (KINDA DONE)<br> 
 > This could also fix the fact that you can't use this mod with EnchantedShulkers
 
-> Add integration with Reinforced Shulkers
+> Add integration with Reinforced Shulkers (KINDA DONE)
 

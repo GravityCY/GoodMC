@@ -10,6 +10,9 @@ import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;
 
+/**
+ * A Tweak that adds a client sided command that opens the minecraft fandom website with whatever you type as arguments
+ */
 @SuppressWarnings("ALL")
 public class WikiClientTweak implements IClientTweak {
 

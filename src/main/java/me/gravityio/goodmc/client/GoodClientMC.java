@@ -7,9 +7,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 
 public class GoodClientMC implements ClientModInitializer {
-
     private MinecraftClient client;
-
     @Override
     public void onInitializeClient() {
         this.client = MinecraftClient.getInstance();

@@ -50,11 +50,13 @@ public class BetterShulkersTweak implements IServerTweak {
     private void onLootTable(ResourceManager resourceManager, LootManager manager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source) {
         if (source.isBuiltin()) {
             if (LootTables.BASTION_TREASURE_CHEST.equals(id)) {
+                GoodMC.LOGGER.debug("<BetterShulkersTweak> Registering Loot Table BASTION_TREASURE_CHEST");
                 LootPool.Builder poolBuilder = LootPool.builder()
                         .rolls(BinomialLootNumberProvider.create(1, 0.9f))
                         .with(ItemEntry.builder(Items.BOOK).apply(EnchantRandomlyLootFunction.create().add(SHULKER_RECURSION)));
                 tableBuilder.pool(poolBuilder);
             } else if (LootTables.END_CITY_TREASURE_CHEST.equals(id)) {
+                GoodMC.LOGGER.debug("<BetterShulkersTweak> Registering Loot Table END_CITY_TREASURE_CHEST");
                 LootPool.Builder poolBuilder = LootPool.builder()
                         .rolls(BinomialLootNumberProvider.create(1, 0.1f))
                         .with(ItemEntry.builder(Items.BOOK).apply(EnchantRandomlyLootFunction.create().add(SHULKER_AFFINITY)));

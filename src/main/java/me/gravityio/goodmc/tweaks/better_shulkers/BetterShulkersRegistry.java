@@ -1,6 +1,7 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
-import me.gravityio.goodmc.random.TriFunction;
+import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.lib.TriFunction;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -34,6 +35,7 @@ public class BetterShulkersRegistry {
      * @param item The Item {@link Class} that extends {@link ItemConvertible}
      */
     public static void register(Class<? extends ItemConvertible> item) {
+        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering Shulker Item: {}", item);
         shulkers.add(item);
     }
 
@@ -43,6 +45,7 @@ public class BetterShulkersRegistry {
      * @param onOpenFunction The {@link Function} that will run when the item is clicked
      */
     public static void register(Class<? extends ItemConvertible> item, TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction) {
+        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering Screen Handler Function for Item: {}", item);
         onSlotScreenHandlers.put(item, onOpenFunction);
     }
 
@@ -51,6 +54,7 @@ public class BetterShulkersRegistry {
      * @param screenHandlerType The {@link ScreenHandlerType} to register
      */
     public static void register(ScreenHandlerType<?> screenHandlerType) {
+        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering allowed ScreenHandlerType: {}", screenHandlerType);
         allowedScreens.add(screenHandlerType);
     }
 
@@ -127,7 +131,11 @@ public class BetterShulkersRegistry {
         new Builder()
                 .addItem(ShulkerBoxBlock.class)
                 .setOpenAction((itemStack, slot, canOpenSupplier) -> {
-                    ScreenHandlerFactory screenHandlerFactory = (syncId, playerInv, playerEntity) -> new ShulkerBoxScreenHandler(syncId, playerInv, new ContainedItemInventory(27, itemStack, slot, canOpenSupplier));
+                    ScreenHandlerFactory screenHandlerFactory = (syncId, playerInv, playerEntity) -> {
+                        ContainedItemInventory itemInventory = ContainedItemInventory.getFromStack(itemStack);
+                        if (itemInventory == null) itemInventory = ContainedItemInventory.make(27, itemStack, slot, canOpenSupplier);
+                       return new ShulkerBoxScreenHandler(syncId, playerInv, itemInventory);
+                    };
                     return new SimpleNamedScreenHandlerFactory(screenHandlerFactory, itemStack.getName());
                 })
                 .register();

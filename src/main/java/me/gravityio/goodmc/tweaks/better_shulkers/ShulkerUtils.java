@@ -2,7 +2,7 @@ package me.gravityio.goodmc.tweaks.better_shulkers;
 
 import me.gravityio.enchantableblocks.mixins.interfaces.IEnchantableBlock;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.random.NbtInventory;
+import me.gravityio.goodmc.lib.item_inventory.NbtInventory;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.render.RenderLayer;

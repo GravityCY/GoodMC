@@ -2,7 +2,7 @@ package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import me.gravityio.goodmc.random.ArmRenderableRegistry;
+import me.gravityio.goodmc.lib.arm_renderable.ArmRenderableRegistry;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -12,6 +12,10 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * A Tweak that selects a lantern to hold in your offhand either as your holding a button or if you toggle that button<br>
+ * &nbsp; This exists because I also added some nice custom rendering for holding lanterns
+ */
 @SuppressWarnings("ALL")
 public class CoolLanternClientTweak implements IClientTweak {
 
