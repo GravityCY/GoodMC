@@ -34,15 +34,15 @@ public class CompassLocatableRegistry {
     }
 
     public record PointData(Identifier dimensionKey, Identifier structureKey) {
-        public static StructureLocatable.PointData fromNbt(NbtCompound nbt) {
+        public static PointData fromNbt(NbtCompound nbt) {
             String dimension = nbt.getString(DIMENSION);
             if (Objects.equals(dimension, "")) return null;
             String structure = nbt.getString(STRUCTURE);
             if (Objects.equals(structure, "")) return null;
-            return new StructureLocatable.PointData(new Identifier(dimension), new Identifier(structure));
+            return new PointData(new Identifier(dimension), new Identifier(structure));
         }
 
-        public static StructureLocatable.PointData fromItem(ItemStack itemStack) {
+        public static PointData fromItem(ItemStack itemStack) {
             NbtCompound nbt = itemStack.getNbt();
             if (nbt == null) return null;
             NbtCompound pointsTo = nbt.getCompound(POINTS_TO);
@@ -50,7 +50,7 @@ public class CompassLocatableRegistry {
             return fromNbt(pointsTo);
         }
 
-        public static NbtCompound toNbt(StructureLocatable.PointData data) {
+        public static NbtCompound toNbt(PointData data) {
             NbtCompound nbt = new NbtCompound();
             nbt.putString("dimension", data.dimensionKey.toString());
             nbt.putString("structure", data.structureKey.toString());

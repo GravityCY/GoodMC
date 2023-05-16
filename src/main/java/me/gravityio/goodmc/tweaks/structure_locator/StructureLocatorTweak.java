@@ -3,7 +3,6 @@ package me.gravityio.goodmc.tweaks.structure_locator;
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.BetterItems;
 import me.gravityio.goodmc.lib.better_compass.CompassLocatableRegistry;
-import me.gravityio.goodmc.lib.better_compass.Locatables;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils;
 import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
 import me.gravityio.goodmc.lib.events.ModEvents;
