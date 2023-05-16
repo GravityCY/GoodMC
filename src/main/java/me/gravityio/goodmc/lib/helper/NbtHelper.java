@@ -1,4 +1,4 @@
-package me.gravityio.goodmc.lib.utils;
+package me.gravityio.goodmc.lib.helper;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -11,7 +11,7 @@ import java.util.function.Function;
 /**
  * Some utilities regarding NBT that {@link net.minecraft.nbt.NbtHelper NbtHelper} doesn't have
  */
-public class NbtUtils {
+public class NbtHelper {
 
     public static boolean internalCopy(NbtCompound comp, String a, String b) {
         if (comp.get(a) == null) return false;

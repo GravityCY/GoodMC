@@ -4,7 +4,7 @@ import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.better_compass.CompassLocatableRegistry;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils;
 import me.gravityio.goodmc.lib.events.ModEvents;
-import me.gravityio.goodmc.lib.utils.ItemUtils;
+import me.gravityio.goodmc.lib.helper.ItemHelper;
 import me.gravityio.goodmc.tweaks.IServerTweak;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,8 +52,8 @@ public class StructureLocatorTweak implements IServerTweak {
 
     static {
         // SET THE LORE OF THE DEFAULT ITEM STACKS TO BE COPIED FOR CREATIVE MENU // SMITHING TABLE
-        ItemUtils.setLore(COMPASS_STACK, new Text[]{Text.translatable("item.goodmc.compass.lore.unlocated").setStyle(LORE_STYLE)});
-        ItemUtils.setLore(TATTERED_MAP_STACK, new Text[]{Text.translatable("item.goodmc.tattered_map.lore").setStyle(LORE_STYLE)});
+        ItemHelper.setLore(COMPASS_STACK, new Text[]{Text.translatable("item.goodmc.compass.lore.unlocated").setStyle(LORE_STYLE)});
+        ItemHelper.setLore(TATTERED_MAP_STACK, new Text[]{Text.translatable("item.goodmc.tattered_map.lore").setStyle(LORE_STYLE)});
 
         // REGISTER ALL THE STRUCTURES FOR THE COMPASS TO USE
         CompassLocatableRegistry.register(World.OVERWORLD.getValue(), new Identifier[] {
@@ -87,11 +87,22 @@ public class StructureLocatorTweak implements IServerTweak {
      */
     @Override
     public void onInit() {
+        StructureLocatorUtils.UPDATE_DISTANCE = GoodMC.CONFIG.locator.update_distance;
+        StructureLocatorUtils.RADIUS = GoodMC.CONFIG.locator.radius;
+
         Registry.register(Registries.SOUND_EVENT, LOCATED_SOUND.getId(), LOCATED_SOUND);
         Registry.register(Registries.ITEM, TATTERED_MAP_ID, TATTERED_MAP);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(TATTERED_MAP_STACK.copy()));
+
         ModEvents.ON_BEFORE_CRAFT.register(this::onCraft);
         ModEvents.ON_CRAFT.register(this::onCraft);
+        GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
+            GoodMC.LOGGER.debug("<StructureLocatorTweak> Setting new UPDATE_DISTANCE to {}", modConfig.locator.update_distance);
+            GoodMC.LOGGER.debug("<StructureLocatorTweak> Setting new RADIUS to {}", modConfig.locator.radius);
+            StructureLocatorUtils.UPDATE_DISTANCE = modConfig.locator.update_distance;
+            StructureLocatorUtils.RADIUS = modConfig.locator.radius;
+            return ActionResult.SUCCESS;
+        });
     }
 
 
@@ -102,8 +113,8 @@ public class StructureLocatorTweak implements IServerTweak {
         Identifier structureKey = structureKeys.get(random.nextInt(structureKeys.size()));
         MutableText loreText = Text.translatable("structure." + structureKey.getNamespace() + "." + structureKey.getPath()).setStyle(LORE_STYLE);
         MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
-        ItemUtils.setLore(stack, new Text[] { loreText });
-        ItemUtils.setHotbarTooltip(stack, hotbarText);
+        ItemHelper.setLore(stack, new Text[] { loreText });
+        ItemHelper.setHotbarTooltip(stack, hotbarText);
         StructureLocatorUtils.setPointsTo(stack, new CompassLocatableRegistry.PointData(dimensionKey, structureKey));
         StructureLocatorUtils.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         return ActionResult.SUCCESS;

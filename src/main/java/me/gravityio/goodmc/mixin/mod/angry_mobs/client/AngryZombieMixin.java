@@ -23,7 +23,7 @@ public abstract class AngryZombieMixin extends BipedEntityRenderer<ZombieEntity,
 
     @Inject(at = @At("HEAD"), method = "getTexture(Lnet/minecraft/entity/mob/ZombieEntity;)Lnet/minecraft/util/Identifier;", cancellable = true)
     private void getTexture(ZombieEntity zombieEntity, CallbackInfoReturnable<Identifier> info) {
-        if (!GoodMC.config.angry_mobs) return;
+        if (!GoodMC.CONFIG.all.angry_mobs) return;
         if (zombieEntity.canPickUpLoot())
             info.setReturnValue(ANGRY_TEXTURE);
     }

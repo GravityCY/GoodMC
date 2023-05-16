@@ -20,7 +20,7 @@ public class HarderBuddingAmethyst {
     )
     private static AbstractBlock.Settings harderBudding(AbstractBlock.Settings settings)
     {
-        if (!GoodMC.config.budding_hardness) return settings;
+        if (!GoodMC.CONFIG.amethyst.budding_hardness) return settings;
         return settings.resistance(1.5f).hardness(20f);
     }
 }

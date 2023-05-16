@@ -1,36 +1,34 @@
 package me.gravityio.goodmc.client.tweaks.todo_list;
 
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import me.gravityio.goodmc.lib.keybinds.KeyBind;
+import me.gravityio.goodmc.lib.keybinds.KeybindManager;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+
+import static me.gravityio.goodmc.client.GoodClientMC.CATEGORY;
 
 /**
  * A TodoList GUI that I eventually make xd
  */
 @SuppressWarnings("ALL")
 public class TodoListClientTweak implements IClientTweak {
-
-    private static final KeyBinding left = new KeyBinding("test", GLFW.GLFW_KEY_LEFT_BRACKET, KeyBinding.MISC_CATEGORY);
-    private static final KeyBinding right = new KeyBinding("test2", GLFW.GLFW_KEY_RIGHT_BRACKET, KeyBinding.MISC_CATEGORY);
-
+    public boolean doRender = false;
+    private MinecraftClient client;
     public final List<TodoItem> todoList = List.of(
             new TodoItem(Items.STONE.getDefaultStack(), 1, 64),
             new TodoItem(Items.DIAMOND.getDefaultStack(), 0, 10),
-            new TodoItem(Items.TORCH.getDefaultStack(), 0, 10));
-    public boolean doRender = false;
-    private MinecraftClient client;
+            new TodoItem(Items.TORCH.getDefaultStack(), 0, 10)
+    );
 
     @Override
     public void onInit(MinecraftClient client) {
         this.client = client;
-        KeyBindingHelper.registerKeyBinding(left);
-        KeyBindingHelper.registerKeyBinding(right);
+        KeybindManager.register(KeyBind.of("key.goodmc.todo", GLFW.GLFW_KEY_Y, CATEGORY,  () -> doRender = !doRender));
         HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
             if (!doRender || todoList.isEmpty()) return;
             TodoListWidget widget = new TodoListWidget(client);
@@ -40,7 +38,6 @@ public class TodoListClientTweak implements IClientTweak {
 
     @Override
     public void onTick() {
-
     }
 
 

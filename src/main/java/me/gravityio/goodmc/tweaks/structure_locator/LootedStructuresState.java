@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.tweaks.structure_locator;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.utils.NbtUtils;
+import me.gravityio.goodmc.lib.helper.NbtHelper;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.MinecraftServer;
@@ -46,11 +46,11 @@ public class LootedStructuresState extends PersistentState {
     }
 
     public static void toList(NbtCompound nbt, List<LootableStructure> list) {
-        NbtUtils.toList(nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE), list, element -> LootableStructure.fromNbt((NbtCompound) element));
+        NbtHelper.toList(nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE), list, element -> LootableStructure.fromNbt((NbtCompound) element));
     }
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
-        nbt.put("LootedStructures", NbtUtils.fromList(lootedStructures, LootableStructure::toNbt));
+        nbt.put("LootedStructures", NbtHelper.fromList(lootedStructures, LootableStructure::toNbt));
         GoodMC.LOGGER.debug("<LootedStructuresState> Saving State to NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
         return nbt;
     }

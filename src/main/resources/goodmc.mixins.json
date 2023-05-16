@@ -22,7 +22,9 @@
     "baby_grows.client.AnimalBabyGrowsMixin",
     "baby_grows.client.VillagerBabyGrowsMixin",
     "better_budding.client.UpdateAmethystCompassMixin",
-    "client.BetterSmithingScreenMixin"
+    "structure_locator.client.BetterSmithingScreenMixin",
+    "view_bobbing.VideoOptionsScreenMixin",
+    "view_bobbing.ViewBobbingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

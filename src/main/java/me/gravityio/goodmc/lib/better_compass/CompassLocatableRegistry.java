@@ -5,10 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.gravityio.goodmc.lib.better_compass.CompassUtils.DIMENSION;
 import static me.gravityio.goodmc.lib.better_compass.CompassUtils.POINTS_TO;
@@ -37,11 +34,11 @@ public class CompassLocatableRegistry {
 
     public record PointData(Identifier dimensionKey, Identifier structureKey) {
         public static PointData fromNbt(NbtCompound nbt) {
-            Identifier dimensionKey = new Identifier(nbt.getString(DIMENSION));
-            if (dimensionKey.getPath().equals("")) return null;
-            Identifier structureKey = new Identifier(nbt.getString(STRUCTURE));
-            if (structureKey.getPath().equals("")) return null;
-            return new PointData(dimensionKey, structureKey);
+            String dimension = nbt.getString(DIMENSION);
+            if (Objects.equals(dimension, "")) return null;
+            String structure = nbt.getString(STRUCTURE);
+            if (Objects.equals(structure, "")) return null;
+            return new PointData(new Identifier(dimension), new Identifier(structure));
         }
 
         public static PointData fromItem(ItemStack itemStack) {

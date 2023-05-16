@@ -63,11 +63,17 @@ I'm pretty sure eventually I can make the server tell the client the age but for
 
 ## Structure Locator
 ### Compasses can now be used to locate structures
-Using a newly an item found in most structures (it will always spawn 1 per structure)
+Using an item found in most structures (it will always spawn 1 per structure)
 in a smithing table with a compass will randomly roll a structure the compass will be 
-pointing to
+pointing to within a certain distance
+
+![Structure Locator](https://i.imgur.com/IPVb2tm.gif)
 
 <br>
+
+### Custom View Bobbing Strength
+Minecraft has either View Bobbing on or View Bobbing off, but what if 
+you like it but just want it to be less strong, well that's what this does
 
 ## Things I want to add...
 > A Todo List

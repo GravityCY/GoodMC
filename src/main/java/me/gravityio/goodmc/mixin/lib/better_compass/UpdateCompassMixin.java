@@ -1,5 +1,6 @@
 package me.gravityio.goodmc.mixin.lib.better_compass;
 
+import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.MoveUpdater;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils;
 import net.minecraft.entity.Entity;
@@ -12,13 +13,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils.UPDATE_DISTANCE;
+
 /**
  * Every time the player moves a certain amount of blocks compasses pointing to structures are updated with the closest structure
  */
 
 @Mixin(Entity.class)
 public abstract class UpdateCompassMixin {
-    private static final int distance = 100;
     private double lastVel = 0;
     private final MoveUpdater moveUpdater = new MoveUpdater();
     private Vec3d last = null;
@@ -34,11 +36,12 @@ public abstract class UpdateCompassMixin {
         if (lastVel > 0.01 && vel == 0) vel = lastVel;
         last = pos;
         lastVel = vel;
-        if (moveUpdater.tick(pos) < distance * (vel + 1)) return;
-        moveUpdater.setOrigin();
+        if (moveUpdater.tick(pos) < UPDATE_DISTANCE * (vel + 1)) return;
+        moveUpdater.setOrigin(pos);
+        GoodMC.LOGGER.debug("<UpdateCompassMixin> Player moved {} blocks, updating...", UPDATE_DISTANCE);
 
         ServerWorld serverWorld = serverPlayer.getWorld();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ItemStack stack = serverPlayer.getInventory().main.get(i);
             StructureLocatorUtils.updateLocator(stack, serverWorld, serverPlayer);
         }

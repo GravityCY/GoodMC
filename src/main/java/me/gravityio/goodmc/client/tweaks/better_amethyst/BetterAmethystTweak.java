@@ -1,10 +1,14 @@
-package me.gravityio.goodmc.tweaks;
+package me.gravityio.goodmc.client.tweaks.better_amethyst;
 
+import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -12,8 +16,8 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BetterAmethystUtils {
-    public static final double UPDATE_DISTANCE = 5;
+public class BetterAmethystTweak implements IClientTweak {
+    public static double UPDATE_DISTANCE = GoodMC.CONFIG.amethyst.update_distance;
     private static final Block AmethystBlock = Blocks.AMETHYST_BLOCK;
     private static final Block BuddingBlock = Blocks.BUDDING_AMETHYST;
 
@@ -38,5 +42,19 @@ public class BetterAmethystUtils {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onInit(MinecraftClient client) {
+        GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
+            GoodMC.LOGGER.debug("<BetterAmethystTweak> Setting new UPDATE_DISTANCE to {}", modConfig.amethyst.update_distance);
+            UPDATE_DISTANCE = modConfig.amethyst.update_distance;
+            return ActionResult.SUCCESS;
+        });
+    }
+
+    @Override
+    public void onTick() {
+
     }
 }

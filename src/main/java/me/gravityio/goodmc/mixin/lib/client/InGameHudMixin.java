@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.mixin.lib.client;
 
-import me.gravityio.goodmc.lib.utils.NbtUtils;
+import me.gravityio.goodmc.lib.helper.NbtHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -36,9 +36,9 @@ public class InGameHudMixin {
     private MutableText onRenderCustomTooltip(MutableText original) {
         NbtCompound nbt = this.currentStack.getNbt();
         if (nbt == null) return original;
-        NbtCompound display = NbtUtils.get(nbt, ItemStack.DISPLAY_KEY);
+        NbtCompound display = NbtHelper.get(nbt, ItemStack.DISPLAY_KEY);
         if (display == null) return original;
-        NbtString hotbarTooltip = NbtUtils.get(display, "hotbar", NbtString.class);
+        NbtString hotbarTooltip = NbtHelper.get(display, "hotbar", NbtString.class);
         if (hotbarTooltip == null) return original;
         this.currentStack.getNbt().get(ItemStack.DISPLAY_KEY);
         return Text.Serializer.fromLenientJson(hotbarTooltip.asString());

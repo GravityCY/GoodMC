@@ -1,4 +1,4 @@
 /**
  * A package of some utility classes that help with things that vanilla should probably have
  */
-package me.gravityio.goodmc.lib.utils;
+package me.gravityio.goodmc.lib.helper;

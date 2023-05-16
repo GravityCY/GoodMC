@@ -23,15 +23,14 @@ import static me.gravityio.goodmc.lib.better_compass.CompassUtils.POINTS_TO;
 /**
  * Some Helper functions to make the compass work nicely with finding structures etc.
  */
-// Possible optimization idea is to disallow search for structures if the position of the new search is close to a previous search
-// Meaning you have to keep a list of all previous search positions and for which structures and only for the current stack,
-// if another stack with the same structure is present it would use a different list or something
+// THINK: Possible optimization idea is to disallow search for structures if the position of the new search is close to a previous search
+//  Meaning you have to keep a list of all previous search positions for structures for the current compass structure,
+//  if another stack with the same structure is present it would use a different list or something
 public class StructureLocatorUtils {
 
     public static final String STRUCTURE = "structure";
-
+    public static int UPDATE_DISTANCE = 100;
     public static int RADIUS = 1;
-
 
     /**
      * Updates the compass to the most recent structure that it's pointing at

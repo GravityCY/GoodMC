@@ -23,7 +23,7 @@ public abstract class AngrySkeletonMixin extends BipedEntityRenderer<AbstractSke
 
     @Inject(at = @At("HEAD"), method = "getTexture(Lnet/minecraft/entity/mob/AbstractSkeletonEntity;)Lnet/minecraft/util/Identifier;", cancellable = true)
     private void getTexture(AbstractSkeletonEntity abstractSkeletonEntity, CallbackInfoReturnable<Identifier> info) {
-        if (!GoodMC.config.angry_mobs) return;
+        if (!GoodMC.CONFIG.all.angry_mobs) return;
         if (abstractSkeletonEntity.canPickUpLoot())
             info.setReturnValue(ANGRY_TEXTURE);
     }

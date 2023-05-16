@@ -1,10 +1,10 @@
-package me.gravityio.goodmc.lib.utils;
+package me.gravityio.goodmc.lib.helper;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 
-public class InventoryUtils {
+public class InventoryHelper {
 
     public static boolean canInsertInventory(DefaultedList<Slot> slots, ItemStack original, int startIndex, int endIndex) {
         if (original.isEmpty()) return false;

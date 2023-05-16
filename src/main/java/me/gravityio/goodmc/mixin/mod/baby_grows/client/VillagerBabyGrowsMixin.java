@@ -22,14 +22,14 @@ public abstract class VillagerBabyGrowsMixin extends MobEntityRenderer<VillagerE
     @ModifyConstant(method = "scale(Lnet/minecraft/entity/passive/VillagerEntity;Lnet/minecraft/client/util/math/MatrixStack;F)V",
             constant = @Constant(floatValue = 0.5f, ordinal = 0))
     private float scaleSizeByAge(float g, VillagerEntity entity) {
-        if (!GoodMC.config.animal_aging) return g;
+        if (!GoodMC.CONFIG.all.animal_aging) return g;
         return 0.5f * (2 - (entity.getBreedingAge() / -24000f));
     }
 
     @ModifyConstant(method = "scale(Lnet/minecraft/entity/passive/VillagerEntity;Lnet/minecraft/client/util/math/MatrixStack;F)V",
             constant = @Constant(floatValue = 0.25f, ordinal = 0))
     private float scaleShadowByAge(float g, VillagerEntity entity) {
-        if (!GoodMC.config.animal_aging) return g;
+        if (!GoodMC.CONFIG.all.animal_aging) return g;
         return 0.25f * (2 - (entity.getBreedingAge() / -24000f));
     }
 }

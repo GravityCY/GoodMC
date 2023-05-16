@@ -1,4 +1,4 @@
-package me.gravityio.goodmc.mixin.mod.client;
+package me.gravityio.goodmc.mixin.mod.structure_locator.client;
 
 import net.minecraft.client.gui.screen.ingame.ForgingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;

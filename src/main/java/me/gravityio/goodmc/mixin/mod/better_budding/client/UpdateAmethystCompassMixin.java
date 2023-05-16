@@ -2,10 +2,10 @@ package me.gravityio.goodmc.mixin.mod.better_budding.client;
 
 import com.mojang.authlib.GameProfile;
 import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.client.tweaks.better_amethyst.BetterAmethystTweak;
 import me.gravityio.goodmc.lib.MoveUpdater;
 import me.gravityio.goodmc.lib.better_compass.CompassUtils;
-import me.gravityio.goodmc.lib.utils.NbtUtils;
-import me.gravityio.goodmc.tweaks.BetterAmethystUtils;
+import me.gravityio.goodmc.lib.helper.NbtHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
     private static void setPreviousPoint(ItemStack compass) {
         if (!CompassUtils.isRandom(compass)) return;
         GoodMC.LOGGER.debug("Setting Previous Point");
-        NbtUtils.internalCopy(compass.getNbt(), POINTS_TO, PREV);
+        NbtHelper.internalCopy(compass.getNbt(), POINTS_TO, PREV);
     }
 
     private static boolean hasPreviousPoint(ItemStack compass) {
@@ -65,16 +65,17 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
     }
 
     /**
-     * Every {@link BetterAmethystUtils#UPDATE_DISTANCE} blocks moved sets compasses in player inventory to point to random if there's amethyst nearby
+     * Every {@link BetterAmethystTweak#UPDATE_DISTANCE BetterAmethystTweak#UPDATE_DISTANCE} blocks moved sets compasses in player inventory to point to random if there's amethyst nearby
      */
     @Inject(method = "tickMovement", at = @At("HEAD"))
     private void onMove(CallbackInfo ci) {
-        if (moveUpdater.tick(this.getPos()) < BetterAmethystUtils.UPDATE_DISTANCE * (this.getVelocity().horizontalLength() + 1)) return;
+        if (!GoodMC.CONFIG.amethyst.geode_compass) return;
+        if (moveUpdater.tick(this.getPos()) < GoodMC.CONFIG.amethyst.update_distance * (this.getVelocity().horizontalLength() + 1)) return;
         moveUpdater.setOrigin(this.getPos());
 
-        List<ItemStack> compasses = BetterAmethystUtils.getCompasses(this.getInventory().main);
+        List<ItemStack> compasses = BetterAmethystTweak.getCompasses(this.getInventory().main);
         if (compasses.isEmpty()) return;
-        if (BetterAmethystUtils.nearAmethyst(this.world, this.getBlockPos())) {
+        if (BetterAmethystTweak.nearAmethyst(this.world, this.getBlockPos())) {
             compasses.forEach(compass -> {
                 if (CompassUtils.isRandom(compass)) {
                     if (CompassUtils.getRandom(compass)) return;
@@ -88,7 +89,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
             compasses.forEach(compass -> {
                 if (!isInsideAmethyst(compass) || !CompassUtils.isRandom(compass) || !CompassUtils.getRandom(compass)) return;
                 if (hasPreviousPoint(compass)) {
-                    NbtUtils.internalCopy(compass.getNbt(), PREV, POINTS_TO);
+                    NbtHelper.internalCopy(compass.getNbt(), PREV, POINTS_TO);
                     removePreviousPoint(compass);
                 } else compass.getNbt().remove(POINTS_TO);
                 compass.getNbt().remove(INSIDE);

@@ -1,11 +1,10 @@
 package me.gravityio.goodmc.lib.better_compass;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.utils.NbtUtils;
+import me.gravityio.goodmc.lib.helper.NbtHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -41,7 +40,7 @@ public class CompassUtils {
      * @return {@link NbtCompound}
      */
     public static NbtCompound getOrCreatePointsTo(ItemStack compass) {
-        return NbtUtils.getOrCreate(compass.getOrCreateNbt(), POINTS_TO);
+        return NbtHelper.getOrCreate(compass.getOrCreateNbt(), POINTS_TO);
     }
 
 
@@ -52,7 +51,7 @@ public class CompassUtils {
      */
     public static BlockPos getPointPosition(ItemStack compass) {
         if (!CompassUtils.isPointingAtPosition(compass)) return null;
-        return NbtHelper.toBlockPos(getPointsTo(compass).getCompound(BLOCK_POS));
+        return net.minecraft.nbt.NbtHelper.toBlockPos(getPointsTo(compass).getCompound(BLOCK_POS));
     }
 
     /**
@@ -82,7 +81,7 @@ public class CompassUtils {
      */
     public static void setPointPosition(ItemStack compass, BlockPos pos) {
         GoodMC.LOGGER.debug("<CompassUtils> Setting compass point position to: {}", pos);
-        CompassUtils.getOrCreatePointsTo(compass).put(BLOCK_POS, NbtHelper.fromBlockPos(pos));
+        CompassUtils.getOrCreatePointsTo(compass).put(BLOCK_POS, net.minecraft.nbt.NbtHelper.fromBlockPos(pos));
     }
 
     /**
@@ -125,7 +124,7 @@ public class CompassUtils {
     public static GlobalPos getGlobalPosPoint(ItemStack compass) {
         if (!CompassUtils.isPointingAtPosition(compass)) return null;
         NbtCompound pointsToComp = compass.getNbt().getCompound(POINTS_TO);
-        BlockPos blockPos = NbtHelper.toBlockPos(pointsToComp.getCompound(BLOCK_POS));
+        BlockPos blockPos = net.minecraft.nbt.NbtHelper.toBlockPos(pointsToComp.getCompound(BLOCK_POS));
         NbtElement dimensionElem = pointsToComp.get(DIMENSION);
 
         Optional<RegistryKey<World>> world = World.CODEC.parse(NbtOps.INSTANCE, dimensionElem).result();

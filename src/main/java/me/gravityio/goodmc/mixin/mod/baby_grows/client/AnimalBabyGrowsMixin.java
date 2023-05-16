@@ -20,7 +20,7 @@ public abstract class AnimalBabyGrowsMixin<T extends LivingEntity> extends Entit
 
     @Inject(method = "scale", at = @At("HEAD"))
     private void scaleByAge(T entity, MatrixStack matrices, float amount, CallbackInfo ci) {
-        if (!GoodMC.config.animal_aging) return;
+        if (!GoodMC.CONFIG.all.animal_aging) return;
         if (entity instanceof PassiveEntity passiveEntity) {
             if (!entity.isBaby()) return;
             float newScale = 2 - passiveEntity.getBreedingAge() / -24000f;

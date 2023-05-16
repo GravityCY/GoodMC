@@ -20,7 +20,7 @@ public class ClientPacketSpawnMixin {
             method = "onEntitySpawn(Lnet/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket;)V",
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci, EntityType<?> entityType, Entity entity) {
-        if (!GoodMC.config.angry_mobs) return;
+        if (!GoodMC.CONFIG.all.angry_mobs) return;
         if (!(entity instanceof MobEntity mobEntity)) return;
         mobEntity.setCanPickUpLoot(((ILootEntity) packet).getCanPickupLoot());
     }

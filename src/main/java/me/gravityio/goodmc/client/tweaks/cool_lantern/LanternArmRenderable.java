@@ -19,7 +19,7 @@ public class LanternArmRenderable implements ArmRenderable {
 
     @Override
     public void renderArm(MatrixStack matrices, Hand hand) {
-        if (!GoodMC.config.physical_lantern) return;
+        if (!GoodMC.CONFIG.lantern.physical_lantern) return;
         if (hand == Hand.MAIN_HAND) {
             matrices.translate(0.4, 0.6, -0.1);
             matrices.multiply(new Quaternionf(-0.1716673, 0.257501, 0, 0.9509067 ));

@@ -26,12 +26,12 @@ public class BuddingAmethystBlockDrop extends Block {
             target = "net/minecraft/block/piston/PistonBehavior.DESTROY : Lnet/minecraft/block/piston/PistonBehavior;",
             opcode = Opcodes.GETSTATIC))
     public PistonBehavior makeMovable() {
-        return GoodMC.config.piston_move_budding ? PistonBehavior.PUSH_ONLY : PistonBehavior.DESTROY;
+        return GoodMC.CONFIG.amethyst.piston_move_budding ? PistonBehavior.PUSH_ONLY : PistonBehavior.DESTROY;
     }
 
     @Override
     public void onDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
-        if (!GoodMC.config.drop_amethyst_on_explode) return;
+        if (!GoodMC.CONFIG.amethyst.drop_amethyst_on_explode) return;
         if (!(explosion.getEntity() instanceof CreeperEntity)) return;
         world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), Items.BUDDING_AMETHYST.getDefaultStack()));
     }
