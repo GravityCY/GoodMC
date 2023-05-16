@@ -2,7 +2,7 @@ package me.gravityio.goodmc.mixin.lib.events;
 
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.events.ModEvents;
-import me.gravityio.goodmc.lib.helper.InventoryHelper;
+import me.gravityio.goodmc.lib.helper.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ForgingScreenHandler;
@@ -29,7 +29,7 @@ public abstract class ForgingScreenHandlerMixins  {
         @Inject(method = "quickMove",
                 at = @At(value = "INVOKE", target = "net/minecraft/screen/slot/Slot.getStack ()Lnet/minecraft/item/ItemStack;", ordinal = 0))
         private void onBeforeCraft(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> cir) {
-            if (slot != 2 || !InventoryHelper.canInsertInventory(this.slots, this.slots.get(slot).getStack(), 3, 39)) return;
+            if (slot != 2 || !InventoryUtils.canInsertInventory(this.slots, this.slots.get(slot).getStack(), 3, 39)) return;
             ForgingScreenHandler self = (ForgingScreenHandler) (Object) this;
             if (self instanceof SmithingScreenHandler)
                 ModEvents.ON_BEFORE_CRAFT.invoker().onBeforeCraft(ModEvents.OnCraftEvent.CraftType.SMITHING, this.slots.get(slot).getStack(), player);

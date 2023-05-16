@@ -5,7 +5,7 @@ import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.better_amethyst.BetterAmethystTweak;
 import me.gravityio.goodmc.lib.MoveUpdater;
 import me.gravityio.goodmc.lib.better_compass.CompassUtils;
-import me.gravityio.goodmc.lib.helper.NbtHelper;
+import me.gravityio.goodmc.lib.helper.NbtUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
     private static void setPreviousPoint(ItemStack compass) {
         if (!CompassUtils.isRandom(compass)) return;
         GoodMC.LOGGER.debug("Setting Previous Point");
-        NbtHelper.internalCopy(compass.getNbt(), POINTS_TO, PREV);
+        NbtUtils.internalCopy(compass.getNbt(), POINTS_TO, PREV);
     }
 
     private static boolean hasPreviousPoint(ItemStack compass) {
@@ -89,7 +89,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
             compasses.forEach(compass -> {
                 if (!isInsideAmethyst(compass) || !CompassUtils.isRandom(compass) || !CompassUtils.getRandom(compass)) return;
                 if (hasPreviousPoint(compass)) {
-                    NbtHelper.internalCopy(compass.getNbt(), PREV, POINTS_TO);
+                    NbtUtils.internalCopy(compass.getNbt(), PREV, POINTS_TO);
                     removePreviousPoint(compass);
                 } else compass.getNbt().remove(POINTS_TO);
                 compass.getNbt().remove(INSIDE);

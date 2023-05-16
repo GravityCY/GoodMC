@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SkeletonEntityRenderer.class)
 public abstract class AngrySkeletonMixin extends BipedEntityRenderer<AbstractSkeletonEntity, SkeletonEntityModel<AbstractSkeletonEntity>> {
 
-    private static final Identifier ANGRY_TEXTURE = new Identifier("goodmc", "textures/entity/skeleton/angry_skeleton.png");
+    private static final Identifier ANGRY_TEXTURE = new Identifier(GoodMC.MOD_ID, "textures/entity/skeleton/angry_skeleton.png");
 
     public AngrySkeletonMixin(EntityRendererFactory.Context ctx, SkeletonEntityModel<AbstractSkeletonEntity> model, float shadowRadius) {
         super(ctx, model, shadowRadius);

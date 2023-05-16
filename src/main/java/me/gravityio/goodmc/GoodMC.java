@@ -15,19 +15,19 @@ import org.slf4j.LoggerFactory;
  * The Main Class of the mod, this will run on both the client and the server
  */
 //  TODO: Make the compass registry compatible with structures / biomes and maybe pois
-//  TODO: Make the better loot registry customizable and figure out how to register items to add on top of the loot table and not be tied to a loot table but just the whole structure
-//  TODO: Make the distance when updating compasses configurable
 //  TODO: Make custom recipe registration modular so that you can add custom recipes from a registry and maybe even custom recipes' other than just the smithing
 //  TODO: Make the Todo List Tweak
-//  TODO: Improve config
 //  TODO: ALL CONFIG ACCESSORS SHOULD BE REPLACED WITH VARIABLES THAT WILL BE SET WHEN THE CONFIG IS SAVED
-//  TODO: ADD A CONFIG TO REMOVE VISUALLY AGING MOBS COLLISION CHANGES ASWELL OR MAYBE EVEN DEFAULT OFF
 //  TODOTHINK: Try and fix the way animals look when visually growing up
 //  TODOTHINK: Make it so that you can filter what the player will get when they roll a structure based on a list of what the player has already rolled?
 //  TODOTHINK: Change the way the dimension of the roll gets decided (currently based on which dimension the player is during rolling)
-//  THINK: Consider what to do about baby growing rendering / collision
 //  THINK: Get rid of the arm renderables' and replace them with the fabric custom renderers
 //  THINK: REDESIGN EVENTUALLY TO SUPPORT FORGE
+//  DONE: Consider what to do about baby growing rendering / collision DONE: (Hitbox updates are disabled by default now and need to be manually enabled with a warning)
+//  DONE: Make the better loot registry customizable and figure out how to register items to add on top of the vanilla loot table and not be tied to a loot table but just the whole structure
+//  DONE: ADD A CONFIG TO REMOVE VISUALLY AGING MOBS COLLISION CHANGES ASWELL OR MAYBE EVEN DEFAULT OFF
+//  DONE: Improve config
+//  DONE: Make the distance when updating compasses configurable
 //  DONE: FIX README
 //  DONE: Configurable View Bobbing Strength
 //  DONE: SAVE BOBBING STRENGTH VALUE

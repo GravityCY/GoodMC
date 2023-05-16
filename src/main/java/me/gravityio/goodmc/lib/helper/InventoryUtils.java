@@ -4,7 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 
-public class InventoryHelper {
+/**
+ * Utility functions for Inventory Related Stuff
+ */
+public class InventoryUtils {
 
     public static boolean canInsertInventory(DefaultedList<Slot> slots, ItemStack original, int startIndex, int endIndex) {
         if (original.isEmpty()) return false;

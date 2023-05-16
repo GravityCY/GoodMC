@@ -15,7 +15,7 @@
   "client": [
     "better_compass.client.CustomCompassDirectionMixin",
     "client.ArmRenderableMixin",
-    "client.InGameHudMixin"
+    "client.BetterItemsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

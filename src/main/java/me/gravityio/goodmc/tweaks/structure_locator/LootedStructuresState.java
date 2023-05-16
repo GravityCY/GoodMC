@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.tweaks.structure_locator;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.helper.NbtHelper;
+import me.gravityio.goodmc.lib.helper.NbtUtils;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.MinecraftServer;
@@ -24,13 +24,7 @@ public class LootedStructuresState extends PersistentState {
 
     public static LootedStructuresState getServerState(MinecraftServer server) {
         PersistentStateManager stateManager = server.getWorld(World.OVERWORLD).getPersistentStateManager();
-        PersistentStateManager netherStateManager = server.getWorld(World.NETHER).getPersistentStateManager();
-        PersistentStateManager endStateManager = server.getWorld(World.END).getPersistentStateManager();
-
-        LootedStructuresState defaultState = stateManager.getOrCreate(LootedStructuresState::createFromNbt, LootedStructuresState::new, GoodMC.MOD_ID + "_overworld");
-        netherStateManager.getOrCreate(nbt -> toListDefault(nbt, defaultState), () -> defaultState, GoodMC.MOD_ID + "_the_nether");
-        endStateManager.getOrCreate(nbt -> toListDefault(nbt, defaultState), () -> defaultState, GoodMC.MOD_ID + "_the_end");
-        return defaultState;
+        return stateManager.getOrCreate(LootedStructuresState::createFromNbt, LootedStructuresState::new, GoodMC.MOD_ID + "_looted_structures");
     }
 
     public static LootedStructuresState createFromNbt(NbtCompound nbt) {
@@ -40,17 +34,12 @@ public class LootedStructuresState extends PersistentState {
         return state;
     }
 
-    public static LootedStructuresState toListDefault(NbtCompound nbt, LootedStructuresState defaultState) {
-        toList(nbt, defaultState.lootedStructures);
-        return defaultState;
-    }
-
     public static void toList(NbtCompound nbt, List<LootableStructure> list) {
-        NbtHelper.toList(nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE), list, element -> LootableStructure.fromNbt((NbtCompound) element));
+        NbtUtils.toList(nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE), list, element -> LootableStructure.fromNbt((NbtCompound) element));
     }
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
-        nbt.put("LootedStructures", NbtHelper.fromList(lootedStructures, LootableStructure::toNbt));
+        nbt.put("LootedStructures", NbtUtils.fromList(lootedStructures, LootableStructure::toNbt));
         GoodMC.LOGGER.debug("<LootedStructuresState> Saving State to NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
         return nbt;
     }
@@ -74,7 +63,7 @@ public class LootedStructuresState extends PersistentState {
 
 
     public static class LootableStructure {
-        private final Identifier structureKey;
+        public final Identifier structureKey;
         private final ChunkPos pos;
         private boolean isLooted = false;
         public static LootableStructure fromNbt(NbtCompound nbt) {

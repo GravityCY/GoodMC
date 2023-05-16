@@ -4,6 +4,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -11,7 +12,24 @@ import java.util.function.Function;
 /**
  * Some utilities regarding NBT that {@link net.minecraft.nbt.NbtHelper NbtHelper} doesn't have
  */
-public class NbtHelper {
+public class NbtUtils {
+
+
+    private static String getUptoDot(String string) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (true) {
+            char c = string.charAt(i);
+            if (c == '.') break;
+            sb.append(c);
+            if (i == string.length() - 1) {
+                break;
+            };
+            i++;
+        }
+        return sb.toString();
+    }
+
 
     public static boolean internalCopy(NbtCompound comp, String a, String b) {
         if (comp.get(a) == null) return false;
@@ -19,6 +37,27 @@ public class NbtHelper {
         comp.put(b, comp.get(a).copy());
         return true;
     }
+
+    public static <T extends NbtElement> T getDeep(NbtCompound comp, Class<T> clazz, String... orderedPaths) {
+        if (comp == null) return null;
+
+        if (orderedPaths.length != 1)
+            return getDeep(NbtUtils.get(comp, orderedPaths[0]), clazz, Arrays.stream(orderedPaths).skip(1).toArray(String[]::new));
+        return clazz.cast(comp.get(orderedPaths[0]));
+    }
+
+    // tag.display.Name
+//    public static <T extends NbtElement> T getDeep(NbtCompound comp, String path, Class<T> clazz) {
+//        StringBuilder pathLevel = new StringBuilder();
+//        path.get
+//        if (!end) {
+//            NbtCompound levelNbt = NbtUtils.get(comp, pathLevel.toString());
+//            if (levelNbt == null) return null;
+//            return getDeep(levelNbt, path.substring(i + 1), clazz);
+//        } else {
+//            return clazz.cast(comp.get(pathLevel.toString()));
+//        }
+//    }
 
     /**
      * Converts a {@link List} into an {@link NbtList}

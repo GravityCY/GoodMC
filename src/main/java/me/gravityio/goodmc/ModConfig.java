@@ -20,17 +20,20 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Gui.CollapsibleObject
     public StructureLocator locator = new StructureLocator();
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Gui.CollapsibleObject
+    public AnimalAging aging = new AnimalAging();
 
     public static class All {
         @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.RequiresRestart
         public boolean ancient_city_cartographer = true;
-        @ConfigEntry.Gui.Tooltip
-        public boolean animal_aging = true;
+
         @ConfigEntry.Gui.Tooltip
         public boolean angry_mobs = true;
 
         @ConfigEntry.BoundedDiscrete(max = 100)
-        public int view_bobbing_strength = 1;
+        public int view_bobbing_strength = 100;
     }
     public static class StructureLocator {
         @ConfigEntry.Gui.Tooltip
@@ -60,4 +63,18 @@ public class ModConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean lantern_toggle = true;
     }
+    public static class AnimalAging {
+        @ConfigEntry.Gui.Tooltip
+        public boolean mob_aging = true;
+        @ConfigEntry.Gui.Tooltip
+        public boolean grow_hitbox = false;
+        @ConfigEntry.Gui.Tooltip
+        public AgeMobOnly only = AgeMobOnly.ALL;
+        public enum AgeMobOnly {
+            ALL, VILLAGER, ANIMALS
+        }
+
+    }
+
+
 }

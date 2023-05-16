@@ -32,7 +32,7 @@ public class BlockEntityMixin {
         if (world.isClient || !(self instanceof IStructureWideLootTable blockStructureLootTable)) return;
         Identifier lootTableID = blockStructureLootTable.getLootTable();
         if (lootTableID == null) return;
-        Identifier structureId = BetterLootRegistry.get(lootTableID);
+        Identifier structureId = BetterLootRegistry.getStructure(lootTableID);
         if (structureId == null) return;
         ServerWorld serverWorld = (ServerWorld) world;
         Structure structure = world.getRegistryManager().get(RegistryKeys.STRUCTURE).get(structureId);

@@ -1,0 +1,64 @@
+package me.gravityio.goodmc.mixin.mod.mob_grows.client;
+
+import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.ModConfig;
+import me.gravityio.goodmc.mixin.interfaces.IAgeAccessor;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.entity.model.AnimalModel;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.PassiveEntity;
+import org.spongepowered.asm.mixin.Debug;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static net.minecraft.entity.passive.PassiveEntity.BABY_AGE;
+
+@Debug(export = true)
+@Mixin(AnimalModel.class)
+public abstract class AnimalModelMixin<E extends Entity> extends EntityModel<E> implements IAgeAccessor {
+    int age = 0;
+    @Override
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    // TODO: EVENTUALLY LEARN HOW TO FUCKING DO RENDERING TO MAKE THE HEAD NOT SCALE WITH THE BODY
+
+//    @ModifyConstant(method = "render", constant = @Constant(floatValue = 16f), slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", ordinal = 0)))
+//    private float onRender(float constant) {
+//        if (!this.child || !GoodMC.CONFIG.aging.mob_aging || GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ALL && GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ANIMALS) return constant;
+//        float newScale = ((float) this.age / BABY_AGE + 1f) / 2;
+//        return constant * newScale;
+//    }
+//
+//    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", ordinal = 0, shift = At.Shift.AFTER))
+//    private void onTranslateScaleHead(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
+//        if (!this.child || !GoodMC.CONFIG.aging.mob_aging || GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ALL && GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ANIMALS) return;
+//        float newScale = (float) (this.age / BABY_AGE) / 2 + 0.5f;
+//        matrices.scale(newScale, newScale, newScale);
+//    }
+
+//
+//    @Inject(method="render", at = @At("HEAD"))
+//    private void test(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
+//        if (!this.child || !GoodMC.CONFIG.aging.mob_aging || GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ALL && GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ANIMALS) return;
+//        float newScale = 2 - this.age / -24000f;
+//        matrices.scale(newScale, newScale, newScale);
+//    }
+
+//    @ModifyVariable(method ="render", at = @At(value = "STORE", ordinal = 1), ordinal = 4)
+//    private float onSetScale(float scale) {
+//        if (!this.child || !GoodMC.CONFIG.aging.mob_aging || GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ALL && GoodMC.CONFIG.aging.only != ModConfig.AnimalAging.AgeMobOnly.ANIMALS) return scale;
+//        float newScale = 2 - this.age / -24000f;
+//        return scale * newScale;
+//    }
+
+}

@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.lib.better_compass;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.helper.NbtHelper;
+import me.gravityio.goodmc.lib.helper.NbtUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -40,7 +40,7 @@ public class CompassUtils {
      * @return {@link NbtCompound}
      */
     public static NbtCompound getOrCreatePointsTo(ItemStack compass) {
-        return NbtHelper.getOrCreate(compass.getOrCreateNbt(), POINTS_TO);
+        return NbtUtils.getOrCreate(compass.getOrCreateNbt(), POINTS_TO);
     }
 
 

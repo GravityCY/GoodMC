@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ZombieBaseEntityRenderer.class)
 public abstract class AngryZombieMixin extends BipedEntityRenderer<ZombieEntity, ZombieEntityModel<ZombieEntity>> {
 
-    private static final Identifier ANGRY_TEXTURE = new Identifier("goodmc", "textures/entity/zombie/angry_zombie.png");
+    private static final Identifier ANGRY_TEXTURE = new Identifier(GoodMC.MOD_ID, "textures/entity/zombie/angry_zombie.png");
 
     public AngryZombieMixin(EntityRendererFactory.Context ctx, ZombieEntityModel<ZombieEntity> model, float shadowRadius) {
         super(ctx, model, shadowRadius);

@@ -1,10 +1,13 @@
 package me.gravityio.goodmc.tweaks.structure_locator;
 
 import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.lib.BetterItems;
 import me.gravityio.goodmc.lib.better_compass.CompassLocatableRegistry;
+import me.gravityio.goodmc.lib.better_compass.Locatables;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils;
+import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
 import me.gravityio.goodmc.lib.events.ModEvents;
-import me.gravityio.goodmc.lib.helper.ItemHelper;
+import me.gravityio.goodmc.lib.helper.ItemUtils;
 import me.gravityio.goodmc.tweaks.IServerTweak;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,6 +32,8 @@ import net.minecraft.world.gen.structure.StructureKeys;
 import java.util.List;
 import java.util.Random;
 
+import static me.gravityio.goodmc.GoodMC.MOD_ID;
+
 
 /**
  * A 'tweak' that adds a Tattered Map Item that will always spawn 1 in <b>ANY</b> structure <br>
@@ -38,13 +43,13 @@ import java.util.Random;
 public class StructureLocatorTweak implements IServerTweak {
     public static final Style LORE_STYLE = Style.EMPTY.withItalic(false).withFormatting(Formatting.GRAY);
     public static final Style HOTBAR_STYLE = Style.EMPTY.withFormatting(Formatting.LIGHT_PURPLE);
-    public static final Identifier TATTERED_MAP_ID = new Identifier(GoodMC.MOD_ID, "tattered_map");
+    public static final Identifier TATTERED_MAP_ID = new Identifier(MOD_ID, "tattered_map");
     public static final Item TATTERED_MAP = new Item(new Item.Settings());
 
     public static final ItemStack COMPASS_STACK = new ItemStack(Items.COMPASS);
     public static final ItemStack TATTERED_MAP_STACK = new ItemStack(TATTERED_MAP);
 
-    public static final SoundEvent LOCATED_SOUND = SoundEvent.of(new Identifier(GoodMC.MOD_ID, "item.compass.located_structure"));
+    public static final SoundEvent LOCATED_SOUND = SoundEvent.of(new Identifier(MOD_ID, "item.compass.located_structure"));
 
     public static LootedStructuresState state;
 
@@ -52,11 +57,11 @@ public class StructureLocatorTweak implements IServerTweak {
 
     static {
         // SET THE LORE OF THE DEFAULT ITEM STACKS TO BE COPIED FOR CREATIVE MENU // SMITHING TABLE
-        ItemHelper.setLore(COMPASS_STACK, new Text[]{Text.translatable("item.goodmc.compass.lore.unlocated").setStyle(LORE_STYLE)});
-        ItemHelper.setLore(TATTERED_MAP_STACK, new Text[]{Text.translatable("item.goodmc.tattered_map.lore").setStyle(LORE_STYLE)});
+        ItemUtils.setLore(COMPASS_STACK, new Text[]{Text.translatable("item.goodmc.compass.lore.unlocated").setStyle(LORE_STYLE)});
+        ItemUtils.setLore(TATTERED_MAP_STACK, new Text[]{Text.translatable("item.goodmc.tattered_map.lore").setStyle(LORE_STYLE)});
 
         // REGISTER ALL THE STRUCTURES FOR THE COMPASS TO USE
-        CompassLocatableRegistry.register(World.OVERWORLD.getValue(), new Identifier[] {
+        CompassLocatableRegistry.registerStructure(World.OVERWORLD.getValue(), new Identifier[] {
                 StructureKeys.PILLAGER_OUTPOST.getValue(),
                 StructureKeys.DESERT_PYRAMID.getValue(),
                 StructureKeys.JUNGLE_PYRAMID.getValue(),
@@ -70,14 +75,16 @@ public class StructureLocatorTweak implements IServerTweak {
                 StructureKeys.VILLAGE_SNOWY.getValue(),
                 StructureKeys.VILLAGE_TAIGA.getValue(),
         });
-        CompassLocatableRegistry.register(World.NETHER.getValue(), new Identifier[] {
+        CompassLocatableRegistry.registerStructure(World.NETHER.getValue(), new Identifier[] {
                 StructureKeys.BASTION_REMNANT.getValue(),
                 StructureKeys.FORTRESS.getValue(),
                 StructureKeys.NETHER_FOSSIL.getValue()
         });
-        CompassLocatableRegistry.register(World.END.getValue(), new Identifier[]{
+        CompassLocatableRegistry.registerStructure(World.END.getValue(), new Identifier[]{
                 StructureKeys.END_CITY.getValue()
         });
+
+        BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
     }
 
     /**
@@ -109,12 +116,12 @@ public class StructureLocatorTweak implements IServerTweak {
     private ActionResult onCraft(ModEvents.OnCraftEvent.CraftType craftType, ItemStack stack, PlayerEntity player) {
         if (!craftType.equals(ModEvents.OnCraftEvent.CraftType.SMITHING) || (!(player instanceof ServerPlayerEntity serverPlayer))) return ActionResult.PASS;
         Identifier dimensionKey = serverPlayer.getWorld().getRegistryKey().getValue();
-        List<Identifier> structureKeys = CompassLocatableRegistry.get(dimensionKey);
+        List<Identifier> structureKeys = CompassLocatableRegistry.getStructures(dimensionKey);
         Identifier structureKey = structureKeys.get(random.nextInt(structureKeys.size()));
         MutableText loreText = Text.translatable("structure." + structureKey.getNamespace() + "." + structureKey.getPath()).setStyle(LORE_STYLE);
         MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
-        ItemHelper.setLore(stack, new Text[] { loreText });
-        ItemHelper.setHotbarTooltip(stack, hotbarText);
+        ItemUtils.setLore(stack, new Text[] { loreText });
+        BetterItems.setHotbarTooltip(stack, hotbarText);
         StructureLocatorUtils.setPointsTo(stack, new CompassLocatableRegistry.PointData(dimensionKey, structureKey));
         StructureLocatorUtils.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         return ActionResult.SUCCESS;

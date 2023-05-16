@@ -16,18 +16,18 @@
       "text.autoconfig.goodmc.option.amethyst.@Tooltip": "Amethyst Related Options",
       "text.autoconfig.goodmc.option.lantern.@Tooltip": "Realistic Lantern Related Options",
       "text.autoconfig.goodmc.option.locator.@Tooltip": "Structure Locator Related Options",
+      "text.autoconfig.goodmc.option.aging.@Tooltip": "Mob Aging Related Options",
 
       "text.autoconfig.goodmc.option.all": "All",
       "text.autoconfig.goodmc.option.amethyst": "Better Amethyst",
       "text.autoconfig.goodmc.option.lantern": "Realistic Lantern",
       "text.autoconfig.goodmc.option.locator": "Structure Locator",
+      "text.autoconfig.goodmc.option.aging": "Mob Aging",
 
       "text.autoconfig.goodmc.option.all.ancient_city_cartographer.@Tooltip": "Cartographer sells Ancient City maps",
-      "text.autoconfig.goodmc.option.all.animal_aging.@Tooltip": "Animals Visually Grow Up",
       "text.autoconfig.goodmc.option.all.angry_mobs.@Tooltip": "Mobs that can Pickup Items have Different Textures",
       
       "text.autoconfig.goodmc.option.all.ancient_city_cartographer": "Ancient City Cartographer",
-      "text.autoconfig.goodmc.option.all.animal_aging": "Animal Aging",
       "text.autoconfig.goodmc.option.all.angry_mobs": "Angry Mobs",
       "text.autoconfig.goodmc.option.all.view_bobbing_strength": "View Bobbing Strength",
       
@@ -42,18 +42,27 @@
       "text.autoconfig.goodmc.option.amethyst.piston_move_budding": "Piston Amethyst",
       "text.autoconfig.goodmc.option.amethyst.budding_hardness": "Amethyst Hardness",
       "text.autoconfig.goodmc.option.amethyst.update_distance": "Update Distance",
-
+      
       "text.autoconfig.goodmc.option.lantern.physical_lantern.@Tooltip": "Hold Lantern in your hand while rendering your arm",
       "text.autoconfig.goodmc.option.lantern.lantern_toggle.@Tooltip": "Toggle-Equip Lantern in your offhand",
-
+      
       "text.autoconfig.goodmc.option.lantern.physical_lantern": "Lantern Realistic Wield",
       "text.autoconfig.goodmc.option.lantern.lantern_toggle": "Lantern Wield Toggle",
       
       "text.autoconfig.goodmc.option.locator.radius.@Tooltip": "Whatever minecraft means for 'radius' when locating structure this means that too",
       "text.autoconfig.goodmc.option.locator.update_distance.@Tooltip": "How often to look for structures (every 'amount of blocks' player has moved)",
-
+      
       "text.autoconfig.goodmc.option.locator.radius": "Radius",
-  "text.autoconfig.goodmc.option.locator.update_distance": "Update Distance",
+      "text.autoconfig.goodmc.option.locator.update_distance": "Update Distance",
+      
+      "text.autoconfig.goodmc.option.aging.mob_aging.@Tooltip": "Mobs Visually Grow Up",
+      "text.autoconfig.goodmc.option.aging.grow_hitbox.@Tooltip": "Whether when Mobs Visually grow up to also grow their Hitbox\n\nThis is an option because growing the hitbox breaks\nsome vanilla farms that depend on mob height",
+      "text.autoconfig.goodmc.option.aging.only.@Tooltip": "Which Mobs Visually Grow Up\nTip: Remove Text from Input to see Available Options",
+
+      "text.autoconfig.goodmc.option.aging.mob_aging": "Mob Aging",
+      "text.autoconfig.goodmc.option.aging.grow_hitbox": "Grow Hitbox",
+    "text.autoconfig.goodmc.option.aging.only": "Only",
+
 
 
   "subtitles.goodmc.located_structure": "Compass found a Structure",
