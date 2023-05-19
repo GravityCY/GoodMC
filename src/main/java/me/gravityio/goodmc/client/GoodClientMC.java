@@ -1,5 +1,6 @@
 package me.gravityio.goodmc.client;
 
+import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.ModConfig;
 import me.gravityio.goodmc.client.tweaks.ClientTweaks;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
@@ -16,7 +17,10 @@ public class GoodClientMC implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         this.client = MinecraftClient.getInstance();
-        ClientTweaks.tweaks.forEach(iTweak -> iTweak.onInit(this.client));
+        ClientTweaks.tweaks.forEach(iTweak -> {
+            iTweak.onInit(this.client);
+            GoodMC.LOGGER.debug("Initialized {} Client Tweak", iTweak.getClass());
+        });
         KeybindManager.init();
         ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
             ClientTweaks.tweaks.forEach(IClientTweak::onTick);

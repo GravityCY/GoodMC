@@ -2,6 +2,7 @@ package me.gravityio.goodmc.client.tweaks.todo_list;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import me.gravityio.goodmc.lib.keybinds.KeyBind;
 import me.gravityio.goodmc.lib.keybinds.KeybindManager;
@@ -11,15 +12,11 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.IdentifierArgumentType;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
-
-import java.text.Format;
 
 import static me.gravityio.goodmc.client.GoodClientMC.CATEGORY;
 
@@ -27,7 +24,7 @@ import static me.gravityio.goodmc.client.GoodClientMC.CATEGORY;
  * A TodoList GUI that I eventually make xd
  */
 @SuppressWarnings("ALL")
-public class TodoListClientTweak implements IClientTweak {
+public class TodoListTweak implements IClientTweak {
 
     private static final MutableText ADD_SUCCESS = Text.literal("Succesfully Added Todo.").formatted(Formatting.GREEN);
     private static final MutableText REMOVE_SUCCESS = Text.literal("Succesfully Removed Todo.").formatted(Formatting.RED);

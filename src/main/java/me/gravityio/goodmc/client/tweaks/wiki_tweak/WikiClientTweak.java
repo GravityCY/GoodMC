@@ -2,6 +2,7 @@ package me.gravityio.goodmc.client.tweaks.wiki_tweak;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;

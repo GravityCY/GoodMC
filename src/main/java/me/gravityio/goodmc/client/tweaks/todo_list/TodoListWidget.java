@@ -1,17 +1,11 @@
 package me.gravityio.goodmc.client.tweaks.todo_list;
 
-import me.gravityio.goodmc.client.tweaks.ClientTweaks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.gravityio.goodmc.client.tweaks.ClientTweaks.TODO_LIST;
 
 @SuppressWarnings("ALL")
 public class TodoListWidget extends EntryListWidget<TodoWidget> {
