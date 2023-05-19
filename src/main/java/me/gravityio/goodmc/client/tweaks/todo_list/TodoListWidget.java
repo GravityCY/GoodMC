@@ -8,6 +8,11 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static me.gravityio.goodmc.client.tweaks.ClientTweaks.TODO_LIST;
+
 @SuppressWarnings("ALL")
 public class TodoListWidget extends EntryListWidget<TodoWidget> {
 
@@ -18,7 +23,7 @@ public class TodoListWidget extends EntryListWidget<TodoWidget> {
 
     public TodoListWidget(MinecraftClient client) {
         super(client, width, height, client.getWindow().getScaledHeight() / 2 - height / 2, client.getWindow().getScaledHeight() / 2 + height / 2, 20);
-        ClientTweaks.TODO_LIST.todoList.forEach(todo -> addEntry(new TodoWidget(super.client, todo.item, todo.count, todo.need)));
+        TodoRegistry.todoList.forEach(todo -> addEntry(new TodoWidget(super.client, todo.item, todo.count, todo.need)));
         super.setLeftPos(client.getWindow().getScaledWidth() - width - margin);
         super.setRenderBackground(false);
         super.setRenderHeader(false, 0);

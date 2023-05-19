@@ -14,23 +14,6 @@ import java.util.function.Function;
  */
 public class NbtUtils {
 
-
-    private static String getUptoDot(String string) {
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        while (true) {
-            char c = string.charAt(i);
-            if (c == '.') break;
-            sb.append(c);
-            if (i == string.length() - 1) {
-                break;
-            };
-            i++;
-        }
-        return sb.toString();
-    }
-
-
     public static boolean internalCopy(NbtCompound comp, String a, String b) {
         if (comp.get(a) == null) return false;
 

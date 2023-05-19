@@ -54,8 +54,8 @@ public class StructureLocatable implements IMovementLocatable {
     @Override
     public BlockPos locate(ItemStack compass, ServerPlayerEntity player) {
         ServerWorld serverWorld = player.getWorld();
-        CompassLocatableRegistry.PointData pointData;
-        if (!compass.getItem().equals(Items.COMPASS) || (pointData = CompassLocatableRegistry.PointData.fromItem(compass)) == null) return;
+        PointData pointData;
+        if (!compass.getItem().equals(Items.COMPASS) || (pointData = PointData.fromItem(compass)) == null) return null;
         if (!serverWorld.getDimensionKey().getValue().equals(pointData.dimensionKey())) {
             GoodMC.LOGGER.debug("<StructureLocatorUtils> Structure Dimension is not in current dimension");
             return null;
