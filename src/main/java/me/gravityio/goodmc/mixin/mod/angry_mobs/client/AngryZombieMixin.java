@@ -1,5 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.angry_mobs.client;
 
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -23,7 +24,7 @@ public abstract class AngryZombieMixin extends BipedEntityRenderer<ZombieEntity,
 
     @Inject(at = @At("HEAD"), method = "getTexture(Lnet/minecraft/entity/mob/ZombieEntity;)Lnet/minecraft/util/Identifier;", cancellable = true)
     private void getTexture(ZombieEntity zombieEntity, CallbackInfoReturnable<Identifier> info) {
-        if (!GoodMC.CONFIG.all.angry_mobs) return;
+        if (!GoodConfig.INSTANCE.all.angry_mobs) return;
         if (zombieEntity.canPickUpLoot())
             info.setReturnValue(ANGRY_TEXTURE);
     }

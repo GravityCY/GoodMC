@@ -2,7 +2,6 @@ package me.gravityio.goodmc.client.tweaks.todo_list;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import me.gravityio.goodmc.lib.keybinds.KeyBind;
 import me.gravityio.goodmc.lib.keybinds.KeybindManager;

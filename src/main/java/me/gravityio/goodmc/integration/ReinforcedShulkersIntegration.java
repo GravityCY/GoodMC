@@ -18,7 +18,7 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 public class ReinforcedShulkersIntegration implements ReinforcedShulkerBoxesModInitializer {
     @Override
     public void onInitializeReinforcedShulkerBoxes() {
-        new BetterShulkersRegistry.Builder()
+        BetterShulkersRegistry.Builder()
                 .addItem(ReinforcedShulkerBoxBlock.class)
                 .setOpenAction((itemStack, slot, booleanSupplier) -> {
                     ReinforcedShulkerBoxBlock block = (ReinforcedShulkerBoxBlock) ((BlockItem) itemStack.getItem()).getBlock();
@@ -32,7 +32,8 @@ public class ReinforcedShulkersIntegration implements ReinforcedShulkerBoxesModI
                 .register();
         for (ReinforcingMaterialSettings setting : ReinforcingMaterialSettings.values()) {
             ScreenHandlerType<ReinforcedStorageScreenHandler> screenHandlerType = ModScreenHandlerType.REINFORCED_SHULKER_BOX_MAP.get(setting.getMaterial());
-            BetterShulkersRegistry.register(screenHandlerType);
+            String matName = Character.toUpperCase(setting.getMaterial().getName().charAt(0)) + setting.getMaterial().getName().substring(1);
+            BetterShulkersRegistry.registerScreen(screenHandlerType, String.format("ScreenHandlerType<ReinforcedStorageScreenHandler> %s", matName));
         }
     }
 }

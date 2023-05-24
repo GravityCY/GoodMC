@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class ItemUtils {
 
-    public static void setLore(ItemStack stack, Text[] loreInput) {
+    public static void setLore(ItemStack stack, Text... loreInput) {
         NbtCompound nbt = stack.getOrCreateNbt();
         NbtCompound display = NbtUtils.getOrCreate(nbt, ItemStack.DISPLAY_KEY);
-        NbtList loreList = (NbtList) NbtUtils.getOrCreate(display, ItemStack.LORE_KEY, NbtElement.LIST_TYPE);
+        NbtList loreList = NbtUtils.getOrCreate(display, ItemStack.LORE_KEY, NbtList::new);
         loreList.clear();
         for (Text loreLine : loreInput)
             loreList.add(NbtString.of(Text.Serializer.toJson(loreLine)));

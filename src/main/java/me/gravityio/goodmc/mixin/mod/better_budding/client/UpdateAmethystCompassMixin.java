@@ -1,6 +1,7 @@
 package me.gravityio.goodmc.mixin.mod.better_budding.client;
 
 import com.mojang.authlib.GameProfile;
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.better_amethyst.BetterAmethystTweak;
 import me.gravityio.goodmc.lib.MoveUpdater;
@@ -34,20 +35,20 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
 
     private static void setPreviousPoint(ItemStack compass) {
         if (!CompassUtils.isRandom(compass)) return;
-        GoodMC.LOGGER.debug("Setting Previous Point");
+        GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Setting Previous Point");
         NbtUtils.internalCopy(compass.getNbt(), POINTS_TO, PREV);
     }
 
     private static boolean hasPreviousPoint(ItemStack compass) {
         if (!CompassUtils.isPointing(compass)) return false;
-        GoodMC.LOGGER.debug("Has previous Point: {}", compass.getNbt().contains(PREV));
+        GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Has previous Point: {}", compass.getNbt().contains(PREV));
         return compass.getNbt().contains(PREV);
     }
 
     private static NbtElement getPreviousPoint(ItemStack compass) {
         if (!CompassUtils.isPointing(compass)) return null;
         NbtCompound nbt = compass.getNbt();
-        GoodMC.LOGGER.debug("Previous Point: {}", nbt.get(PREV));
+        GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Previous Point: {}", nbt.get(PREV));
         return nbt.get(PREV);
     }
 
@@ -56,7 +57,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
         if (!CompassUtils.isPointing(compass)) return;
         compass.getNbt().remove(PREV);
         NbtCompound pointsTo = CompassUtils.getPointsTo(compass);
-        GoodMC.LOGGER.debug("Removing previous Point");
+        GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Removing previous Point");
         pointsTo.remove(PREV);
     }
 
@@ -69,8 +70,8 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
      */
     @Inject(method = "tickMovement", at = @At("HEAD"))
     private void onMove(CallbackInfo ci) {
-        if (!GoodMC.CONFIG.amethyst.geode_compass) return;
-        if (moveUpdater.tick(this.getPos()) < GoodMC.CONFIG.amethyst.update_distance * (this.getVelocity().horizontalLength() + 1)) return;
+        if (!GoodConfig.INSTANCE.amethyst.geode_compass) return;
+        if (moveUpdater.tick(this.getPos()) < GoodConfig.INSTANCE.amethyst.update_distance * (this.getVelocity().horizontalLength() + 1)) return;
         moveUpdater.setOrigin(this.getPos());
 
         List<ItemStack> compasses = BetterAmethystTweak.getCompasses(this.getInventory().main);
@@ -83,7 +84,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
                 }
                 CompassUtils.setPointsToRandom(compass, true);
                 compass.getNbt().putBoolean(INSIDE, true);
-                GoodMC.LOGGER.debug("Walked into Amethyst: {}", compass.getNbt().toString());
+                GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Walked into Amethyst: {}", compass.getNbt().toString());
             });
         } else {
             compasses.forEach(compass -> {
@@ -93,7 +94,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
                     removePreviousPoint(compass);
                 } else compass.getNbt().remove(POINTS_TO);
                 compass.getNbt().remove(INSIDE);
-                GoodMC.LOGGER.debug("Exited Amethyst: {}", compass.getNbt().toString());
+                GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Exited Amethyst: {}", compass.getNbt().toString());
             });
         }
     }

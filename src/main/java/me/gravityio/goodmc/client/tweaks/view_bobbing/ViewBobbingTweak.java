@@ -19,7 +19,7 @@ public class ViewBobbingTweak implements IClientTweak {
     @Override
     public void onInit(MinecraftClient client) {
         GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
-            GoodMC.LOGGER.debug("<ViewBobbingTweak> Setting new VIEW_BOBBING_STRENGTH to {}", modConfig.all.view_bobbing_strength);
+            GoodMC.LOGGER.debug("[ViewBobbingTweak] Setting new VIEW_BOBBING_STRENGTH to {}", modConfig.all.view_bobbing_strength);
             viewBobbingStrength.setValue(modConfig.all.view_bobbing_strength);
             return ActionResult.SUCCESS;
         });

@@ -2,12 +2,12 @@ package me.gravityio.goodmc.tweaks.better_shulkers;
 
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.TriFunction;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.*;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 
 import java.util.*;
@@ -34,8 +34,8 @@ public class BetterShulkersRegistry {
      * Registers a {@link Class} that extends {@link ItemConvertible} in order to query the registry whether an item is a Shulker Item
      * @param item The Item {@link Class} that extends {@link ItemConvertible}
      */
-    public static void register(Class<? extends ItemConvertible> item) {
-        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering Shulker Item: {}", item);
+    public static void registerItem(Class<? extends ItemConvertible> item) {
+        GoodMC.LOGGER.debug("[BetterShulkersRegistry] Registering Shulker Item: {}", item);
         shulkers.add(item);
     }
 
@@ -44,8 +44,8 @@ public class BetterShulkersRegistry {
      * @param item The {@link Class} the item is of
      * @param onOpenFunction The {@link Function} that will run when the item is clicked
      */
-    public static void register(Class<? extends ItemConvertible> item, TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction) {
-        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering Screen Handler Function for Item: {}", item);
+    public static void registerItemCallback(Class<? extends ItemConvertible> item, TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction) {
+        GoodMC.LOGGER.debug("[BetterShulkersRegistry] Registering Screen Handler Function for Item: {}", item);
         onSlotScreenHandlers.put(item, onOpenFunction);
     }
 
@@ -53,8 +53,17 @@ public class BetterShulkersRegistry {
      * Registers a {@link ScreenHandlerType} that will be used to check which ScreenHandlers Shulker Items can be opened in
      * @param screenHandlerType The {@link ScreenHandlerType} to register
      */
-    public static void register(ScreenHandlerType<?> screenHandlerType) {
-        GoodMC.LOGGER.debug("<BetterShulkersRegistry> Registering allowed ScreenHandlerType: {}", screenHandlerType);
+    public static void registerScreen(ScreenHandlerType<?> screenHandlerType) {
+        registerScreen(screenHandlerType, "Unknown");
+    }
+
+    /**
+     * Registers a {@link ScreenHandlerType} that will be used to check which ScreenHandlers Shulker Items can be opened in
+     * @param screenHandlerType The {@link ScreenHandlerType} to register
+     * @param name The name of the ScreenHandlerType (this is just for the debug reasons)
+     */
+    public static void registerScreen(ScreenHandlerType<?> screenHandlerType, String name) {
+        GoodMC.LOGGER.debug("[BetterShulkersRegistry] Registering allowed Screen: '{}'", name);
         allowedScreens.add(screenHandlerType);
     }
 
@@ -100,20 +109,24 @@ public class BetterShulkersRegistry {
         return item instanceof BlockItem blockItem ? onSlotScreenHandlers.get(blockItem.getBlock().getClass()) : onSlotScreenHandlers.get(item.getClass());
     }
 
-    public static class Builder {
+    public static RegistryBuilder Builder() {
+        return new RegistryBuilder();
+    }
+
+    public static class RegistryBuilder {
         private final List<Class<? extends ItemConvertible>> items = new ArrayList<>();
         private TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction;
-        public Builder addItem(Class<? extends ItemConvertible> item) {
+        public RegistryBuilder addItem(Class<? extends ItemConvertible> item) {
             this.items.add(item);
             return this;
         }
 
-        public Builder addItems(List<Class<? extends ItemConvertible>> items) {
+        public RegistryBuilder addItems(List<Class<? extends ItemConvertible>> items) {
             this.items.addAll(items);
             return this;
         }
 
-        public Builder setOpenAction(TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction) {
+        public RegistryBuilder setOpenAction(TriFunction<ItemStack, Slot, Supplier<Boolean>, NamedScreenHandlerFactory> onOpenFunction) {
             this.onOpenFunction = onOpenFunction;
             return this;
         }
@@ -121,24 +134,9 @@ public class BetterShulkersRegistry {
         public void register() {
             for (Class<? extends ItemConvertible> itemClass : items) {
                 if (this.onOpenFunction != null)
-                    BetterShulkersRegistry.register(itemClass, this.onOpenFunction);
-                BetterShulkersRegistry.register(itemClass);
+                    BetterShulkersRegistry.registerItemCallback(itemClass, this.onOpenFunction);
+                BetterShulkersRegistry.registerItem(itemClass);
             }
         }
-    }
-
-    static {
-        new Builder()
-                .addItem(ShulkerBoxBlock.class)
-                .setOpenAction((itemStack, slot, canOpenSupplier) -> {
-                    ScreenHandlerFactory screenHandlerFactory = (syncId, playerInv, playerEntity) -> {
-                        ContainedItemInventory itemInventory = ContainedItemInventory.getFromStack(itemStack);
-                        if (itemInventory == null) itemInventory = ContainedItemInventory.make(27, itemStack, slot, canOpenSupplier);
-                       return new ShulkerBoxScreenHandler(syncId, playerInv, itemInventory);
-                    };
-                    return new SimpleNamedScreenHandlerFactory(screenHandlerFactory, itemStack.getName());
-                })
-                .register();
-        register(ScreenHandlerType.SHULKER_BOX);
     }
 }

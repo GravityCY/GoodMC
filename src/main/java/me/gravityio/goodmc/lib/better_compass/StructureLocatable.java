@@ -2,10 +2,9 @@ package me.gravityio.goodmc.lib.better_compass;
 
 import com.mojang.datafixers.util.Pair;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.tweaks.structure_locator.StructureLocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -17,100 +16,143 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.Structure;
 
-import java.util.*;
-
-import static me.gravityio.goodmc.lib.better_compass.CompassUtils.DIMENSION;
-import static me.gravityio.goodmc.lib.better_compass.CompassUtils.POINTS_TO;
-import static me.gravityio.goodmc.lib.better_compass.StructureLocatorUtils.STRUCTURE;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StructureLocatable implements IMovementLocatable {
-    private static final Map<Identifier, List<Identifier>> dimensionStructures = new HashMap<>();
+    public static final String STRUCTURE_PATH = "structure";
+    public static int UPDATE_DISTANCE = 100;
+    public static int RADIUS = 1;
 
-    public static final int UPDATE_DISTANCE = 100;
-    public static final int RADIUS = 100;
 
-
-    public static void registerStructure(Identifier dimensionKey, Identifier structureKey) {
-        List<Identifier> structures = dimensionStructures.computeIfAbsent(dimensionKey, k -> new ArrayList<>());
-        GoodMC.LOGGER.debug("<CompassLocatableRegistry> Registering structure:'{}' in dimension: '{}'", structureKey, dimensionKey);
-        structures.add(structureKey);
+    public static void setPointsToStructure(ItemStack compass, Identifier structureKey) {
+        CompassUtils.getOrCreatePointsTo(compass).putString(STRUCTURE_PATH, structureKey.toString());
     }
 
-    public static void registerStructure(Identifier dimensionKey, Identifier[] structureKeys) {
-        for (Identifier structureKey : structureKeys)
-            registerStructure(dimensionKey, structureKey);
+    /**
+     * Sets the compass to point to a structure in a dimension
+     * @param compass
+     * @param dimensionKey
+     * @param structureKey
+     */
+    public static void setPointsTo(ItemStack compass, Identifier dimensionKey, Identifier structureKey) {
+        CompassUtils.setPointDimension(compass, dimensionKey);
+        setPointsToStructure(compass, structureKey);
+        CompassUtils.setPointsToRandom(compass, true);
     }
 
-    public static List<Identifier> getStructure(Identifier dimensionKey) {
-        return dimensionStructures.get(dimensionKey);
+    /**
+     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } NBT
+     * @param compass {@link ItemStack}
+     * @return {@link Boolean}
+     */
+    public static boolean isPointingAtStructure(ItemStack compass) {
+        return CompassUtils.isPointing(compass) && CompassUtils.getPointsTo(compass).contains(STRUCTURE_PATH);
     }
 
-    @Override
-    public boolean isLocatable(ItemStack compass, ServerPlayerEntity player) {
-        if (!compass.getItem().equals(Items.COMPASS)) return false;
-        return false;
+    /**
+     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } and {@link CompassUtils#DIMENSION CompassUtils#DIMENSION } NBT
+     * @param compass {@link ItemStack}
+     * @return {@link Boolean}
+     */
+    public static boolean isPointing(ItemStack compass) {
+        return CompassUtils.isPointingAtDimension(compass) && isPointingAtStructure(compass);
     }
 
-    @Override
-    public BlockPos locate(ItemStack compass, ServerPlayerEntity player) {
-        ServerWorld serverWorld = player.getWorld();
-        PointData pointData;
-        if (!compass.getItem().equals(Items.COMPASS) || (pointData = PointData.fromItem(compass)) == null) return null;
-        if (!serverWorld.getDimensionKey().getValue().equals(pointData.dimensionKey())) {
-            GoodMC.LOGGER.debug("<StructureLocatorUtils> Structure Dimension is not in current dimension");
-            return null;
+    /**
+     * Returns the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } NBT of an {@link ItemStack}
+     * @param compass {@link ItemStack}
+     * @return {@link Boolean}
+     */
+    public static Identifier getPointStructure(ItemStack compass) {
+        if (!isPointingAtStructure(compass)) return null;
+        return new Identifier(CompassUtils.getPointsTo(compass).getString(STRUCTURE_PATH));
+    }
+
+
+    /**
+     * Updates the compass to the most recent structure that it's pointing at
+     * @param compass {@link ItemStack}
+     * @param serverWorld {@link ServerWorld}
+     * @param serverPlayer {@link ServerPlayerEntity}
+     */
+    public static void updateLocator(ItemStack compass, ServerWorld serverWorld, ServerPlayerEntity serverPlayer) {
+        if (!compass.getItem().equals(Items.COMPASS) || !isPointing(compass)) return;
+        Identifier dimensionKey = CompassUtils.getPointDimension(compass);
+        Identifier structureKey = getPointStructure(compass);
+        if (!serverWorld.getDimensionKey().getValue().equals(dimensionKey)) {
+            GoodMC.LOGGER.debug("[StructureLocatable] Structure Dimension is not in current dimension");
+            return;
         }
-        GoodMC.LOGGER.debug("<StructureLocatorUtils> Looking for {}", pointData.structureKey());
+        GoodMC.LOGGER.debug("[StructureLocatable] Looking for {}", structureKey);
         long start = System.nanoTime();
-        BlockPos locatedPos = StructureLocatorUtils.locateStructure(serverWorld, pointData.structureKey(), player.getBlockPos());
-        if (locatedPos == null) return null;
+        BlockPos playerPos = serverPlayer.getBlockPos();
+        BlockPos locatedPos = locateStructure(serverWorld, structureKey, playerPos);
+        GoodMC.LOGGER.debug("[StructureLocatable] Elapsed Time: {}ms", (System.nanoTime() - start) / 1000000L);
+        if (locatedPos == null) return;
+        GoodMC.LOGGER.debug("[StructureLocatable] Found structure at {}", locatedPos);
         if (!CompassUtils.isPointingAtPosition(compass)) {
             CompassUtils.setPointsToRandom(compass, false);
-            player.playSound(StructureLocatorTweak.LOCATED_SOUND, SoundCategory.PLAYERS, 0.5f, 1);
+            serverPlayer.playSound(LocatorTweak.SOUND_STRUCTURE_LOCATED, SoundCategory.PLAYERS, 0.5f, 1);
+        } else {
+            double distLocated = Math.sqrt(playerPos.getSquaredDistance(locatedPos));
+            double distPrev = Math.sqrt(playerPos.getSquaredDistance(CompassUtils.getPointPosition(compass)));
+            if (distPrev < distLocated) {
+                GoodMC.LOGGER.debug("[StructureLocatable] Previous position {}b is closer than the located position {}b, keeping previous...", distPrev, distLocated);
+                return;
+            }
         }
-        GoodMC.LOGGER.debug("<StructureLocatorUtils> Setting the block position of found structure to {}", locatedPos);
-        GoodMC.LOGGER.debug("<StructureLocatorUtils> Elapsed Time: {}ms", (System.nanoTime() - start) / 1000000L);
-        return locatedPos;
+        CompassUtils.setPointPosition(compass, locatedPos);
+        GoodMC.LOGGER.debug("[StructureLocatable] Setting the block position of found structure to {}", locatedPos);
     }
 
-    private static BlockPos locateStructure(ServerWorld serverWorld, Identifier structureKey, BlockPos center) {
+    /**
+     * Locates a structure
+     * @param serverWorld {@link ServerWorld}
+     * @param structureKey {@link Identifier}
+     * @param center {@link BlockPos}
+     * @return {@link BlockPos}
+     */
+    public static BlockPos locateStructure(ServerWorld serverWorld, Identifier structureKey, BlockPos center) {
         Registry<Structure> structureRegistry = serverWorld.getRegistryManager().get(RegistryKeys.STRUCTURE);
         Structure structure = structureRegistry.get(structureKey);
         RegistryEntry<Structure> registryEntry = structureRegistry.getEntry(structure);
         RegistryEntryList<Structure> registryEntryList = RegistryEntryList.of(registryEntry);
-        GoodMC.LOGGER.debug("<StructureLocatorUtils> Locating structure starting from {} with a radius of {} in dimension {}", center, RADIUS, serverWorld.getRegistryKey().getValue().toString());
+        GoodMC.LOGGER.debug("[StructureLocatable] Locating structure starting from {} with a radius of {} in dimension {}", center, RADIUS, serverWorld.getRegistryKey().getValue().toString());
         Pair<BlockPos, RegistryEntry<Structure>> pair = serverWorld.getChunkManager().getChunkGenerator().locateStructure(serverWorld, registryEntryList, center, RADIUS, false);
         return pair != null ? pair.getFirst() : null;
     }
 
     @Override
-    public int getUpdateDistance() {
-        return UPDATE_DISTANCE;
+    public boolean isLocatable(ItemStack compass, ServerPlayerEntity player) {
+        return compass.isOf(Items.COMPASS) && isPointing(compass);
     }
 
-    public record PointData(Identifier dimensionKey, Identifier structureKey) {
-        public static PointData fromNbt(NbtCompound nbt) {
-            String dimension = nbt.getString(DIMENSION);
-            if (Objects.equals(dimension, "")) return null;
-            String structure = nbt.getString(STRUCTURE);
-            if (Objects.equals(structure, "")) return null;
-            return new PointData(new Identifier(dimension), new Identifier(structure));
+    @Override
+    public void locate(ItemStack compass, ServerPlayerEntity player) {
+        updateLocator(compass, player.getWorld(), player);
+    }
+
+    @Override
+    public boolean hasMoved(double distance, double velocity) {
+        return distance >= UPDATE_DISTANCE * (velocity + 1);
+    }
+
+    public static class StructureRegistry {
+        private static final Map<Identifier, List<Identifier>> dimensionStructures = new HashMap<>();
+        public static void registerStructure(Identifier dimensionKey, Identifier... structureKeys) {
+            List<Identifier> structures = dimensionStructures.computeIfAbsent(dimensionKey, k -> new ArrayList<>());
+            for (Identifier structureKey : structureKeys) {
+                GoodMC.LOGGER.debug("[StructureRegistry] Registering structure:'{}' in dimension: '{}'", structureKey, dimensionKey);
+                structures.add(structureKey);
+            }
         }
 
-        public static PointData fromItem(ItemStack itemStack) {
-            NbtCompound nbt = itemStack.getNbt();
-            if (nbt == null) return null;
-            NbtCompound pointsTo = nbt.getCompound(POINTS_TO);
-            if (pointsTo == null) return null;
-            return fromNbt(pointsTo);
-        }
 
-        public static NbtCompound toNbt(PointData data) {
-            NbtCompound nbt = new NbtCompound();
-            nbt.putString("dimension", data.dimensionKey.toString());
-            nbt.putString("structure", data.structureKey.toString());
-            return nbt;
+        public static List<Identifier> getStructures(Identifier dimensionKey) {
+            return dimensionStructures.get(dimensionKey);
         }
-
     }
 }

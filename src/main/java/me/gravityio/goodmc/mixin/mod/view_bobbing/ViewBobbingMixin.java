@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.view_bobbing;
 
-import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.GoodConfig;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +13,6 @@ public class ViewBobbingMixin {
             at = @At(value = "STORE", ordinal = 0),
             ordinal = 3)
     private float onBobView(float value) {
-        return value * (GoodMC.CONFIG.all.view_bobbing_strength / 100f);
+        return value * (GoodConfig.INSTANCE.all.view_bobbing_strength / 100f);
     }
 }

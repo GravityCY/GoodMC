@@ -4,14 +4,15 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.ActionResult;
 
 public class ModEvents {
 
     public static final Event<OnCraftEvent> ON_CRAFT = EventFactory.createArrayBacked(OnCraftEvent.class,
-        listeners -> (craftType, stack, player) -> {
+        listeners -> (recipe, stack, player) -> {
         for (OnCraftEvent onCraftEvent : listeners) {
-            ActionResult result = onCraftEvent.onCraft(craftType, stack, player);
+            ActionResult result = onCraftEvent.onCraft(recipe, stack, player);
             if (result != ActionResult.PASS)
                 return result;
         }
@@ -19,9 +20,9 @@ public class ModEvents {
     });
 
     public static final Event<OnBeforeCraft> ON_BEFORE_CRAFT = EventFactory.createArrayBacked(OnBeforeCraft.class,
-        listeners -> (craftType, stack, player) -> {
+        listeners -> (recipe, stack, player) -> {
         for (OnBeforeCraft onCraftEvent : listeners) {
-            ActionResult result = onCraftEvent.onBeforeCraft(craftType, stack, player);
+            ActionResult result = onCraftEvent.onBeforeCraft(recipe, stack, player);
             if (result != ActionResult.PASS)
                 return result;
         }
@@ -29,13 +30,11 @@ public class ModEvents {
     });
 
     public interface OnBeforeCraft {
-        ActionResult onBeforeCraft(OnCraftEvent.CraftType craftType, ItemStack copy, PlayerEntity player);
+        ActionResult onBeforeCraft(Recipe<?> recipe, ItemStack copy, PlayerEntity player);
     }
 
     public interface OnCraftEvent {
-        ActionResult onCraft(CraftType craftType, ItemStack stack, PlayerEntity player);
-        enum CraftType {
-            ANY, SMITHING
-        }
+        ActionResult onCraft(Recipe<?> recipe, ItemStack stack, PlayerEntity player);
+
     }
 }

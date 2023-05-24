@@ -1,5 +1,6 @@
 package me.gravityio.goodmc.client.tweaks.better_amethyst;
 
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import net.minecraft.block.Block;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BetterAmethystTweak implements IClientTweak {
-    public static double UPDATE_DISTANCE = GoodMC.CONFIG.amethyst.update_distance;
+    public static double UPDATE_DISTANCE;
     private static final Block AmethystBlock = Blocks.AMETHYST_BLOCK;
     private static final Block BuddingBlock = Blocks.BUDDING_AMETHYST;
 
@@ -46,8 +47,9 @@ public class BetterAmethystTweak implements IClientTweak {
 
     @Override
     public void onInit(MinecraftClient client) {
+        UPDATE_DISTANCE = GoodConfig.INSTANCE.amethyst.update_distance;
         GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
-            GoodMC.LOGGER.debug("<BetterAmethystTweak> Setting new UPDATE_DISTANCE to {}", modConfig.amethyst.update_distance);
+            GoodMC.LOGGER.debug("[BetterAmethystTweak] Setting new UPDATE_DISTANCE to {}", modConfig.amethyst.update_distance);
             UPDATE_DISTANCE = modConfig.amethyst.update_distance;
             return ActionResult.SUCCESS;
         });

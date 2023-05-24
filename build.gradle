@@ -6,6 +6,11 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+loom {
+	accessWidenerPath = file("src/main/resources/goodmc.accesswidener")
+}
+
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -45,6 +50,10 @@ dependencies {
 	// Reinforced Shulkers
 	modCompileOnly("atonkish.reinfcore:reinforced-core:${project.reinf_core_version}")
 	modImplementation("atonkish.reinfshulker:reinforced-shulker-boxes:${project.reinf_shulker_version}")
+
+	implementation("com.github.LlamaLad7:MixinExtras:0.1.1")
+	include("com.github.LlamaLad7:MixinExtras:0.1.1")
+	annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
 
 	// Lazy DFU
 	modLocalRuntime("maven.modrinth:lazydfu:${project.lazy_dfu_version}")

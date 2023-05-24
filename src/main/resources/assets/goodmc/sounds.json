@@ -1,8 +1,14 @@
 {
-  "item.compass.located_structure": {
-    "subtitle": "subtitles.goodmc.located_structure",
+  "item.compass.structure.located": {
+    "subtitle": "subtitles.goodmc.structure.located",
     "sounds": [
-      "goodmc:item/compass/located_structure"
+      "goodmc:item/compass/structure/located"
+    ]
+  },
+  "item.compass.biome.located": {
+    "subtitle": "subtitles.goodmc.biome.located",
+    "sounds": [
+      "goodmc:item/compass/biome/located"
     ]
   }
 }

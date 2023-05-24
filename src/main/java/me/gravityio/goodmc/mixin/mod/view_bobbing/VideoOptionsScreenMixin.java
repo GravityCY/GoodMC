@@ -1,5 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.view_bobbing;
 
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -32,7 +33,7 @@ public class VideoOptionsScreenMixin extends GameOptionsScreen {
 
     @Inject(method = "method_19865", at = @At("HEAD"))
     private void onSave(Window window, ButtonWidget button, CallbackInfo ci) {
-        GoodMC.CONFIG.all.view_bobbing_strength = VIEW_BOBBING.viewBobbingStrength.getValue();
+        GoodConfig.INSTANCE.all.view_bobbing_strength = VIEW_BOBBING.viewBobbingStrength.getValue();
         GoodMC.CONFIG_HOLDER.save();
     }
 

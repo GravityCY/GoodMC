@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.mob_grows;
 
-import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.GoodConfig;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -36,19 +36,19 @@ public abstract class PassiveEntityMixin extends PathAwareEntity {
 
     @Inject(method = "getBreedingAge", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void getAgeFromTracker(CallbackInfoReturnable<Integer> cir) {
-        if (!GoodMC.CONFIG.aging.mob_aging) return;
+        if (!GoodConfig.INSTANCE.aging.mob_aging) return;
         cir.setReturnValue(this.dataTracker.get(BREEDING_AGE));
     }
 
     @Inject(method = "setBreedingAge", at = @At("TAIL"))
     private void updateBreedingAgeTracker(int age, CallbackInfo ci) {
-        if (!GoodMC.CONFIG.aging.mob_aging) return;
+        if (!GoodConfig.INSTANCE.aging.mob_aging) return;
         this.dataTracker.set(BREEDING_AGE, age);
     }
 
     @Inject(method = "onTrackedDataSet", at = @At("HEAD"))
     private void updateDimensions(TrackedData<?> data, CallbackInfo ci) {
-        if (!GoodMC.CONFIG.aging.mob_aging) return;
+        if (!GoodConfig.INSTANCE.aging.mob_aging) return;
         if (this.isBaby() && data.equals(BREEDING_AGE))
             this.calculateDimensions();
     }

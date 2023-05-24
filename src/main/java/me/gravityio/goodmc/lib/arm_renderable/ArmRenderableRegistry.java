@@ -18,7 +18,7 @@ import java.util.List;
 public class ArmRenderableRegistry {
     private static final List<ArmRenderable> armRenderableList = new ArrayList<>();
     public static <T extends ArmRenderable> T register(T armRenderable) {
-        GoodMC.LOGGER.debug("<ArmRenderableRegistry> Registering Arm Renderable");
+        GoodMC.LOGGER.debug("[ArmRenderableRegistry] Registering Arm Renderable");
         armRenderableList.add(armRenderable);
         return armRenderable;
     }

@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "goodmc:tattered_map"
+          "name": "goodmc:structure_tattered_map"
         },
         {
           "type": "minecraft:item",

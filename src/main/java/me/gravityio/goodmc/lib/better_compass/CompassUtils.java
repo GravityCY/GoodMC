@@ -60,7 +60,7 @@ public class CompassUtils {
      * @return {@link Identifier}
      */
     public static Identifier getPointDimension(ItemStack compass) {
-        if (!CompassUtils.isPointingAtPosition(compass)) return null;
+        if (!CompassUtils.isPointing(compass)) return null;
         return new Identifier(CompassUtils.getPointsTo(compass).getString(DIMENSION));
     }
 
@@ -70,7 +70,7 @@ public class CompassUtils {
      * @param dimension {@link Identifier}
      */
     public static void setPointDimension(ItemStack compass, Identifier dimension) {
-        GoodMC.LOGGER.debug("<CompassUtils> Setting compass point dimension to: {}", dimension);
+        GoodMC.LOGGER.debug("[CompassUtils] Setting compass point dimension to: {}", dimension);
         CompassUtils.getOrCreatePointsTo(compass).putString(DIMENSION, dimension.toString());
     }
 
@@ -80,7 +80,7 @@ public class CompassUtils {
      * @param pos {@link BlockPos}
      */
     public static void setPointPosition(ItemStack compass, BlockPos pos) {
-        GoodMC.LOGGER.debug("<CompassUtils> Setting compass point position to: {}", pos);
+        GoodMC.LOGGER.debug("[CompassUtils] Setting compass point position to: {}", pos);
         CompassUtils.getOrCreatePointsTo(compass).put(BLOCK_POS, net.minecraft.nbt.NbtHelper.fromBlockPos(pos));
     }
 
@@ -103,6 +103,10 @@ public class CompassUtils {
     public static boolean isPointing(ItemStack compass) {
         NbtCompound nbt = compass.getNbt();
         return nbt != null && nbt.contains(POINTS_TO);
+    }
+
+    public static boolean isPointingAtDimension(ItemStack compass) {
+        return isPointing(compass) && getPointsTo(compass).contains(DIMENSION);
     }
 
     /**
@@ -132,7 +136,7 @@ public class CompassUtils {
     }
 
     public static void setPointsToRandom(ItemStack compass, boolean random) {
-        GoodMC.LOGGER.debug("<CompassUtils> Setting compass point random: {}", random);
+        GoodMC.LOGGER.debug("[CompassUtils] Setting compass point random: {}", random);
         getOrCreatePointsTo(compass).putBoolean(RANDOM, random);
     }
 
