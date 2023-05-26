@@ -52,15 +52,12 @@
 	</Appenders>
 	<Loggers>
 		<Logger level="${sys:fabric.log.level:-info}" name="net.minecraft"/>
-<<<<<<< HEAD
-=======
 		<Logger level="all" name="goodmc" additivity="false">
 			<AppenderRef ref="DebugFile" level="debug"/>
 			<AppenderRef ref="SysOut" level="all"/>
 			<AppenderRef ref="LatestFile" level="all"/>
 			<AppenderRef ref="ServerGuiConsole" level="all"/>
 		</Logger>
->>>>>>> build
 		<Root level="all">
 			<AppenderRef ref="DebugFile" level="${sys:fabric.log.debug.level:-debug}"/>
 			<AppenderRef ref="SysOut" level="${sys:fabric.log.level:-info}"/>
