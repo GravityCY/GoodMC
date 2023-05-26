@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.mixin.interfaces;
 
 
-import me.gravityio.goodmc.tweaks.structure_locator.LootedStructuresState;
+import me.gravityio.goodmc.tweaks.locator.LootedStructuresState;
 
 /**
  * 

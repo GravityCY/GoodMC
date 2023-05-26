@@ -1,4 +1,4 @@
-package me.gravityio.goodmc.tweaks.structure_locator;
+package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.helper.NbtUtils;
@@ -18,6 +18,7 @@ import java.util.List;
 /**
  *
  */
+// TODO: MOVE TO LIBRARIES
 public class LootedStructuresState extends PersistentState {
     private static final String LOOTED_STRUCTURES = "LootedStructures";
     public List<LootableStructure> lootedStructures = new ArrayList<>();
@@ -29,7 +30,7 @@ public class LootedStructuresState extends PersistentState {
 
     public static LootedStructuresState createFromNbt(NbtCompound nbt) {
         LootedStructuresState state = new LootedStructuresState();
-        GoodMC.LOGGER.debug("<LootedStructuresState> Loading State from NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
+        GoodMC.LOGGER.debug("[LootedStructuresState] Loading State from NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
         toList(nbt, state.lootedStructures);
         return state;
     }
@@ -40,7 +41,7 @@ public class LootedStructuresState extends PersistentState {
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
         nbt.put("LootedStructures", NbtUtils.fromList(lootedStructures, LootableStructure::toNbt));
-        GoodMC.LOGGER.debug("<LootedStructuresState> Saving State to NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
+        GoodMC.LOGGER.debug("[LootedStructuresState] Saving State to NBT: {}", nbt.getList(LOOTED_STRUCTURES, NbtElement.COMPOUND_TYPE));
         return nbt;
     }
 
@@ -49,14 +50,14 @@ public class LootedStructuresState extends PersistentState {
             if (lootedStructure.structureKey.equals(structureKey) && lootedStructure.pos.equals(start.getPos()))
                 return lootedStructure;
         }
-        GoodMC.LOGGER.debug("Couldn't find loaded structure for ID: {} at {} creating new one", structureKey, start.getPos());
+        GoodMC.LOGGER.debug("[LootedStructuresState] Couldn't find loaded structure for ID: {} at {} creating new one", structureKey, start.getPos());
         LootableStructure structure = new LootableStructure(structureKey, start.getPos());
         this.lootedStructures.add(structure);
         return structure;
     }
 
     public void setLooted(LootableStructure structure) {
-        GoodMC.LOGGER.debug("Setting Structure {} to Looted", structure);
+        GoodMC.LOGGER.debug("[LootedStructuresState] Setting Structure {} to Looted", structure);
         structure.setLooted(true);
         this.markDirty();
     }
@@ -70,7 +71,7 @@ public class LootedStructuresState extends PersistentState {
             String id = nbt.getString("id");
             int x = nbt.getInt("X");
             int z = nbt.getInt("Z");
-            GoodMC.LOGGER.debug("Loading LootableStructure from NBT, ID: {}, POS: [X:{}, Z:{}]", id, x, z);
+            GoodMC.LOGGER.debug("[LootableStructure] Loading LootableStructure from NBT, ID: {}, POS: [X:{}, Z:{}]", id, x, z);
             LootableStructure structure = new LootableStructure(new Identifier(id), new ChunkPos(x, z));
             structure.isLooted = true;
             return structure;

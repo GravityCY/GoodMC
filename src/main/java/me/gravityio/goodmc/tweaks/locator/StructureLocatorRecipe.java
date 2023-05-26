@@ -1,4 +1,4 @@
-package me.gravityio.goodmc.tweaks.structure_locator;
+package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodmc.lib.better_compass.CompassUtils;
 import net.minecraft.inventory.Inventory;
@@ -9,10 +9,10 @@ import net.minecraft.recipe.SmithingRecipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-public class LocatorRecipe extends SmithingRecipe {
+public class StructureLocatorRecipe extends SmithingRecipe {
 
-    public LocatorRecipe(Identifier RECIPE_ID) {
-        super(RECIPE_ID, Ingredient.ofItems(Items.COMPASS), Ingredient.ofItems(StructureLocatorTweak.TATTERED_MAP), StructureLocatorTweak.COMPASS_STACK);
+    public StructureLocatorRecipe(Identifier id) {
+        super(id, Ingredient.ofItems(Items.COMPASS), Ingredient.ofItems(LocatorTweak.STRUCTURE_TATTERED_MAP), LocatorTweak.STACK_STRUCTURE_COMPASS);
     }
 
     @Override

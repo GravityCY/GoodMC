@@ -1,26 +1,20 @@
 package me.gravityio.goodmc.mixin.mod.better_budding;
 
-import me.gravityio.goodmc.GoodMC;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import me.gravityio.goodmc.GoodConfig;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.BuddingAmethystBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(Blocks.class)
+@Mixin(AbstractBlock.AbstractBlockState.class)
 public class HarderBuddingAmethyst {
-    @ModifyArg(
-            method = "<clinit>",
-            at = @At(
-                    value = "INVOKE",
-                    target = "net/minecraft/block/BuddingAmethystBlock.<init> (Lnet/minecraft/block/AbstractBlock$Settings;)V",
-                    ordinal = 0
-            ),
-            index = 0
-    )
-    private static AbstractBlock.Settings harderBudding(AbstractBlock.Settings settings)
+
+    @ModifyReturnValue(method = "getHardness", at = @At("RETURN"))
+    private float getHardness(float original)
     {
-        if (!GoodMC.CONFIG.amethyst.budding_hardness) return settings;
-        return settings.resistance(1.5f).hardness(20f);
+        AbstractBlock.AbstractBlockState self = (AbstractBlock.AbstractBlockState) (Object) this;
+        if (!(self.getBlock() instanceof BuddingAmethystBlock)) return original;
+        return GoodConfig.INSTANCE.amethyst.budding_hardness ? 20 : original;
     }
 }

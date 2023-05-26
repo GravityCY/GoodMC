@@ -1,6 +1,5 @@
 package me.gravityio.goodmc.client.tweaks.todo_list;
 
-import me.gravityio.goodmc.client.tweaks.ClientTweaks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
@@ -18,7 +17,7 @@ public class TodoListWidget extends EntryListWidget<TodoWidget> {
 
     public TodoListWidget(MinecraftClient client) {
         super(client, width, height, client.getWindow().getScaledHeight() / 2 - height / 2, client.getWindow().getScaledHeight() / 2 + height / 2, 20);
-        ClientTweaks.TODO_LIST.todoList.forEach(todo -> addEntry(new TodoWidget(super.client, todo.item, todo.count, todo.need)));
+        TodoRegistry.todoList.forEach(todo -> addEntry(new TodoWidget(super.client, todo.item, todo.count, todo.need)));
         super.setLeftPos(client.getWindow().getScaledWidth() - width - margin);
         super.setRenderBackground(false);
         super.setRenderHeader(false, 0);

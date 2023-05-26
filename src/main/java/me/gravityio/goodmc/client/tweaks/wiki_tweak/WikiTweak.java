@@ -14,7 +14,7 @@ import java.io.IOException;
  * A Tweak that adds a client sided command that opens the minecraft fandom website with whatever you type as arguments
  */
 @SuppressWarnings("ALL")
-public class WikiClientTweak implements IClientTweak {
+public class WikiTweak implements IClientTweak {
 
     public final LiteralArgumentBuilder<FabricClientCommandSource> openWikiCmd = ClientCommandManager.literal("wiki").then(ClientCommandManager.argument("id", StringArgumentType.greedyString()).executes(context -> {
         String id = context.getArgument("id", String.class);

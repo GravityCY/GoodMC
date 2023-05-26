@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
-import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
 import me.gravityio.goodmc.lib.arm_renderable.ArmRenderableRegistry;
 import me.gravityio.goodmc.lib.keybinds.KeyBind;
@@ -19,7 +19,7 @@ import static me.gravityio.goodmc.client.GoodClientMC.CATEGORY;
  * &nbsp; This exists because I also added some nice custom rendering for holding lanterns
  */
 @SuppressWarnings("ALL")
-public class CoolLanternClientTweak implements IClientTweak {
+public class CoolLanternTweak implements IClientTweak {
 
     private MinecraftClient client;
     private final LanternArmRenderable lanternArmRenderable = ArmRenderableRegistry.register(new LanternArmRenderable());
@@ -74,18 +74,18 @@ public class CoolLanternClientTweak implements IClientTweak {
         this.client = client;
         KeyBind selectLight = KeybindManager.register(KeyBind.of("key.goodmc.select_light", GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
         selectLight.setWhilePressedCallback(() -> {
-            if (!GoodMC.CONFIG.lantern.lantern_toggle) return;
+            if (!GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             if (!hasPrevSlot()) equip();
             else unequip();
             if (prevSlot == -2) unequip();
         });
         selectLight.setOnPressedCallback(() -> {
-            if (GoodMC.CONFIG.lantern.lantern_toggle) return;
+            if (GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             if (hasPrevSlot()) return;
             equip();
         });
         selectLight.setOnReleaseCallback(() -> {
-            if (GoodMC.CONFIG.lantern.lantern_toggle) return;
+            if (GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             unequip();
         });
     }
@@ -93,7 +93,7 @@ public class CoolLanternClientTweak implements IClientTweak {
     @Override
     public void onTick()
     {
-//        if (GoodMC.CONFIG.lantern_toggle) {
+//        if (GoodConfig.INSTANCE.lantern_toggle) {
 //            while (selectLight.bind.wasPressed()) {
 //                if (prevSlot == -1) {
 //                    prevSlot = equipLightItem(client);

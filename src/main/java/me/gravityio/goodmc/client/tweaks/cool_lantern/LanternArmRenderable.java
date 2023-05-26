@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
-import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.lib.arm_renderable.ArmRenderable;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
@@ -19,7 +19,7 @@ public class LanternArmRenderable implements ArmRenderable {
 
     @Override
     public void renderArm(MatrixStack matrices, Hand hand) {
-        if (!GoodMC.CONFIG.lantern.physical_lantern) return;
+        if (!GoodConfig.INSTANCE.lantern.physical_lantern) return;
         if (hand == Hand.MAIN_HAND) {
             matrices.translate(0.4, 0.6, -0.1);
             matrices.multiply(new Quaternionf(-0.1716673, 0.257501, 0, 0.9509067 ));

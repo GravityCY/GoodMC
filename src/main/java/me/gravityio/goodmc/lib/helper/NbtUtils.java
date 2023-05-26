@@ -3,39 +3,32 @@ package me.gravityio.goodmc.lib.helper;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Some utilities regarding NBT that {@link net.minecraft.nbt.NbtHelper NbtHelper} doesn't have
  */
 public class NbtUtils {
 
+    public static boolean internalCopy(NbtCompound comp, String from, String to) {
+        if (comp.get(from) == null) return false;
 
-    private static String getUptoDot(String string) {
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        while (true) {
-            char c = string.charAt(i);
-            if (c == '.') break;
-            sb.append(c);
-            if (i == string.length() - 1) {
-                break;
-            };
-            i++;
-        }
-        return sb.toString();
+        comp.put(to, comp.get(from).copy());
+        return true;
     }
 
+    public static <T extends NbtElement> T getOrCreateDeep(NbtCompound comp, Supplier<T> typeSupplier, Class<T> clazz, String... orderedPaths) {
+        if (comp == null) return null;
 
-    public static boolean internalCopy(NbtCompound comp, String a, String b) {
-        if (comp.get(a) == null) return false;
-
-        comp.put(b, comp.get(a).copy());
-        return true;
+        if (orderedPaths.length != 1)
+            return getOrCreateDeep(NbtUtils.getOrCreate(comp, orderedPaths[0]), typeSupplier, clazz, Arrays.stream(orderedPaths).skip(1).toArray(String[]::new));
+        return NbtUtils.getOrCreate(comp, orderedPaths[0], typeSupplier, clazz);
     }
 
     public static <T extends NbtElement> T getDeep(NbtCompound comp, Class<T> clazz, String... orderedPaths) {
@@ -45,19 +38,6 @@ public class NbtUtils {
             return getDeep(NbtUtils.get(comp, orderedPaths[0]), clazz, Arrays.stream(orderedPaths).skip(1).toArray(String[]::new));
         return clazz.cast(comp.get(orderedPaths[0]));
     }
-
-    // tag.display.Name
-//    public static <T extends NbtElement> T getDeep(NbtCompound comp, String path, Class<T> clazz) {
-//        StringBuilder pathLevel = new StringBuilder();
-//        path.get
-//        if (!end) {
-//            NbtCompound levelNbt = NbtUtils.get(comp, pathLevel.toString());
-//            if (levelNbt == null) return null;
-//            return getDeep(levelNbt, path.substring(i + 1), clazz);
-//        } else {
-//            return clazz.cast(comp.get(pathLevel.toString()));
-//        }
-//    }
 
     /**
      * Converts a {@link List} into an {@link NbtList}
@@ -115,7 +95,6 @@ public class NbtUtils {
         return nbtCompound;
     }
 
-
     /**
      * Converts an {@link NbtCompound} to a {@link Map}
      * @param nbtCompound The {@link NbtCompound} to convert to a {@link Map}
@@ -136,27 +115,21 @@ public class NbtUtils {
         return map;
     }
 
-
     /**
-     *
+     * This will replace any previous NBT that does not match the given type,
+     * for example getOrCreate(nbt, "coolName", () -> NbtInt.of(1), NbtInt.class) but "coolName" points to a string
+     * it will just end up replacing "coolName" with your given type
      * @param nbt The root NBT Compound to use to check if a sub element exists, etc.
-     * @param id The sub element id to look for
-     * @param type The sub element type - Get from {@link NbtElement}
+     * @param key The sub element id to look for
      * @return The element that has been either gotten or created
      */
-    public static NbtElement getOrCreate(NbtCompound nbt, String id, byte type) {
-        if (type == NbtElement.LIST_TYPE) {
-            NbtElement elem = nbt.get(id);
-            NbtList ret = new NbtList();
-            if (nbt.getType(id) == NbtElement.LIST_TYPE)
-                ret = (NbtList) elem;
-            nbt.put(id, ret);
-            return ret;
-        }
-        NbtCompound ret = nbt.getCompound(id);
-        if (!nbt.contains(id))
-            nbt.put(id, ret);
-        return ret;
+    public static <T extends NbtElement> T getOrCreate(NbtCompound nbt, String key, Supplier<T> typeSupplier, Class<T> clazz) {
+        if (nbt == null) return null;
+        NbtElement elem = nbt.get(key);
+        if (!clazz.isInstance(elem))
+            nbt.put(key, elem = typeSupplier.get());
+
+        return clazz.cast(elem);
     }
 
     /**
@@ -166,31 +139,52 @@ public class NbtUtils {
      * @return The element that has been either gotten or created
      */
     public static NbtCompound getOrCreate(NbtCompound nbt, String id) {
-        NbtCompound ret = nbt.getCompound(id);
-        if (!nbt.contains(id))
-            nbt.put(id, ret);
+        if (nbt == null) return null;
+        NbtCompound ret = NbtUtils.get(nbt, id);
+        if (ret == null)
+            nbt.put(id, ret = new NbtCompound());
         return ret;
     }
 
     /**
-     *
+     * A Nullable version of all the NbtCompound.get${type} variants <br>
+     * For example NbtCompound.getList() always returns a new NbtList that is not attached to its entries <br>
+     * So you'd have to do something like
+     * <pre style="padding: 2px; background-color: #1e1f22">
+     *{@code
+     * // Either returns the entry or a newly made NbtList because it didn't exist
+     * NbtList theList = nbt.getList("TheList", NbtElement.STRING_TYPE);
+     * // Can we guarantee that this was even a list that was in the NBTs' entries?
+     * if (theList.isEmpty())
+     *   nbt.putString("TheList", theList = new NbtList());
+     * }</pre> <br>
+     * So this just kinda simplifies things by making you do a null check instead
+     * <pre style="padding: 2px; background-color: #1e1f22">
+     *{@code
+     * NbtList theList = NbtUtils.get(nbt, "TheList", NbtList.class);
+     * if (theList == null)
+     *   nbt.put("TheList", theList = new NbtList());
+     * }</pre> <br>
+     * You could also just do <span style="background-color:#222">NbtList theList = (NbtList) nbt.get("TheList")</span> :/
      * @param nbt The NBT to work on
-     * @param key The key inside the NBT
+     * @param key The key inDside the NBT
      * @param clazz A class of what to return
      * @return Returns the type of the class parameter
      * @param <T> The class of what to return
      */
-    public static <T> T get(NbtCompound nbt, String key, Class<T> clazz) {
+    public static <T> @Nullable T get(NbtCompound nbt, String key, Class<T> clazz) {
+        if (nbt == null) return null;
         return clazz.cast(nbt.get(key));
     }
 
     /**
-     *
+     * A Nullable version of
      * @param nbt The NBT to work on
      * @param key The key inside the NBT
      * @return Returns the type of the class parameter
      */
-    public static NbtCompound get(NbtCompound nbt, String key) {
+    public static @Nullable NbtCompound get(NbtCompound nbt, String key) {
+        if (nbt == null) return null;
         return (NbtCompound) nbt.get(key);
     }
 }

@@ -1,10 +1,9 @@
 package me.gravityio.goodmc.mixin.lib.better_loot;
 
-import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
 import me.gravityio.goodmc.mixin.interfaces.IStructureWideLootTable;
-import me.gravityio.goodmc.tweaks.structure_locator.LootedStructuresState.LootableStructure;
-import me.gravityio.goodmc.tweaks.structure_locator.StructureLocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LootedStructuresState.LootableStructure;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -21,7 +20,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -64,7 +62,7 @@ public abstract class LootableContainerBlockEntityMixin extends LockableContaine
     @Inject(method = "checkLootInteraction", at = @At("HEAD"))
     private void addCustomLoot(PlayerEntity player, CallbackInfo ci) {
         if (this.lootTableId == null || this.structure == null || this.structure.isLooted()) return;
-        StructureLocatorTweak.state.setLooted(this.structure);
+        LocatorTweak.state.setLooted(this.structure);
         for (Identifier lootTableKey : BetterLootRegistry.getLoot(this.structure.structureKey)) {
             LootTable lootTable = this.world.getServer().getLootManager().getTable(lootTableKey);
             LootContext.Builder builder = new LootContext.Builder((ServerWorld) this.world).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(this.pos)).random(this.lootTableSeed);

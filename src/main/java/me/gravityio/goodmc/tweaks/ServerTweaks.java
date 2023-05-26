@@ -1,8 +1,7 @@
 package me.gravityio.goodmc.tweaks;
 
 import me.gravityio.goodmc.tweaks.better_shulkers.BetterShulkersTweak;
-import me.gravityio.goodmc.tweaks.better_villagers.BetterVillagersTweak;
-import me.gravityio.goodmc.tweaks.structure_locator.StructureLocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +11,7 @@ public class ServerTweaks {
     public static final List<IServerTweak> tweaks = new ArrayList<>();
 
     public static BetterShulkersTweak BETTER_SHULKERS = register(new BetterShulkersTweak());
-    public static BetterVillagersTweak BETTER_VILLAGERS = register(new BetterVillagersTweak());
-    public static StructureLocatorTweak LOCATOR = register(new StructureLocatorTweak());
+    public static LocatorTweak LOCATOR = register(new LocatorTweak());
 
     private static <T extends IServerTweak> T register(T tweak)
     {

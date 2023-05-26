@@ -11,11 +11,15 @@
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
+  "accessWidener": "goodmc.accesswidener",
   "license": "CC0-1.0",
   "icon": "assets/goodmc/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
+      "me.gravityio.goodmc.GoodMC"
+    ],
+    "preLaunch": [
       "me.gravityio.goodmc.GoodMC"
     ],
     "client": [

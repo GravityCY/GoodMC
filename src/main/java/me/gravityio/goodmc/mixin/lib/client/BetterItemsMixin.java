@@ -1,18 +1,13 @@
 package me.gravityio.goodmc.mixin.lib.client;
 
 import me.gravityio.goodmc.lib.BetterItems;
-import me.gravityio.goodmc.lib.helper.NbtUtils;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Slice;
 
 /**
  * Adds support for custom hotbar tooltips <br><br>

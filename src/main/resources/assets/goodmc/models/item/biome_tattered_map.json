@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "goodmc:item/tattered_map"
+    "layer0": "goodmc:item/biome_tattered_map"
   }
 }

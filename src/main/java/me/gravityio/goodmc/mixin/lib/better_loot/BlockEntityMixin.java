@@ -2,7 +2,7 @@ package me.gravityio.goodmc.mixin.lib.better_loot;
 
 import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
 import me.gravityio.goodmc.mixin.interfaces.IStructureWideLootTable;
-import me.gravityio.goodmc.tweaks.structure_locator.StructureLocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
@@ -38,6 +38,6 @@ public class BlockEntityMixin {
         Structure structure = world.getRegistryManager().get(RegistryKeys.STRUCTURE).get(structureId);
         StructureStart structureStart = serverWorld.getStructureAccessor().getStructureContaining(this.pos, structure);
         if (structureStart == null) return;
-        blockStructureLootTable.setStructure(StructureLocatorTweak.state.getStructure(structureStart, structureId));
+        blockStructureLootTable.setStructure(LocatorTweak.state.getStructure(structureStart, structureId));
     }
 }

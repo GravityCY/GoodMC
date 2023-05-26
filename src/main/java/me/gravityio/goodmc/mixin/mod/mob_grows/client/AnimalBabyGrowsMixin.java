@@ -1,10 +1,7 @@
 package me.gravityio.goodmc.mixin.mod.mob_grows.client;
 
-import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.ModConfig;
-import me.gravityio.goodmc.ModConfig.AnimalAging.AgeMobOnly;
-import me.gravityio.goodmc.mixin.interfaces.IAgeAccessor;
-import net.minecraft.client.render.VertexConsumerProvider;
+import me.gravityio.goodmc.GoodConfig;
+import me.gravityio.goodmc.GoodConfig.AnimalAging.AgeMobOnly;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -13,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,7 +31,7 @@ public abstract class AnimalBabyGrowsMixin<T extends LivingEntity, M extends Ent
 
     @Inject(method = "scale", at = @At("HEAD"))
     private void scaleByAge(T entity, MatrixStack matrices, float amount, CallbackInfo ci) {
-        if (!GoodMC.CONFIG.aging.mob_aging || GoodMC.CONFIG.aging.only != AgeMobOnly.ALL && GoodMC.CONFIG.aging.only != AgeMobOnly.ANIMALS) return;
+        if (!GoodConfig.INSTANCE.aging.mob_aging || GoodConfig.INSTANCE.aging.only != AgeMobOnly.ALL && GoodConfig.INSTANCE.aging.only != AgeMobOnly.ANIMALS) return;
         if (entity instanceof PassiveEntity passiveEntity) {
             if (!entity.isBaby()) return;
             float newScale = 2 - passiveEntity.getBreedingAge() / -24000f;

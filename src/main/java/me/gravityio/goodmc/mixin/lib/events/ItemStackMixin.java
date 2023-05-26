@@ -14,7 +14,7 @@ public class ItemStackMixin {
     @Inject(method = "onCraft", at = @At("HEAD"))
     private void onCraftEvent(World world, PlayerEntity player, int amount, CallbackInfo ci) {
         ItemStack self = (ItemStack) (Object) this;
-        ModEvents.ON_CRAFT.invoker().onCraft(ModEvents.OnCraftEvent.CraftType.ANY, self, player);
+        ModEvents.ON_CRAFT.invoker().onCraft(null, self, player);
     }
 
 }

@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.angry_mobs.client;
 
-import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.mixin.interfaces.ILootEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ public class ClientPacketSpawnMixin {
             method = "onEntitySpawn(Lnet/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket;)V",
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci, EntityType<?> entityType, Entity entity) {
-        if (!GoodMC.CONFIG.all.angry_mobs) return;
+        if (!GoodConfig.INSTANCE.all.angry_mobs) return;
         if (!(entity instanceof MobEntity mobEntity)) return;
         mobEntity.setCanPickUpLoot(((ILootEntity) packet).getCanPickupLoot());
     }

@@ -5,7 +5,6 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureKeys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class BetterLootRegistry {
     }
 
     public static void registerStructure(Identifier lootTableKey, Identifier structureKey) {
-        GoodMC.LOGGER.debug("<BetterLootRegistry> Registering Structure {} from Loot Table: {}", structureKey, lootTableKey);
+        GoodMC.LOGGER.debug("[BetterLootRegistry] Registering Structure {} from Loot Table: {}", structureKey, lootTableKey);
         lootTableStructure.put(lootTableKey, structureKey);
     }
 
@@ -78,14 +77,14 @@ public class BetterLootRegistry {
     }
 
     public static void registerLoot(Identifier structureKey, Identifier lootTableKey) {
-        GoodMC.LOGGER.debug("<BetterLootRegistry> Registering Loot {} for Structure: {}", lootTableKey, structureKey);
+        GoodMC.LOGGER.debug("[BetterLootRegistry] Registering Loot {} for Structure: {}", lootTableKey, structureKey);
         if (!structureLootTables.containsKey(structureKey))
             structureLootTables.put(structureKey, new ArrayList<>());
         structureLootTables.get(structureKey).add(lootTableKey);
     }
 
     public static List<Identifier> getLoot(Identifier structureKey) {
-        GoodMC.LOGGER.debug("<BetterLootRegistry> Getting Loot for Structure: {}", structureKey);
+        GoodMC.LOGGER.debug("[BetterLootRegistry] Getting Loot for Structure: {}", structureKey);
         List<Identifier> merged = new ArrayList<>();
         List<Identifier> all = structureLootTables.get(ALL);
         List<Identifier> structure = structureLootTables.get(structureKey);

@@ -2,8 +2,7 @@ package me.gravityio.goodmc.mixin.lib;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.tweaks.structure_locator.LocatorRecipe;
+import me.gravityio.goodmc.lib.better_recipes.BetterRecipeRegistry;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
@@ -23,8 +22,6 @@ import java.util.Map;
  */
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
-    private static final Identifier LOCATOR_RECIPE_ID = new Identifier(GoodMC.MOD_ID, "locator_smithing");
-    private static final LocatorRecipe LOCATOR_RECIPE = new LocatorRecipe(LOCATOR_RECIPE_ID);
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V",
             at = @At(value = "INVOKE",
                      target = "java/util/Map.entrySet()Ljava/util/Set;",
@@ -35,8 +32,12 @@ public class RecipeManagerMixin {
                          Profiler profiler, CallbackInfo ci,
                          Map<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> map2,
                          ImmutableMap.Builder<Identifier, Recipe<?>> builder) {
-        map2.computeIfAbsent(RecipeType.SMITHING, recipeType -> ImmutableMap.builder()).put(LOCATOR_RECIPE_ID, LOCATOR_RECIPE);
-        builder.put(LOCATOR_RECIPE_ID, LOCATOR_RECIPE);
+        BetterRecipeRegistry.getRecipes().forEach(recipeData -> {
+            RecipeType<? extends Recipe<?>> type = recipeData.type();
+            Recipe<?> recipe = recipeData.recipe();
+            map2.computeIfAbsent(type, recipeType -> ImmutableMap.builder()).put(recipe.getId(), recipe);
+            builder.put(recipe.getId(), recipe);
+        });
     }
 
 }
