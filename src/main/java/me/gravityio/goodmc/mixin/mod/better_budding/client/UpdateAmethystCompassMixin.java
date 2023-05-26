@@ -34,7 +34,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
     }
 
     private static void setPreviousPoint(ItemStack compass) {
-        if (!CompassUtils.isRandom(compass)) return;
+        if (!CompassUtils.isPointingRandom(compass)) return;
         GoodMC.LOGGER.debug("[UpdateAmethystCompassMixin] Setting Previous Point");
         NbtUtils.internalCopy(compass.getNbt(), POINTS_TO, PREV);
     }
@@ -78,7 +78,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
         if (compasses.isEmpty()) return;
         if (BetterAmethystTweak.nearAmethyst(this.world, this.getBlockPos())) {
             compasses.forEach(compass -> {
-                if (CompassUtils.isRandom(compass)) {
+                if (CompassUtils.isPointingRandom(compass)) {
                     if (CompassUtils.getRandom(compass)) return;
                     setPreviousPoint(compass);
                 }
@@ -88,7 +88,7 @@ public abstract class UpdateAmethystCompassMixin extends PlayerEntity {
             });
         } else {
             compasses.forEach(compass -> {
-                if (!isInsideAmethyst(compass) || !CompassUtils.isRandom(compass) || !CompassUtils.getRandom(compass)) return;
+                if (!isInsideAmethyst(compass) || !CompassUtils.isPointingRandom(compass) || !CompassUtils.getRandom(compass)) return;
                 if (hasPreviousPoint(compass)) {
                     NbtUtils.internalCopy(compass.getNbt(), PREV, POINTS_TO);
                     removePreviousPoint(compass);

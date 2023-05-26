@@ -18,7 +18,7 @@ public class ItemUtils {
     public static void setLore(ItemStack stack, Text... loreInput) {
         NbtCompound nbt = stack.getOrCreateNbt();
         NbtCompound display = NbtUtils.getOrCreate(nbt, ItemStack.DISPLAY_KEY);
-        NbtList loreList = NbtUtils.getOrCreate(display, ItemStack.LORE_KEY, NbtList::new);
+        NbtList loreList = NbtUtils.getOrCreate(display, ItemStack.LORE_KEY, NbtList::new, NbtList.class);
         loreList.clear();
         for (Text loreLine : loreInput)
             loreList.add(NbtString.of(Text.Serializer.toJson(loreLine)));

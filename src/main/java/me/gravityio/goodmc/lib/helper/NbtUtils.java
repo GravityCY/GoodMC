@@ -23,12 +23,12 @@ public class NbtUtils {
         return true;
     }
 
-    public static <T extends NbtElement> T getOrCreateDeep(NbtCompound comp, Supplier<T> typeSupplier, String... orderedPaths) {
+    public static <T extends NbtElement> T getOrCreateDeep(NbtCompound comp, Supplier<T> typeSupplier, Class<T> clazz, String... orderedPaths) {
         if (comp == null) return null;
 
         if (orderedPaths.length != 1)
-            return getOrCreateDeep(NbtUtils.getOrCreate(comp, orderedPaths[0]), typeSupplier, Arrays.stream(orderedPaths).skip(1).toArray(String[]::new));
-        return NbtUtils.getOrCreate(comp, orderedPaths[0], typeSupplier);
+            return getOrCreateDeep(NbtUtils.getOrCreate(comp, orderedPaths[0]), typeSupplier, clazz, Arrays.stream(orderedPaths).skip(1).toArray(String[]::new));
+        return NbtUtils.getOrCreate(comp, orderedPaths[0], typeSupplier, clazz);
     }
 
     public static <T extends NbtElement> T getDeep(NbtCompound comp, Class<T> clazz, String... orderedPaths) {
@@ -116,18 +116,20 @@ public class NbtUtils {
     }
 
     /**
-     *
+     * This will replace any previous NBT that does not match the given type,
+     * for example getOrCreate(nbt, "coolName", () -> NbtInt.of(1), NbtInt.class) but "coolName" points to a string
+     * it will just end up replacing "coolName" with your given type
      * @param nbt The root NBT Compound to use to check if a sub element exists, etc.
      * @param key The sub element id to look for
      * @return The element that has been either gotten or created
      */
-    public static <T extends NbtElement> T getOrCreate(NbtCompound nbt, String key, Supplier<T> typeSupplier) {
+    public static <T extends NbtElement> T getOrCreate(NbtCompound nbt, String key, Supplier<T> typeSupplier, Class<T> clazz) {
         if (nbt == null) return null;
-
         NbtElement elem = nbt.get(key);
-        if (elem == null)
+        if (!clazz.isInstance(elem))
             nbt.put(key, elem = typeSupplier.get());
-        return (T) elem;
+
+        return clazz.cast(elem);
     }
 
     /**

@@ -1,9 +1,7 @@
 package me.gravityio.goodmc.lib.helper;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;

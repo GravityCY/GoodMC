@@ -13,7 +13,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
@@ -25,6 +24,10 @@ public class BiomeLocatable implements IMovementLocatable {
     public static final String BIOME_PATH = "biome";
     public static double UPDATE_DISTANCE = 100;
     public static int RADIUS = 1;
+    private static final int BLOCKS = 512;
+    private static final int HORIZONTAL_BLOCK_SKIP = 256;
+    private static final int VERTICAL_BLOCK_SKIP = 64;
+
 
     public static void setPointsToBiome(ItemStack compass, Identifier biomeKey) {
         CompassUtils.getOrCreatePointsTo(compass).putString(BIOME_PATH, biomeKey.toString());
@@ -63,19 +66,22 @@ public class BiomeLocatable implements IMovementLocatable {
         BlockPos locatedPos = locateBiome(serverWorld, biomeKey, playerPos);
         GoodMC.LOGGER.debug("[BiomeLocatable] Elapsed Time: {}ms", (System.nanoTime() - start) / 1000000L);
         if (locatedPos == null) return;
+        double distLocated = Math.sqrt(playerPos.getSquaredDistance(locatedPos));
         GoodMC.LOGGER.debug("[BiomeLocatable] Found Biome at: {}", locatedPos);
         if (!CompassUtils.isPointingAtPosition(compass)) {
             CompassUtils.setPointsToRandom(compass, false);
             serverPlayer.playSound(LocatorTweak.SOUND_BIOME_LOCATED, SoundCategory.PLAYERS, 0.5f, 1);
         } else {
-            double distLocated = Math.sqrt(playerPos.getSquaredDistance(locatedPos));
             double distPrev = Math.sqrt(playerPos.getSquaredDistance(CompassUtils.getPointPosition(compass)));
             if (distPrev < distLocated) {
                 GoodMC.LOGGER.debug("[BiomeLocatable] Previous position {}b is closer than the located position {}b, keeping previous...", distPrev, distLocated);
+//                CompassUtils.setPointStrength(compass, Math.max(Math.min(500d / distPrev, 1), 0.25d));
                 return;
             }
         }
+
         CompassUtils.setPointPosition(compass, locatedPos);
+//        CompassUtils.setPointStrength(compass, Math.max(Math.min(500d / distLocated, 1), 0.25d));
         GoodMC.LOGGER.debug("[BiomeLocatable] Setting the block position of found biome to {}", locatedPos);
     }
 
@@ -83,8 +89,8 @@ public class BiomeLocatable implements IMovementLocatable {
         Registry<Biome> biomeRegistry = serverWorld.getRegistryManager().get(RegistryKeys.BIOME);
         Biome biome = biomeRegistry.get(biomeKey);
         RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(biome);
-        GoodMC.LOGGER.debug("[BiomeLocatable] Locating biome starting from {} with a radius of {} in dimension {}", center, RADIUS, serverWorld.getRegistryKey().getValue().toString());
-        Pair<BlockPos, RegistryEntry<Biome>> pair = serverWorld.locateBiome(biomeRegistryEntry -> biomeEntry == biomeRegistryEntry, center, RADIUS * 512, 256, 64);
+        GoodMC.LOGGER.debug("[BiomeLocatable] Locating biome starting from {} with a radius of {} in dimension {}", center, RADIUS * BLOCKS, serverWorld.getRegistryKey().getValue().toString());
+        Pair<BlockPos, RegistryEntry<Biome>> pair = serverWorld.locateBiome(biomeRegistryEntry -> biomeEntry == biomeRegistryEntry, center, RADIUS * BLOCKS, HORIZONTAL_BLOCK_SKIP, VERTICAL_BLOCK_SKIP);
         return pair != null ? pair.getFirst() : null;
     }
 

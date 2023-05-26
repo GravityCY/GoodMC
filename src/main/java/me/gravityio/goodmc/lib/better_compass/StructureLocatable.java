@@ -27,8 +27,13 @@ public class StructureLocatable implements IMovementLocatable {
     public static int RADIUS = 1;
 
 
-    public static void setPointsToStructure(ItemStack compass, Identifier structureKey) {
-        CompassUtils.getOrCreatePointsTo(compass).putString(STRUCTURE_PATH, structureKey.toString());
+    /**
+     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } and {@link CompassUtils#DIMENSION CompassUtils#DIMENSION } NBT
+     * @param compass {@link ItemStack}
+     * @return {@link Boolean}
+     */
+    public static boolean isPointing(ItemStack compass) {
+        return CompassUtils.isPointingAtDimension(compass) && isPointingAtStructure(compass);
     }
 
     /**
@@ -39,26 +44,12 @@ public class StructureLocatable implements IMovementLocatable {
      */
     public static void setPointsTo(ItemStack compass, Identifier dimensionKey, Identifier structureKey) {
         CompassUtils.setPointDimension(compass, dimensionKey);
-        setPointsToStructure(compass, structureKey);
+        setPointStructure(compass, structureKey);
         CompassUtils.setPointsToRandom(compass, true);
     }
 
-    /**
-     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } NBT
-     * @param compass {@link ItemStack}
-     * @return {@link Boolean}
-     */
-    public static boolean isPointingAtStructure(ItemStack compass) {
-        return CompassUtils.isPointing(compass) && CompassUtils.getPointsTo(compass).contains(STRUCTURE_PATH);
-    }
-
-    /**
-     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } and {@link CompassUtils#DIMENSION CompassUtils#DIMENSION } NBT
-     * @param compass {@link ItemStack}
-     * @return {@link Boolean}
-     */
-    public static boolean isPointing(ItemStack compass) {
-        return CompassUtils.isPointingAtDimension(compass) && isPointingAtStructure(compass);
+    public static void setPointStructure(ItemStack compass, Identifier structureKey) {
+        CompassUtils.getOrCreatePointsTo(compass).putString(STRUCTURE_PATH, structureKey.toString());
     }
 
     /**
@@ -71,6 +62,18 @@ public class StructureLocatable implements IMovementLocatable {
         return new Identifier(CompassUtils.getPointsTo(compass).getString(STRUCTURE_PATH));
     }
 
+    /**
+     * Returns whether an {@link ItemStack} contains the {@link StructureLocatable#STRUCTURE_PATH StructureLocatable#STRUCTURE } NBT
+     * @param compass {@link ItemStack}
+     * @return {@link Boolean}
+     */
+    public static boolean isPointingAtStructure(ItemStack compass) {
+        return CompassUtils.isPointing(compass) && CompassUtils.getPointsTo(compass).contains(STRUCTURE_PATH);
+    }
+
+    public static boolean canLocate(ItemStack compass) {
+        return compass.isOf(Items.COMPASS) && isPointing(compass);
+    }
 
     /**
      * Updates the compass to the most recent structure that it's pointing at
@@ -79,31 +82,37 @@ public class StructureLocatable implements IMovementLocatable {
      * @param serverPlayer {@link ServerPlayerEntity}
      */
     public static void updateLocator(ItemStack compass, ServerWorld serverWorld, ServerPlayerEntity serverPlayer) {
-        if (!compass.getItem().equals(Items.COMPASS) || !isPointing(compass)) return;
+        if (!canLocate(compass)) return;
+
         Identifier dimensionKey = CompassUtils.getPointDimension(compass);
         Identifier structureKey = getPointStructure(compass);
         if (!serverWorld.getDimensionKey().getValue().equals(dimensionKey)) {
             GoodMC.LOGGER.debug("[StructureLocatable] Structure Dimension is not in current dimension");
             return;
         }
-        GoodMC.LOGGER.debug("[StructureLocatable] Looking for {}", structureKey);
         long start = System.nanoTime();
         BlockPos playerPos = serverPlayer.getBlockPos();
+
+        GoodMC.LOGGER.debug("[StructureLocatable] Looking for {}", structureKey);
         BlockPos locatedPos = locateStructure(serverWorld, structureKey, playerPos);
         GoodMC.LOGGER.debug("[StructureLocatable] Elapsed Time: {}ms", (System.nanoTime() - start) / 1000000L);
         if (locatedPos == null) return;
         GoodMC.LOGGER.debug("[StructureLocatable] Found structure at {}", locatedPos);
+
+        double distLocated = Math.sqrt(playerPos.getSquaredDistance(locatedPos));
         if (!CompassUtils.isPointingAtPosition(compass)) {
             CompassUtils.setPointsToRandom(compass, false);
             serverPlayer.playSound(LocatorTweak.SOUND_STRUCTURE_LOCATED, SoundCategory.PLAYERS, 0.5f, 1);
         } else {
-            double distLocated = Math.sqrt(playerPos.getSquaredDistance(locatedPos));
             double distPrev = Math.sqrt(playerPos.getSquaredDistance(CompassUtils.getPointPosition(compass)));
             if (distPrev < distLocated) {
                 GoodMC.LOGGER.debug("[StructureLocatable] Previous position {}b is closer than the located position {}b, keeping previous...", distPrev, distLocated);
+//                CompassUtils.setPointStrength(compass, Math.min(250d / distPrev, 1));
                 return;
             }
         }
+
+//        CompassUtils.setPointStrength(compass, Math.min(250d / distLocated, 1));
         CompassUtils.setPointPosition(compass, locatedPos);
         GoodMC.LOGGER.debug("[StructureLocatable] Setting the block position of found structure to {}", locatedPos);
     }
@@ -127,7 +136,7 @@ public class StructureLocatable implements IMovementLocatable {
 
     @Override
     public boolean isLocatable(ItemStack compass, ServerPlayerEntity player) {
-        return compass.isOf(Items.COMPASS) && isPointing(compass);
+        return StructureLocatable.canLocate(compass);
     }
 
     @Override
@@ -137,7 +146,7 @@ public class StructureLocatable implements IMovementLocatable {
 
     @Override
     public boolean hasMoved(double distance, double velocity) {
-        return distance >= UPDATE_DISTANCE * (velocity + 1);
+        return distance >= 5 * (velocity + 1);
     }
 
     public static class StructureRegistry {

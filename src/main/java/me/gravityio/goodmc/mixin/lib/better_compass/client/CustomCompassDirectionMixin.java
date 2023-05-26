@@ -19,7 +19,7 @@ public class CustomCompassDirectionMixin {
 
     @Inject(method = "method_43220", at = @At("HEAD"), cancellable = true)
     private static void registerCompassModelProvider(ClientWorld world, ItemStack compass, Entity entity, CallbackInfoReturnable<GlobalPos> cir) {
-        if (CompassUtils.isRandom(compass) && CompassUtils.getRandom(compass)) {
+        if (CompassUtils.isPointingRandom(compass) && CompassUtils.getRandom(compass)) {
             cir.setReturnValue(null);
             return;
         }

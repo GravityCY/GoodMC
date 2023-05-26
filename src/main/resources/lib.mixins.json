@@ -6,13 +6,16 @@
   "mixins": [
     "RecipeManagerMixin",
     "better_compass.UpdateCompassMixin",
+    "better_compass.client.ItemStackAngleInterpolatorMixin",
     "better_loot.BlockEntityMixin",
     "better_loot.LootableContainerBlockEntityMixin",
     "events.ForgingScreenHandlerMixins$ForgingScreenHandlerMixin",
     "events.ForgingScreenHandlerMixins$SmithingScreenHandlerMixin",
-    "events.ItemStackMixin"
+    "events.ItemStackMixin",
+    "events.MinecraftServerMixin"
   ],
   "client": [
+    "better_compass.client.CustomCompassAngleMixin",
     "better_compass.client.CustomCompassDirectionMixin",
     "client.ArmRenderableMixin",
     "client.BetterItemsMixin"

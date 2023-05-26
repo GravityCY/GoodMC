@@ -97,16 +97,18 @@ public class LocatorTweak implements IServerTweak {
         initSaveListener();
         initRegistry();
         initDefaultItems();
+        ModEvents.ON_CREATE_WORLDS.register((server) -> {
+            state = LootedStructuresState.getServerState(server);
+            return ActionResult.SUCCESS;
+        });
     }
 
     @Override
-    public void onServerStart(MinecraftServer server) {
-        state = LootedStructuresState.getServerState(server);
-    }
+    public void onServerStart(MinecraftServer server) {}
     @Override
     public void onTick() {}
 
-    // BUG: SOMEHOW DUPLICATING 2ND SLOT
+    // DONE: SOMEHOW DUPLICATING 2ND SLOT // I forgor to set biome tattered map to only chest loot tables...
     private ActionResult onCraft(Recipe<?> recipe, ItemStack stack, PlayerEntity player) {
         if (!(recipe instanceof SmithingRecipe) || (!(player instanceof ServerPlayerEntity serverPlayer))) return ActionResult.PASS;
         if (recipe.getId() == BIOME_RECIPE_ID) {
@@ -159,7 +161,7 @@ public class LocatorTweak implements IServerTweak {
                 }
         );
         LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
-            if (source.isBuiltin()) {
+            if (source.isBuiltin() && id.getPath().startsWith("chests/")) {
                 LootPool.Builder poolBuilder = LootPool.builder()
                         .rolls(BinomialLootNumberProvider.create(1, 0.1f))
                         .with(ItemEntry.builder(BIOME_TATTERED_MAP));
