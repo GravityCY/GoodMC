@@ -73,7 +73,8 @@
       "text.autoconfig.goodmc.option.aging.grow_hitbox": "Grow Hitbox",
       "text.autoconfig.goodmc.option.aging.only": "Only",
 
-  "subtitles.goodmc.located_structure": "Compass found a Structure",
+  "subtitles.goodmc.structure.located": "Compass found a Structure",
+  "subtitles.goodmc.biome.located": "Compass found a Biome",
 
   "options.goodmc.bobbing_strength": "View Bobbing Strength",
   "options.goodmc.bobbing": "%s%%",

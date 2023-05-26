@@ -146,7 +146,7 @@ public class StructureLocatable implements IMovementLocatable {
 
     @Override
     public boolean hasMoved(double distance, double velocity) {
-        return distance >= 5 * (velocity + 1);
+        return distance >= UPDATE_DISTANCE * (velocity + 1);
     }
 
     public static class StructureRegistry {
