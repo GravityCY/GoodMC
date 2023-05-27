@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
  * The Main Class of the mod, this will run on both the client and the server
  */
 //  TODO: Make the Todo List Tweak
-//  TODO: ALL CONFIG ACCESSORS SHOULD BE REPLACED WITH VARIABLES THAT WILL BE SET WHEN THE CONFIG IS SAVED
 //  TODOTHINK: Try and fix the way animals look when visually growing up
 //  TODOTHINK: Make it so that you can filter what the player will get when they roll a structure based on a list of what the player has already rolled?
 //  TODOTHINK: Change the way the dimension of the roll gets decided (currently based on which dimension the player is during rolling)

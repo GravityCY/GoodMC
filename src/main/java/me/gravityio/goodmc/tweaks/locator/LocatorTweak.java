@@ -46,9 +46,25 @@ import java.util.*;
 
 import static me.gravityio.goodmc.GoodMC.MOD_ID;
 
-// TODO: Turns out compasses are not as fun as they could be, just depending on a radius still means you depend on vanillas completely random biome generation,
-//  which means sometimes you just get really unlucky, and the compass should kind of be more helpful than just hey if there's a structure within 1024 blocks of you I'll point to it
-//  maybe it should be more like hey there's a structure 10000 blocks away but I'm not gonna give you an accurate location of it, more like a general direction until you get closer
+// TODO: Make compasses a bit more helpful
+
+//  THINK: Turns out compasses are not as fun as they could be, just searching every so and so blocks still means you depend on vanillas completely random biome generation,
+//      which means sometimes you just get really unlucky, and the compass should kind of be more helpful than just hey if there's a structure within 1024 blocks of you I'll point to it
+//      maybe it should be more like hey there's a structure 10000 blocks away but I'm not gonna give you an accurate location of it, more like a general direction until you get closer
+//      but how do you even optimize that, since right now it runs the locate function every certain amount of blocks, because what if the player walks away from the currently pointed
+//      structure and there could be a closer structure so you have to update the position, you either
+//      1. Do some math to only try to locate for new structures if the player is moving away from the currently pointed structure?
+//      But what if, yeah the player is walking away from the current one and if it can't find another structure it'll keep locating the same structure again and again,
+//      effectively that'll be a lag machine till it finds a new structure, but maybe don't search if trying to search within previous searched positions
+//      ;
+//      2. You force the player to go to that structure and then when they're nearby you can start doing checks again? Which will return that structure nearby him
+//      but maybe you can add a list of already explored positions?
+//      3. Maybe this all just needs a custom locating function instead of depending on the vanilla one, but that sounds difficult, also threads sound like an interesting option
+
+/**
+ * If moving towards pointed sturcture don't search
+ * If moving away from pointed structure and not in radius of previous search position search
+ */
 
 /**
  * A 'tweak' that adds a Tattered Map Item that will always spawn 1 in <b>ANY</b> structure <br>
