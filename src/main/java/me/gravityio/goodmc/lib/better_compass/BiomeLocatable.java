@@ -114,6 +114,10 @@ public class BiomeLocatable implements IMovementLocatable {
         public static void registerBiome(Identifier dimensionKey, Identifier... biomeKeys) {
             List<Identifier> biomes = dimensionBiomes.computeIfAbsent(dimensionKey, k -> new ArrayList<>());
             for (Identifier biomeKey : biomeKeys) {
+                if (biomes.contains(biomeKey)) {
+                    GoodMC.LOGGER.debug("[BiomeRegistry] Biome:'{}' in dimension: '{}', already exists skipping...", biomeKey, dimensionKey);
+                    continue;
+                }
                 GoodMC.LOGGER.debug("[BiomeRegistry] Registering biome:'{}' in dimension: '{}'", biomeKey, dimensionKey);
                 biomes.add(biomeKey);
             }
@@ -121,6 +125,11 @@ public class BiomeLocatable implements IMovementLocatable {
 
         public static List<Identifier> getBiomes(Identifier dimensionKey) {
             return dimensionBiomes.get(dimensionKey);
+        }
+
+        public static void clear() {
+            GoodMC.LOGGER.debug("[BiomeRegistry] Clearing Registry...");
+            dimensionBiomes.clear();
         }
     }
 

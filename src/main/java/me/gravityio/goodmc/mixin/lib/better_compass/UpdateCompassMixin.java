@@ -1,17 +1,14 @@
 package me.gravityio.goodmc.mixin.lib.better_compass;
 
-import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.lib.MoveUpdater;
 import me.gravityio.goodmc.lib.better_compass.IMovementLocatable;
 import me.gravityio.goodmc.lib.better_compass.LocatableRegistry;
 import me.gravityio.goodmc.lib.better_compass.LocatableType;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

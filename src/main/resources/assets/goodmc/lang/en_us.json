@@ -51,17 +51,21 @@
       "text.autoconfig.goodmc.option.locator.structure": "Structure",
         "text.autoconfig.goodmc.option.locator.structure.radius.@Tooltip": "Whatever minecraft means for 'radius' when locating structures this means that too",
         "text.autoconfig.goodmc.option.locator.structure.update_distance.@Tooltip": "How often to look for structures (every 'amount of blocks' player has moved)",
+        "text.autoconfig.goodmc.option.locator.structure.exclusions.@Tooltip": "The structures to exclude from the Compass being able to search for.",
       
         "text.autoconfig.goodmc.option.locator.structure.radius": "Radius",
         "text.autoconfig.goodmc.option.locator.structure.update_distance": "Update Distance",
+        "text.autoconfig.goodmc.option.locator.structure.exclusions": "Exclusions",
 
       "text.autoconfig.goodmc.option.locator.biome.@Tooltip": "Locator Options for Biomes.",
       "text.autoconfig.goodmc.option.locator.biome": "Biome",
         "text.autoconfig.goodmc.option.locator.biome.radius.@Tooltip": "Radius of 1 is 512 Blocks",
         "text.autoconfig.goodmc.option.locator.biome.update_distance.@Tooltip": "How often to look for biomes (every 'amount of blocks' player has moved)",
+        "text.autoconfig.goodmc.option.locator.biome.exclusions.@Tooltip": "The biomes to exclude from the Compass being able to search for.",
       
         "text.autoconfig.goodmc.option.locator.biome.radius": "Radius",
         "text.autoconfig.goodmc.option.locator.biome.update_distance": "Update Distance",
+        "text.autoconfig.goodmc.option.locator.biome.exclusions": "Exclusions",
     
     "text.autoconfig.goodmc.option.aging.@Tooltip": "Mob Aging Related Options",
     "text.autoconfig.goodmc.option.aging": "Mob Aging",

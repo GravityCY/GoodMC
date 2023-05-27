@@ -16,10 +16,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.Structure;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StructureLocatable implements IMovementLocatable {
     public static final String STRUCTURE_PATH = "structure";
@@ -154,6 +151,10 @@ public class StructureLocatable implements IMovementLocatable {
         public static void registerStructure(Identifier dimensionKey, Identifier... structureKeys) {
             List<Identifier> structures = dimensionStructures.computeIfAbsent(dimensionKey, k -> new ArrayList<>());
             for (Identifier structureKey : structureKeys) {
+                if (structures.contains(structureKey)) {
+                    GoodMC.LOGGER.debug("[StructureRegistry] Structure:'{}' in dimension: '{}', already exists skipping...", structureKey, dimensionKey);
+                    continue;
+                }
                 GoodMC.LOGGER.debug("[StructureRegistry] Registering structure:'{}' in dimension: '{}'", structureKey, dimensionKey);
                 structures.add(structureKey);
             }
@@ -162,6 +163,10 @@ public class StructureLocatable implements IMovementLocatable {
 
         public static List<Identifier> getStructures(Identifier dimensionKey) {
             return dimensionStructures.get(dimensionKey);
+        }
+        public static void clear() {
+            GoodMC.LOGGER.debug("[StructureRegistry] Clearing Registry...");
+            dimensionStructures.clear();
         }
     }
 }

@@ -25,10 +25,12 @@ import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmithingRecipe;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -36,12 +38,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.gen.structure.StructureKeys;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.structure.Structure;
+import org.apache.logging.log4j.core.jmx.Server;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static me.gravityio.goodmc.GoodMC.MOD_ID;
 
@@ -55,6 +56,7 @@ import static me.gravityio.goodmc.GoodMC.MOD_ID;
  * (based in the dimension your currently in) of a structure that the compass will point to
  */
 public class LocatorTweak implements IServerTweak {
+
     public static final Style LORE_STYLE = Style.EMPTY.withItalic(false).withFormatting(Formatting.GRAY);
     public static final Style HOTBAR_STYLE = Style.EMPTY.withFormatting(Formatting.LIGHT_PURPLE);
     // MAPS
@@ -76,10 +78,9 @@ public class LocatorTweak implements IServerTweak {
     private static final Identifier BIOME_RECIPE_ID = new Identifier(GoodMC.MOD_ID, "biome_locator_smithing");
     private static final StructureLocatorRecipe STRUCTURE_LOCATOR_RECIPE = new StructureLocatorRecipe(STRUCTURE_RECIPE_ID);
     private static final BiomeLocatorRecipe BIOME_LOCATOR_RECIPE = new BiomeLocatorRecipe(BIOME_RECIPE_ID);
-
     public static LootedStructuresState state;
-
-    private static final Random random = new Random();
+    private final Random random = new Random();
+    private MinecraftServer server;
 
     /**
      * ON_BEFORE_CRAFT is needed because ON_CRAFT doesn't execute when shift clicking on a stack in a smithing table
@@ -94,8 +95,8 @@ public class LocatorTweak implements IServerTweak {
         ModEvents.ON_BEFORE_CRAFT.register(this::onCraft);
         ModEvents.ON_CRAFT.register(this::onCraft);
 
+        initVanillaRegistries();
         initSaveListener();
-        initRegistry();
         initDefaultItems();
         ModEvents.ON_CREATE_WORLDS.register((server) -> {
             state = LootedStructuresState.getServerState(server);
@@ -104,7 +105,11 @@ public class LocatorTweak implements IServerTweak {
     }
 
     @Override
-    public void onServerStart(MinecraftServer server) {}
+    public void onServerStart(MinecraftServer server) {
+        this.server = server;
+        initLocatableRegistries();
+    }
+
     @Override
     public void onTick() {}
 
@@ -138,6 +143,7 @@ public class LocatorTweak implements IServerTweak {
 
     private void initSaveListener() {
         GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
+            initLocatableRegistries();
             GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure UPDATE_DISTANCE to {}", modConfig.locator.structure.update_distance);
             GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure RADIUS to {}", modConfig.locator.structure.radius);
             GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome UPDATE_DISTANCE to {}", modConfig.locator.biome.update_distance);
@@ -150,7 +156,7 @@ public class LocatorTweak implements IServerTweak {
         });
     }
 
-    private void initRegistry() {
+    private void initVanillaRegistries() {
         // Vanilla Registries
         Registry.register(Registries.SOUND_EVENT, SOUND_STRUCTURE_LOCATED.getId(), SOUND_STRUCTURE_LOCATED);
         Registry.register(Registries.ITEM, STRUCTURE_TATTERED_MAP_ID, STRUCTURE_TATTERED_MAP);
@@ -168,51 +174,29 @@ public class LocatorTweak implements IServerTweak {
                 tableBuilder.pool(poolBuilder);
             }
         });
+        BetterRecipeRegistry.register(RecipeType.SMITHING, STRUCTURE_LOCATOR_RECIPE, BIOME_LOCATOR_RECIPE);
+    }
 
-        // Mod Registries
-        // REGISTER ALL THE STRUCTURES FOR THE COMPASS TO USE
-        StructureRegistry.registerStructure(World.OVERWORLD.getValue(),
-                StructureKeys.PILLAGER_OUTPOST.getValue(),
-                StructureKeys.DESERT_PYRAMID.getValue(),
-                StructureKeys.JUNGLE_PYRAMID.getValue(),
-                StructureKeys.ANCIENT_CITY.getValue(),
-                StructureKeys.MANSION.getValue(),
-                StructureKeys.MONUMENT.getValue(),
-                StructureKeys.MONUMENT.getValue(),
-                StructureKeys.VILLAGE_DESERT.getValue(),
-                StructureKeys.VILLAGE_PLAINS.getValue(),
-                StructureKeys.VILLAGE_SAVANNA.getValue(),
-                StructureKeys.VILLAGE_SNOWY.getValue(),
-                StructureKeys.VILLAGE_TAIGA.getValue());
-        StructureRegistry.registerStructure(World.NETHER.getValue(),
-                StructureKeys.BASTION_REMNANT.getValue(),
-                StructureKeys.FORTRESS.getValue(),
-                StructureKeys.NETHER_FOSSIL.getValue());
-        StructureRegistry.registerStructure(World.END.getValue(),
-                StructureKeys.END_CITY.getValue());
+    private void initLocatableRegistries() {
+        if (this.server == null || !this.server.isRunning()) return;
 
-        BiomeRegistry.registerBiome(World.OVERWORLD.getValue(),
-                BiomeKeys.PLAINS.getValue(),
-                BiomeKeys.SUNFLOWER_PLAINS.getValue(),
-                BiomeKeys.SNOWY_PLAINS.getValue(),
-                BiomeKeys.ICE_SPIKES.getValue(),
-                BiomeKeys.DESERT.getValue(),
-                BiomeKeys.SWAMP.getValue(),
-                BiomeKeys.MANGROVE_SWAMP.getValue(),
-                BiomeKeys.FOREST.getValue(),
-                BiomeKeys.FLOWER_FOREST.getValue(),
-                BiomeKeys.BIRCH_FOREST.getValue(),
-                BiomeKeys.DARK_FOREST.getValue(),
-                BiomeKeys.TAIGA.getValue(),
-                BiomeKeys.SNOWY_TAIGA.getValue(),
-                BiomeKeys.SAVANNA.getValue(),
-                BiomeKeys.SAVANNA_PLATEAU.getValue()
-                // AND MORE
-        );
+        StructureRegistry.clear();
+        BiomeRegistry.clear();
+        this.server.getWorlds().forEach(serverWorld -> {
+            Identifier dimension = serverWorld.getRegistryKey().getValue();
+            List<Identifier> structures = getStructuresInDimension(serverWorld);
+            List<Identifier> biomes = getBiomesInDimension(serverWorld);
+            for (Identifier structure : structures) {
+                if (GoodConfig.INSTANCE.locator.structure.exclusions.contains(structure.toString())) continue;
+                StructureRegistry.registerStructure(dimension, structure);
+            }
+            for (Identifier biome: biomes) {
+                if (GoodConfig.INSTANCE.locator.biome.exclusions.contains(biome.toString())) continue;
+                BiomeRegistry.registerBiome(dimension, biome);
+            }
+        });
 
         BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
-
-        BetterRecipeRegistry.register(RecipeType.SMITHING, STRUCTURE_LOCATOR_RECIPE, BIOME_LOCATOR_RECIPE);
     }
 
     private void initDefaultItems() {
@@ -223,6 +207,46 @@ public class LocatorTweak implements IServerTweak {
         ItemUtils.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
     }
 
+    private static boolean inBiome(RegistryEntryList<Biome> strBiomes, Set<RegistryEntry<Biome>> dimBiomes) {
+        for (RegistryEntry<Biome> biome : strBiomes) {
+            Optional<RegistryKey<Biome>> opt = biome.getKey();
+            if (opt.isEmpty()) continue;
+            RegistryKey<Biome> strBiomeKey = opt.get();
+            for (RegistryEntry<Biome> dimBiome : dimBiomes) {
+                Optional<RegistryKey<Biome>> opt1 = dimBiome.getKey();
+                if (opt1.isEmpty()) continue;
+                RegistryKey<Biome> dimBiomeKey = opt1.get();
+                if (dimBiomeKey.getValue().equals(strBiomeKey.getValue()))
+                    return true;
+            }
+        }
+        return false;
+    }
 
+    private static List<Identifier> getBiomesInDimension(ServerWorld dimension) {
+        List<Identifier> list = new ArrayList<>();
+
+        for (RegistryEntry<Biome> biome : dimension.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes()) {
+            Optional<RegistryKey<Biome>> opt = biome.getKey();
+            if (opt.isEmpty()) continue;
+            list.add(opt.get().getValue());
+        }
+        return list;
+    }
+
+    private static List<Identifier> getStructuresInDimension(ServerWorld dimension) {
+        List<Identifier> list = new ArrayList<>();
+
+        Set<RegistryEntry<Biome>> biomes = dimension.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes();
+        DynamicRegistryManager registry = dimension.getRegistryManager();
+        for (Map.Entry<RegistryKey<Structure>, Structure> entry : registry.get(RegistryKeys.STRUCTURE).getEntrySet()) {
+            RegistryKey<Structure> key = entry.getKey();
+            Structure structure = entry.getValue();
+            if (!inBiome(structure.getValidBiomes(), biomes)) continue;
+            list.add(key.getValue());
+        }
+
+        return list;
+    }
 
 }

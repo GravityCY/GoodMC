@@ -4,9 +4,12 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
+import java.util.List;
+
 @SuppressWarnings("CanBeFinal")
 @Config(name = GoodMC.MOD_ID)
 public class GoodConfig implements ConfigData {
+
     @ConfigEntry.Gui.Excluded
     public static GoodConfig INSTANCE;
 
@@ -45,6 +48,13 @@ public class GoodConfig implements ConfigData {
             @ConfigEntry.Gui.Tooltip
             @ConfigEntry.BoundedDiscrete(min = 50, max = 500)
             public int update_distance = 250;
+            @ConfigEntry.Gui.Tooltip
+            public List<String> exclusions = List.of(
+                    "minecraft:the_void",
+                    "minecraft:old_growth_birch_forest",
+                    "minecraft:old_growth_pine_taiga",
+                    "minecraft:old_growth_spruce_taiga"
+            );
         }
         public static class Structure {
             @ConfigEntry.Gui.Tooltip
@@ -53,6 +63,24 @@ public class GoodConfig implements ConfigData {
             @ConfigEntry.Gui.Tooltip
             @ConfigEntry.BoundedDiscrete(min = 50, max = 500)
             public int update_distance = 200;
+            @ConfigEntry.Gui.Tooltip
+            public List<String> exclusions = List.of(
+                    "minecraft:mineshaft",
+                    "minecraft:mineshaft_mesa",
+                    "minecraft:igloo",
+                    "minecraft:stronghold",
+                    "minecraft:ocean_ruin_cold",
+                    "minecraft:ocean_ruin_warm",
+                    "minecraft:nether_fossil",
+                    "minecraft:buried_treasure",
+                    "minecraft:ruined_portal",
+                    "minecraft:ruined_portal_desert",
+                    "minecraft:ruined_portal_jungle",
+                    "minecraft:ruined_portal_swamp",
+                    "minecraft:ruined_portal_mountain",
+                    "minecraft:ruined_portal_ocean",
+                    "minecraft:ruined_portal_nether"
+            );
         }
 
     }
@@ -88,6 +116,5 @@ public class GoodConfig implements ConfigData {
         }
 
     }
-
 
 }
