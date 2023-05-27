@@ -12,6 +12,7 @@ import me.gravityio.goodmc.lib.better_recipes.BetterRecipeRegistry;
 import me.gravityio.goodmc.lib.events.ModEvents;
 import me.gravityio.goodmc.lib.helper.ItemUtils;
 import me.gravityio.goodmc.tweaks.IServerTweak;
+import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,7 +41,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.Structure;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.*;
 
@@ -82,6 +82,20 @@ public class LocatorTweak implements IServerTweak {
     private final Random random = new Random();
     private MinecraftServer server;
 
+
+
+    /**
+     * Previous Config Structure Exclusions
+     * Used to track whether anything in the config regarding exclusions has changed in order to re-initialize the registry
+     */
+    private List<String> prevStrConf;
+    /**
+     * Previous Config Biome Exclusions<br>
+     * Used to track whether anything in the config regarding exclusions has changed in order to re-initialize the registry
+     */
+    private List<String> prevBiomeConf;
+
+
     /**
      * ON_BEFORE_CRAFT is needed because ON_CRAFT doesn't execute when shift clicking on a stack in a smithing table
      */
@@ -95,19 +109,20 @@ public class LocatorTweak implements IServerTweak {
         ModEvents.ON_BEFORE_CRAFT.register(this::onCraft);
         ModEvents.ON_CRAFT.register(this::onCraft);
 
+        GoodMC.CONFIG_HOLDER.registerSaveListener(this::onSave);
         initVanillaRegistries();
-        initSaveListener();
         initDefaultItems();
         ModEvents.ON_CREATE_WORLDS.register((server) -> {
             state = LootedStructuresState.getServerState(server);
             return ActionResult.SUCCESS;
         });
+        BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
     }
 
     @Override
     public void onServerStart(MinecraftServer server) {
         this.server = server;
-        initLocatableRegistries();
+        initLocatableRegistry();
     }
 
     @Override
@@ -141,19 +156,30 @@ public class LocatorTweak implements IServerTweak {
         return ActionResult.SUCCESS;
     }
 
-    private void initSaveListener() {
-        GoodMC.CONFIG_HOLDER.registerSaveListener((configHolder, modConfig) -> {
-            initLocatableRegistries();
-            GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure UPDATE_DISTANCE to {}", modConfig.locator.structure.update_distance);
-            GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure RADIUS to {}", modConfig.locator.structure.radius);
-            GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome UPDATE_DISTANCE to {}", modConfig.locator.biome.update_distance);
-            GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome RADIUS to {}", modConfig.locator.biome.radius);
-            StructureLocatable.UPDATE_DISTANCE = modConfig.locator.structure.update_distance;
-            StructureLocatable.RADIUS = modConfig.locator.structure.radius;
-            BiomeLocatable.UPDATE_DISTANCE = modConfig.locator.biome.update_distance;
-            BiomeLocatable.RADIUS = modConfig.locator.biome.radius;
-            return ActionResult.SUCCESS;
-        });
+    /**
+     * Everytime it saves, checks whether structure exclusions and biome exclusions from config have been changed and updates the registry to match accordingly <br>
+     * Keeps track of the previous exclusion instances and whether they match equally with the new exclusions when saved
+     */
+    private ActionResult onSave(ConfigHolder<GoodConfig> holder, GoodConfig config) {
+        initLocatableRegistry();
+
+        GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure UPDATE_DISTANCE to {}", config.locator.structure.update_distance);
+        GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure RADIUS to {}", config.locator.structure.radius);
+        GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome UPDATE_DISTANCE to {}", config.locator.biome.update_distance);
+        GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome RADIUS to {}", config.locator.biome.radius);
+        StructureLocatable.UPDATE_DISTANCE = config.locator.structure.update_distance;
+        StructureLocatable.RADIUS = config.locator.structure.radius;
+        BiomeLocatable.UPDATE_DISTANCE = config.locator.biome.update_distance;
+        BiomeLocatable.RADIUS = config.locator.biome.radius;
+        return ActionResult.SUCCESS;
+    }
+
+    private boolean hasStructureConfigChanged() {
+        return !GoodConfig.INSTANCE.locator.structure.exclusions.equals(prevStrConf);
+    }
+
+    private boolean hasBiomeConfigChanged() {
+        return !GoodConfig.INSTANCE.locator.biome.exclusions.equals(prevBiomeConf);
     }
 
     private void initVanillaRegistries() {
@@ -177,26 +203,54 @@ public class LocatorTweak implements IServerTweak {
         BetterRecipeRegistry.register(RecipeType.SMITHING, STRUCTURE_LOCATOR_RECIPE, BIOME_LOCATOR_RECIPE);
     }
 
-    private void initLocatableRegistries() {
-        if (this.server == null || !this.server.isRunning()) return;
-
+    /**
+     * Gets called at server start or config change
+     */
+    private void initStructureRegistry() {
         StructureRegistry.clear();
-        BiomeRegistry.clear();
+        GoodMC.LOGGER.debug("[LocatorTweak] Initializing Structure Registry");
         this.server.getWorlds().forEach(serverWorld -> {
             Identifier dimension = serverWorld.getRegistryKey().getValue();
             List<Identifier> structures = getStructuresInDimension(serverWorld);
-            List<Identifier> biomes = getBiomesInDimension(serverWorld);
             for (Identifier structure : structures) {
                 if (GoodConfig.INSTANCE.locator.structure.exclusions.contains(structure.toString())) continue;
                 StructureRegistry.registerStructure(dimension, structure);
             }
+        });
+        prevStrConf = GoodConfig.INSTANCE.locator.structure.exclusions;
+    }
+
+    /**
+     * Gets called at server start or config change<br>
+     * Also clears so that it can update after already registering<br>
+     * Sets `prevBiomeConf` to the current config exclusions
+     */
+    private void initBiomeRegistry() {
+        BiomeRegistry.clear();
+        GoodMC.LOGGER.debug("[LocatorTweak] Initializing Biome Registry");
+        this.server.getWorlds().forEach(serverWorld -> {
+            Identifier dimension = serverWorld.getRegistryKey().getValue();
+            List<Identifier> biomes = getBiomesInDimension(serverWorld);
             for (Identifier biome: biomes) {
                 if (GoodConfig.INSTANCE.locator.biome.exclusions.contains(biome.toString())) continue;
                 BiomeRegistry.registerBiome(dimension, biome);
             }
         });
+        prevBiomeConf = GoodConfig.INSTANCE.locator.biome.exclusions;
+    }
 
-        BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
+    /**
+     * Gets called at server start
+     */
+    private void initLocatableRegistry() {
+        if (server == null || !server.isRunning()) return;
+
+        GoodMC.LOGGER.debug("[LocatorTweak] Initializing Locatable Registry");
+
+        if (prevStrConf == null || hasStructureConfigChanged())
+            initStructureRegistry();
+        if (prevBiomeConf == null || hasBiomeConfigChanged())
+            initBiomeRegistry();
     }
 
     private void initDefaultItems() {
@@ -207,7 +261,7 @@ public class LocatorTweak implements IServerTweak {
         ItemUtils.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
     }
 
-    private static boolean inBiome(RegistryEntryList<Biome> strBiomes, Set<RegistryEntry<Biome>> dimBiomes) {
+    private static boolean areValidBiomesInDimBiomes(RegistryEntryList<Biome> strBiomes, Set<RegistryEntry<Biome>> dimBiomes) {
         for (RegistryEntry<Biome> biome : strBiomes) {
             Optional<RegistryKey<Biome>> opt = biome.getKey();
             if (opt.isEmpty()) continue;
@@ -242,7 +296,7 @@ public class LocatorTweak implements IServerTweak {
         for (Map.Entry<RegistryKey<Structure>, Structure> entry : registry.get(RegistryKeys.STRUCTURE).getEntrySet()) {
             RegistryKey<Structure> key = entry.getKey();
             Structure structure = entry.getValue();
-            if (!inBiome(structure.getValidBiomes(), biomes)) continue;
+            if (!areValidBiomesInDimBiomes(structure.getValidBiomes(), biomes)) continue;
             list.add(key.getValue());
         }
 
