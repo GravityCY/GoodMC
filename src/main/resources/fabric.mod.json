@@ -41,7 +41,9 @@
     "fabric-api": ">=0.14.18",
     "minecraft": "~1.19.3",
     "cloth-config": ">=9.0.94",
-    "modmenu": ">=5.1.0",
     "java": ">=17"
+  },
+  "recommends": {
+    "modmenu": "*"
   }
 }

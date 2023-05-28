@@ -126,6 +126,7 @@ or I guess the mod's config file in the minecraft folder🤷‍♂️
 
 ![View Bobbing Strength](https://i.imgur.com/XCSobkg.png])
 ## Things I want to add...
+If you want the todo list I use to track things, here it is: https://trello.com/b/JO99cFBz
 > A Todo List (Working on it... rendering is hard)
 
 > Better Mob Aging (Kinda done just need to fix baby animal head scaling)

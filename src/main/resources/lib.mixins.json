@@ -4,6 +4,7 @@
   "package": "me.gravityio.goodmc.mixin.lib",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MissingTranslationImplMixin",
     "RecipeManagerMixin",
     "better_compass.UpdateCompassMixin",
     "better_compass.client.ItemStackAngleInterpolatorMixin",

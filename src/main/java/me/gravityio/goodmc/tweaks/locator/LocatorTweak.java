@@ -2,6 +2,8 @@ package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
+import me.gravityio.goodmc.MissingTranslation;
+import me.gravityio.goodmc.Utils;
 import me.gravityio.goodmc.lib.BetterItems;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable.BiomeRegistry;
@@ -112,6 +114,18 @@ public class LocatorTweak implements IServerTweak {
     private List<String> prevBiomeConf;
 
 
+    private static String formatPointKey(String pointKey) {
+        int slash = pointKey.lastIndexOf('/');
+        if (slash != -1)
+            return Utils.capitalize(pointKey.substring(slash + 1).replace("_", " "));
+
+        int dot = pointKey.lastIndexOf('.');
+        if (dot != -1)
+            return Utils.capitalize(pointKey.substring(dot + 1).replace("_", " "));
+
+        return Utils.capitalize(pointKey.replace("_", " "));
+    }
+
     /**
      * ON_BEFORE_CRAFT is needed because ON_CRAFT doesn't execute when shift clicking on a stack in a smithing table
      */
@@ -130,6 +144,19 @@ public class LocatorTweak implements IServerTweak {
         initDefaultItems();
         ModEvents.ON_CREATE_WORLDS.register((server) -> {
             state = LootedStructuresState.getServerState(server);
+            return ActionResult.SUCCESS;
+        });
+        ModEvents.ON_MISSING_TRANSLATION.register((key, newText) -> {
+            // structure.minecraft.the_name
+            // biome.minecraft.the_name
+            String newString = MissingTranslation.get(key);
+            if (newString == null) {
+                if (!key.matches("^(structure|biome)\\..*")) return ActionResult.PASS;
+                newString = MissingTranslation.add(key, formatPointKey(key));
+            } else {
+                newString = MissingTranslation.get(key);
+            }
+            newText.append(newString);
             return ActionResult.SUCCESS;
         });
         BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
@@ -151,7 +178,8 @@ public class LocatorTweak implements IServerTweak {
             Identifier dimensionKey = serverPlayer.getWorld().getRegistryKey().getValue();
             List<Identifier> biomeKeys = BiomeRegistry.getBiomes(dimensionKey);
             Identifier biomeKey = biomeKeys.get(random.nextInt(biomeKeys.size()));
-            MutableText loreText = Text.translatable(String.format("biome.%s.%s",biomeKey.getNamespace(), biomeKey.getPath())).setStyle(LORE_STYLE);
+            String key = String.format("biome.%s.%s",biomeKey.getNamespace(), biomeKey.getPath());
+            MutableText loreText = Text.translatable(key).setStyle(LORE_STYLE);
             MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
             ItemUtils.setLore(stack, loreText);
             BetterItems.setHotbarTooltip(stack, hotbarText);

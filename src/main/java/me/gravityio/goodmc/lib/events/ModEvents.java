@@ -42,6 +42,21 @@ public class ModEvents {
             return ActionResult.PASS;
         });
 
+
+    public static final Event<MissingTranslation> ON_MISSING_TRANSLATION = EventFactory.createArrayBacked(MissingTranslation.class,
+        listeners -> (key, newText) -> {
+            for (MissingTranslation listener : listeners) {
+                ActionResult result = listener.onMissingTranslation(key, newText);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        });
+
+    public interface MissingTranslation {
+        ActionResult onMissingTranslation(String key, StringBuilder newText);
+    }
+
     public interface OnCreateWorlds {
         ActionResult onCreateWorlds(MinecraftServer server);
     }
