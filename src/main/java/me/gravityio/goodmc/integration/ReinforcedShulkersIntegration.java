@@ -24,7 +24,7 @@ public class ReinforcedShulkersIntegration implements ReinforcedShulkerBoxesModI
                     ReinforcedShulkerBoxBlock block = (ReinforcedShulkerBoxBlock) ((BlockItem) itemStack.getItem()).getBlock();
                     ScreenHandlerFactory factory = (syncId, playerInventory, player) -> {
                         ContainedItemInventory itemInventory = ContainedItemInventory.getFromStack(itemStack);
-                        if (itemInventory == null) itemInventory = ContainedItemInventory.make(block.getMaterial().getSize(), itemStack, slot, booleanSupplier);
+                        if (itemInventory == null) itemInventory = ContainedItemInventory.create(block.getMaterial().getSize(), itemStack, slot, booleanSupplier);
                         return ReinforcedStorageScreenHandler.createShulkerBoxScreen(block.getMaterial(), syncId, playerInventory, itemInventory);
                     };
                     return new SimpleNamedScreenHandlerFactory(factory, itemStack.getName());

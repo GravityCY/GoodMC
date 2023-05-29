@@ -26,7 +26,7 @@ public class ContainedItemInventory extends ItemInventory {
         return inventoryMap.get(stack);
     }
 
-    public static ContainedItemInventory make(int size, ItemStack inventoryStack, Slot parentInventoryStackSlot, Supplier<Boolean> parentCanPlayerUseSupplier) {
+    public static ContainedItemInventory create(int size, ItemStack inventoryStack, Slot parentInventoryStackSlot, Supplier<Boolean> parentCanPlayerUseSupplier) {
         ContainedItemInventory inventory = new ContainedItemInventory(size, inventoryStack, parentInventoryStackSlot, parentCanPlayerUseSupplier);
         inventoryMap.put(inventoryStack, inventory);
         return inventory;

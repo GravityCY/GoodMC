@@ -57,7 +57,6 @@ public class GoodMC implements ModInitializer, PreLaunchEntrypoint {
 
     @Override
     public void onInitialize() {
-
         GoodMC.LOGGER.info("[Common] Initializing...");
         GoodMC.LOGGER.debug("[Common] Set to Debug Mode." );
 

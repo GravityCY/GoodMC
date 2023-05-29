@@ -6,3 +6,5 @@ accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleI
 accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator update (JD)V
 accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator shouldUpdate (J)Z
 accessible field net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator value D
+
+accessible field net/minecraft/block/entity/ShulkerBoxBlockEntity animationStage Lnet/minecraft/block/entity/ShulkerBoxBlockEntity$AnimationStage;

@@ -64,7 +64,7 @@ public class BetterShulkersTweak implements IServerTweak {
                 .setOpenAction((itemStack, slot, canOpenSupplier) -> {
                     ScreenHandlerFactory screenHandlerFactory = (syncId, playerInv, playerEntity) -> {
                         ContainedItemInventory itemInventory = ContainedItemInventory.getFromStack(itemStack);
-                        if (itemInventory == null) itemInventory = ContainedItemInventory.make(27, itemStack, slot, canOpenSupplier);
+                        if (itemInventory == null) itemInventory = ContainedItemInventory.create(slot.inventory.size(), itemStack, slot, canOpenSupplier);
                         return new ShulkerBoxScreenHandler(syncId, playerInv, itemInventory);
                     };
                     return new SimpleNamedScreenHandlerFactory(screenHandlerFactory, itemStack.getName());
