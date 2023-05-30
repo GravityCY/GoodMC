@@ -305,8 +305,9 @@ public class LocatorTweak implements IServerTweak {
             Identifier dimension = entry.getKey();
             LookupMap<Identifier> lookupMap = LookupMap.fromList(exclusions.computeIfAbsent(dimension, (v) -> new ArrayList<>()));
             for (Identifier identifier : entry.getValue()) {
+                out.computeIfAbsent(dimension, (v) -> new ArrayList<>());
                 if (!lookupMap.contains(identifier))
-                    out.computeIfAbsent(dimension, (v) -> new ArrayList<>()).add(identifier);
+                    out.get(dimension).add(identifier);
             }
         }
         return out;
