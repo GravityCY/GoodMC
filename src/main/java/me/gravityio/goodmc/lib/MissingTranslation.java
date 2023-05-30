@@ -1,4 +1,4 @@
-package me.gravityio.goodmc;
+package me.gravityio.goodmc.lib;
 
 import java.util.HashMap;
 import java.util.Map;

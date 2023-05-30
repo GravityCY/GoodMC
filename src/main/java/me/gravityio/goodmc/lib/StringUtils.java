@@ -1,6 +1,6 @@
-package me.gravityio.goodmc;
+package me.gravityio.goodmc.lib;
 
-public class Utils {
+public class StringUtils {
 
     public static String capitalize(String str) {
         StringBuilder sb = new StringBuilder();

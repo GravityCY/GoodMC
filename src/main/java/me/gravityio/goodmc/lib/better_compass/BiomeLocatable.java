@@ -123,6 +123,10 @@ public class BiomeLocatable implements IMovementLocatable {
             }
         }
 
+        public static Map<Identifier, List<Identifier>> getDimensionBiomes() {
+            return dimensionBiomes;
+        }
+
         public static List<Identifier> getBiomes(Identifier dimensionKey) {
             return dimensionBiomes.get(dimensionKey);
         }

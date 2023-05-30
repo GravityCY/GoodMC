@@ -12,6 +12,7 @@
     "better_shulkers.ShulkerAffinityMixin",
     "better_shulkers.ShulkerBlockEntityRecursionMixin",
     "better_shulkers.ShulkerSlotRecursionMixin",
+    "locator.PlayerLocatorMixin",
     "mob_grows.LivingEntityMixin",
     "mob_grows.PassiveEntityMixin"
   ],
@@ -20,9 +21,9 @@
     "angry_mobs.client.AngryZombieMixin",
     "angry_mobs.client.ClientPacketSpawnMixin",
     "better_budding.client.UpdateAmethystCompassMixin",
+    "locator.client.BetterSmithingScreenMixin",
     "mob_grows.client.AnimalBabyGrowsMixin",
     "mob_grows.client.VillagerBabyGrowsMixin",
-    "structure_locator.client.BetterSmithingScreenMixin",
     "view_bobbing.VideoOptionsScreenMixin",
     "view_bobbing.ViewBobbingMixin"
   ],

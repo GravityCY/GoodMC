@@ -2,9 +2,7 @@ package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.MissingTranslation;
-import me.gravityio.goodmc.Utils;
-import me.gravityio.goodmc.lib.BetterItems;
+import me.gravityio.goodmc.lib.*;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable.BiomeRegistry;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatable;
@@ -13,6 +11,7 @@ import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
 import me.gravityio.goodmc.lib.better_recipes.BetterRecipeRegistry;
 import me.gravityio.goodmc.lib.events.ModEvents;
 import me.gravityio.goodmc.lib.helper.ItemUtils;
+import me.gravityio.goodmc.mixin.interfaces.ILocatorPlayer;
 import me.gravityio.goodmc.tweaks.IServerTweak;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -63,8 +62,8 @@ import static me.gravityio.goodmc.GoodMC.MOD_ID;
 //      but maybe you can add a list of already explored positions?
 //      3. Maybe this all just needs a custom locating function instead of depending on the vanilla one, but that sounds difficult, also threads sound like an interesting option
 
-/**
- * If moving towards pointed sturcture don't search
+/*
+ * If moving towards pointed structure don't search
  * If moving away from pointed structure and not in radius of previous search position search
  */
 
@@ -100,8 +99,6 @@ public class LocatorTweak implements IServerTweak {
     private final Random random = new Random();
     private MinecraftServer server;
 
-
-
     /**
      * Previous Config Structure Exclusions
      * Used to track whether anything in the config regarding exclusions has changed in order to re-initialize the registry
@@ -112,19 +109,6 @@ public class LocatorTweak implements IServerTweak {
      * Used to track whether anything in the config regarding exclusions has changed in order to re-initialize the registry
      */
     private List<String> prevBiomeConf;
-
-
-    private static String formatPointKey(String pointKey) {
-        int slash = pointKey.lastIndexOf('/');
-        if (slash != -1)
-            return Utils.capitalize(pointKey.substring(slash + 1).replace("_", " "));
-
-        int dot = pointKey.lastIndexOf('.');
-        if (dot != -1)
-            return Utils.capitalize(pointKey.substring(dot + 1).replace("_", " "));
-
-        return Utils.capitalize(pointKey.replace("_", " "));
-    }
 
     /**
      * ON_BEFORE_CRAFT is needed because ON_CRAFT doesn't execute when shift clicking on a stack in a smithing table
@@ -174,10 +158,17 @@ public class LocatorTweak implements IServerTweak {
     // DONE: SOMEHOW DUPLICATING 2ND SLOT // I forgor to set biome tattered map to only chest loot tables...
     private ActionResult onCraft(Recipe<?> recipe, ItemStack stack, PlayerEntity player) {
         if (!(recipe instanceof SmithingRecipe) || (!(player instanceof ServerPlayerEntity serverPlayer))) return ActionResult.PASS;
+        ILocatorPlayer locatorPlayer = (ILocatorPlayer) player;
         if (recipe.getId() == BIOME_RECIPE_ID) {
             Identifier dimensionKey = serverPlayer.getWorld().getRegistryKey().getValue();
-            List<Identifier> biomeKeys = BiomeRegistry.getBiomes(dimensionKey);
-            Identifier biomeKey = biomeKeys.get(random.nextInt(biomeKeys.size()));
+            Map<Identifier, List<Identifier>> availableBiomesMap = locatorPlayer.getAvailableBiomes();
+            List<Identifier> availableBiomesList = availableBiomesMap.get(dimensionKey);
+            boolean empty = availableBiomesList.isEmpty();
+            if (empty)
+                availableBiomesList = BiomeRegistry.getBiomes(dimensionKey);
+            Identifier biomeKey = availableBiomesList.get(random.nextInt(availableBiomesList.size()));
+            if (!empty)
+                locatorPlayer.addExcludedBiome(dimensionKey, biomeKey);
             String key = String.format("biome.%s.%s",biomeKey.getNamespace(), biomeKey.getPath());
             MutableText loreText = Text.translatable(key).setStyle(LORE_STYLE);
             MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
@@ -187,8 +178,14 @@ public class LocatorTweak implements IServerTweak {
             BiomeLocatable.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         } else if (recipe.getId() == STRUCTURE_RECIPE_ID) {
             Identifier dimensionKey = serverPlayer.getWorld().getRegistryKey().getValue();
-            List<Identifier> structureKeys = StructureRegistry.getStructures(dimensionKey);
-            Identifier structureKey = structureKeys.get(random.nextInt(structureKeys.size()));
+            Map<Identifier, List<Identifier>> availableStructuresMap = locatorPlayer.getAvailableStructures();
+            List<Identifier> availableStructuresList = availableStructuresMap.get(dimensionKey);
+            boolean empty = availableStructuresList.isEmpty();
+            if (empty)
+                availableStructuresList = StructureRegistry.getStructures(dimensionKey);
+            Identifier structureKey = availableStructuresList.get(random.nextInt(availableStructuresList.size()));
+            if (!empty)
+                locatorPlayer.addExcludedStructure(dimensionKey, structureKey);
             MutableText loreText = Text.translatable(String.format("structure.%s.%s", structureKey.getNamespace(), structureKey.getPath())).setStyle(LORE_STYLE);
             MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
             ItemUtils.setLore(stack, loreText);
@@ -221,7 +218,6 @@ public class LocatorTweak implements IServerTweak {
     private boolean hasStructureConfigChanged() {
         return !GoodConfig.INSTANCE.locator.structure.exclusions.equals(prevStrConf);
     }
-
     private boolean hasBiomeConfigChanged() {
         return !GoodConfig.INSTANCE.locator.biome.exclusions.equals(prevBiomeConf);
     }
@@ -246,10 +242,6 @@ public class LocatorTweak implements IServerTweak {
         });
         BetterRecipeRegistry.register(RecipeType.SMITHING, STRUCTURE_LOCATOR_RECIPE, BIOME_LOCATOR_RECIPE);
     }
-
-    /**
-     * Gets called at server start or config change
-     */
     private void initStructureRegistry() {
         StructureRegistry.clear();
         GoodMC.LOGGER.debug("[LocatorTweak] Initializing Structure Registry");
@@ -263,12 +255,6 @@ public class LocatorTweak implements IServerTweak {
         });
         prevStrConf = GoodConfig.INSTANCE.locator.structure.exclusions;
     }
-
-    /**
-     * Gets called at server start or config change<br>
-     * Also clears so that it can update after already registering<br>
-     * Sets `prevBiomeConf` to the current config exclusions
-     */
     private void initBiomeRegistry() {
         BiomeRegistry.clear();
         GoodMC.LOGGER.debug("[LocatorTweak] Initializing Biome Registry");
@@ -305,7 +291,55 @@ public class LocatorTweak implements IServerTweak {
         ItemUtils.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
     }
 
-    private static boolean areValidBiomesInDimBiomes(RegistryEntryList<Biome> strBiomes, Set<RegistryEntry<Biome>> dimBiomes) {
+    /**
+     * Gets all items in a given map that are not in the exclusions map <br><br>
+     * Used for getting all structures / biomes a player can roll that have not already been rolled <br><br>
+     * If they've rolled minecraft:plains, that would be in the exclusions map, so we fill the dimensionalMap with all the other registered biomes that are not minecraft:plains
+     * @param dimensionalMap
+     * @param exclusions
+     * @return
+     */
+    public static Map<Identifier, List<Identifier>> getAvailable(Map<Identifier, List<Identifier>> dimensionalMap, Map<Identifier, List<Identifier>> exclusions) {
+        Map<Identifier, List<Identifier>> out = new HashMap<>();
+        for (Map.Entry<Identifier, List<Identifier>> entry : dimensionalMap.entrySet()) {
+            Identifier dimension = entry.getKey();
+            LookupMap<Identifier> lookupMap = LookupMap.fromList(exclusions.computeIfAbsent(dimension, (v) -> new ArrayList<>()));
+            for (Identifier identifier : entry.getValue()) {
+                if (!lookupMap.contains(identifier))
+                    out.computeIfAbsent(dimension, (v) -> new ArrayList<>()).add(identifier);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * As a fallback option when the translation key doesn't exist we use this function to turn a translation key into a somewhat displayable string
+     * "minecraft:plains" -> "Plains"
+     * "minecraft:the_nether" -> "The Nether"
+     * "terralith:zpointer/some_people_use_directoies" -> "Some People Use Directories"
+     * @param pointKey
+     * @return
+     */
+    private static String formatPointKey(String pointKey) {
+        int slash = pointKey.lastIndexOf('/');
+        if (slash != -1)
+            return StringUtils.capitalize(pointKey.substring(slash + 1).replace("_", " "));
+
+        int dot = pointKey.lastIndexOf('.');
+        if (dot != -1)
+            return StringUtils.capitalize(pointKey.substring(dot + 1).replace("_", " "));
+
+        return StringUtils.capitalize(pointKey.replace("_", " "));
+    }
+
+    /**
+     * Returns true if any of the strBiomes is included in dimBiomes <br>
+     * Used to find if a structure belongs to a given dimension using the structures biome sources
+     * @param strBiomes
+     * @param dimBiomes
+     * @return
+     */
+    private static boolean hasAnyBiomeInDimBiome(RegistryEntryList<Biome> strBiomes, Set<RegistryEntry<Biome>> dimBiomes) {
         for (RegistryEntry<Biome> biome : strBiomes) {
             Optional<RegistryKey<Biome>> opt = biome.getKey();
             if (opt.isEmpty()) continue;
@@ -321,6 +355,11 @@ public class LocatorTweak implements IServerTweak {
         return false;
     }
 
+    /**
+     * Gets all biomes associated with a certain dimension
+     * @param dimension
+     * @return
+     */
     private static List<Identifier> getBiomesInDimension(ServerWorld dimension) {
         List<Identifier> list = new ArrayList<>();
 
@@ -332,15 +371,20 @@ public class LocatorTweak implements IServerTweak {
         return list;
     }
 
+    /**
+     * Gets all structures associated with a certain dimension
+     * @param dimension
+     * @return
+     */
     private static List<Identifier> getStructuresInDimension(ServerWorld dimension) {
         List<Identifier> list = new ArrayList<>();
 
-        Set<RegistryEntry<Biome>> biomes = dimension.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes();
+        Set<RegistryEntry<Biome>> dimBiomes = dimension.getChunkManager().getChunkGenerator().getBiomeSource().getBiomes();
         DynamicRegistryManager registry = dimension.getRegistryManager();
         for (Map.Entry<RegistryKey<Structure>, Structure> entry : registry.get(RegistryKeys.STRUCTURE).getEntrySet()) {
             RegistryKey<Structure> key = entry.getKey();
             Structure structure = entry.getValue();
-            if (!areValidBiomesInDimBiomes(structure.getValidBiomes(), biomes)) continue;
+            if (!hasAnyBiomeInDimBiome(structure.getValidBiomes(), dimBiomes)) continue;
             list.add(key.getValue());
         }
 

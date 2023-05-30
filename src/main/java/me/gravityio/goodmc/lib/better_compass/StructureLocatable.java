@@ -163,6 +163,9 @@ public class StructureLocatable implements IMovementLocatable {
             }
         }
 
+        public static Map<Identifier, List<Identifier>> getDimensionStructures() {
+            return dimensionStructures;
+        }
 
         public static List<Identifier> getStructures(Identifier dimensionKey) {
             return dimensionStructures.get(dimensionKey);
