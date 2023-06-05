@@ -110,6 +110,7 @@ public class GoodConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean grow_hitbox = false;
         @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         public AgeMobOnly only = AgeMobOnly.ALL;
         public enum AgeMobOnly {
             ALL, VILLAGER, ANIMALS

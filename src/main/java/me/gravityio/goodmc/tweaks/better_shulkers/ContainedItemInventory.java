@@ -1,6 +1,7 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
 import me.gravityio.goodmc.lib.item_inventory.ItemInventory;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;

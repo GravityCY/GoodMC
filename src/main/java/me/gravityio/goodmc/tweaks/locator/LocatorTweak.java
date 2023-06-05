@@ -2,7 +2,10 @@ package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.*;
+import me.gravityio.goodmc.lib.BetterItems;
+import me.gravityio.goodmc.lib.LookupMap;
+import me.gravityio.goodmc.lib.MissingTranslation;
+import me.gravityio.goodmc.lib.StringUtils;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable;
 import me.gravityio.goodmc.lib.better_compass.BiomeLocatable.BiomeRegistry;
 import me.gravityio.goodmc.lib.better_compass.StructureLocatable;
@@ -95,7 +98,6 @@ public class LocatorTweak implements IServerTweak {
     private static final Identifier BIOME_RECIPE_ID = new Identifier(GoodMC.MOD_ID, "biome_locator_smithing");
     private static final StructureLocatorRecipe STRUCTURE_LOCATOR_RECIPE = new StructureLocatorRecipe(STRUCTURE_RECIPE_ID);
     private static final BiomeLocatorRecipe BIOME_LOCATOR_RECIPE = new BiomeLocatorRecipe(BIOME_RECIPE_ID);
-    public static LootedStructuresState state;
     private final Random random = new Random();
     private MinecraftServer server;
 
@@ -126,10 +128,6 @@ public class LocatorTweak implements IServerTweak {
         GoodMC.CONFIG_HOLDER.registerSaveListener(this::onSave);
         initVanillaRegistries();
         initDefaultItems();
-        ModEvents.ON_CREATE_WORLDS.register((server) -> {
-            state = LootedStructuresState.getServerState(server);
-            return ActionResult.SUCCESS;
-        });
         ModEvents.ON_MISSING_TRANSLATION.register((key, newText) -> {
             // structure.minecraft.the_name
             // biome.minecraft.the_name

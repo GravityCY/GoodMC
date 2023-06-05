@@ -10,6 +10,8 @@
     "better_compass.client.ItemStackAngleInterpolatorMixin",
     "better_loot.BlockEntityMixin",
     "better_loot.LootableContainerBlockEntityMixin",
+    "better_loot.StructurePieceMixin",
+    "better_loot.StructureStartMixin",
     "events.ForgingScreenHandlerMixins$ForgingScreenHandlerMixin",
     "events.ForgingScreenHandlerMixins$SmithingScreenHandlerMixin",
     "events.ItemStackMixin",

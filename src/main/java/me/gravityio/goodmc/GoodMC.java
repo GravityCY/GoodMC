@@ -73,4 +73,5 @@ public class GoodMC implements ModInitializer, PreLaunchEntrypoint {
         ServerTickEvents.END_SERVER_TICK.register(server -> ServerTweaks.tweaks.forEach(IServerTweak::onTick));
         GoodMC.LOGGER.info("[Common] Initialized...");
     }
+
 }

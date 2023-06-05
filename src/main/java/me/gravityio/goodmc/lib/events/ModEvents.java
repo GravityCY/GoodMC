@@ -10,8 +10,6 @@ import net.minecraft.util.ActionResult;
 
 public class ModEvents {
 
-
-
     public static final Event<OnCraftEvent> ON_CRAFT = EventFactory.createArrayBacked(OnCraftEvent.class,
         listeners -> (recipe, stack, player) -> {
             for (OnCraftEvent onCraftEvent : listeners) {

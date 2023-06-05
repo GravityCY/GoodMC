@@ -63,10 +63,6 @@ base {
 	archivesName = project.mod_id
 }
 
-javadoc {
-	options.stylesheetFile = file("C:\\new.css")
-}
-
 processResources {
 	inputs.property "version", project.version
 

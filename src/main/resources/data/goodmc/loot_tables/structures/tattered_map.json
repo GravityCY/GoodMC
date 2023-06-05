@@ -3,19 +3,10 @@
   "pools": [
     {
       "bonus_rolls": 0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "goodmc:structure_tattered_map"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:compass"
         }
       ],
       "rolls": 1

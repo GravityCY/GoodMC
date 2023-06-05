@@ -71,7 +71,7 @@
     "text.autoconfig.goodmc.option.aging": "Mob Aging",
       "text.autoconfig.goodmc.option.aging.mob_aging.@Tooltip": "Mobs Visually Grow Up",
       "text.autoconfig.goodmc.option.aging.grow_hitbox.@Tooltip": "Whether when Mobs Visually grow up to also grow their Hitbox\n\nThis is an off by default because growing the hitbox breaks\nsome vanilla farms that depend on mob height",
-      "text.autoconfig.goodmc.option.aging.only.@Tooltip": "Which Mobs Visually Grow Up\nTip: Remove Text from Input to see Available Options",
+      "text.autoconfig.goodmc.option.aging.only.@Tooltip": "Which Mobs Visually Grow Up",
 
       "text.autoconfig.goodmc.option.aging.mob_aging": "Mob Aging",
       "text.autoconfig.goodmc.option.aging.grow_hitbox": "Grow Hitbox",
