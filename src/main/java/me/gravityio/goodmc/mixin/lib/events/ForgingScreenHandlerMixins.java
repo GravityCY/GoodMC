@@ -5,11 +5,9 @@ import me.gravityio.goodmc.lib.events.ModEvents;
 import me.gravityio.goodmc.lib.helper.InventoryUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.LegacySmithingRecipe;
 import net.minecraft.recipe.SmithingRecipe;
-import net.minecraft.screen.ForgingScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.SmithingScreenHandler;
+import net.minecraft.screen.*;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,15 +31,17 @@ public abstract class ForgingScreenHandlerMixins  {
         private void onBeforeCraft(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> cir) {
             if (slot != 2 || !InventoryUtils.canInsertInventory(this.slots, this.slots.get(slot).getStack(), 3, 39)) return;
             ForgingScreenHandler self = (ForgingScreenHandler) (Object) this;
-            GoodMC.LOGGER.debug("[SmithingScreenHandlerMixin] Player {} quick moved item {} in smithing table output", player.getDisplayName().getString(), this.slots.get(slot).getStack());
-            if (self instanceof SmithingScreenHandler smithingScreenHandler)
+            if (self instanceof LegacySmithingScreenHandler smithingScreenHandler) {
+                GoodMC.LOGGER.debug("[SmithingScreenHandlerMixin] Player {} quick moved item {} in smithing table output for recipe {}", smithingScreenHandler.currentRecipe, player.getDisplayName().getString(), this.slots.get(slot).getStack());
                 ModEvents.ON_BEFORE_CRAFT.invoker().onBeforeCraft(smithingScreenHandler.currentRecipe, this.slots.get(slot).getStack(), player);
+            }
         }
     }
 
-    @Mixin(SmithingScreenHandler.class)
-    private static class SmithingScreenHandlerMixin {
-        @Shadow private @Nullable SmithingRecipe currentRecipe;
+    @Mixin(LegacySmithingScreenHandler.class)
+    private static class LegacySmithingScreenHandlerMixin {
+
+        @Shadow private @Nullable LegacySmithingRecipe currentRecipe;
 
         @Inject(method = "onTakeOutput", at = @At("HEAD"))
         private void onCraft(PlayerEntity player, ItemStack stack, CallbackInfo info) {

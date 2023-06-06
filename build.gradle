@@ -43,13 +43,17 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 	// Cloth Config
 	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
-	// Enchantable Blocks
-	modImplementation("me.gravityio:enchantable-blocks:${project.enchantable_blocks_version}")
-	include("me.gravityio:enchantable-blocks:${project.enchantable_blocks_version}")
+	// Enchantable Blocks - Locally Built https://github.com/GravityCY/EnchantableBlockEntities
+	modImplementation("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
+	include("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
 
 	// Reinforced Shulkers
-	modCompileOnly("atonkish.reinfcore:reinforced-core:${project.reinf_core_version}")
-	modImplementation("atonkish.reinfshulker:reinforced-shulker-boxes:${project.reinf_shulker_version}")
+	modCompileOnly("atonkish.reinfcore:reinforced-core:${project.reinf_core_version}") {
+		transitive = false
+	}
+	modCompileOnly("atonkish.reinfshulker:reinforced-shulker-boxes:${project.reinf_shulker_version}") {
+		transitive = false
+	}
 
 	implementation("com.github.LlamaLad7:MixinExtras:0.1.1")
 	include("com.github.LlamaLad7:MixinExtras:0.1.1")
@@ -67,7 +71,10 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand 	"version": project.version,
+				"loader_version": project.loader_version,
+				"fabric_version": project.fabric_version,
+				"minecraft_version": project.minecraft_version
 	}
 }
 

@@ -72,7 +72,7 @@ import static me.gravityio.goodmc.GoodMC.MOD_ID;
 
 /**
  * A 'tweak' that adds a Tattered Map Item that will always spawn 1 in <b>ANY</b> structure <br>
- * &nbsp; You then use this item to merge it with a compass in a smithing table in order to get a random roll
+ * You then use this item to merge it with a compass in a smithing table in order to get a random roll
  * (based in the dimension your currently in) of a structure that the compass will point to
  */
 public class LocatorTweak implements IServerTweak {

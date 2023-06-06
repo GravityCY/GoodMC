@@ -8,11 +8,11 @@ import java.util.List;
 
 public class TodoRegistry {
     public static final List<TodoEntry> todoList = new ArrayList<>();
-    public static final List<TodoChecker<? extends Todo>> todoCheckers = new ArrayList<>();
+    public static final List<TodoFactory<? extends Todo>> TODO_FACTORIES = new ArrayList<>();
     private static MinecraftClient client;
 
     static {
-        registerChecker(new TodoItemChecker());
+        registerChecker(new TodoItemFactory());
     }
 
     public static void setClient(MinecraftClient client) {
@@ -23,21 +23,21 @@ public class TodoRegistry {
         return getFromIdentifier(id) != null;
     }
 
-    public static void registerChecker(TodoChecker<? extends Todo> checker) {
-        todoCheckers.add(checker);
+    public static void registerChecker(TodoFactory<? extends Todo> checker) {
+        TODO_FACTORIES.add(checker);
     }
 
-    public static TodoChecker<? extends Todo> getFromIdentifier(Identifier identifier) {
-        for (TodoChecker<? extends Todo> todoChecker : todoCheckers) {
-            if (todoChecker.isValid(identifier)) return todoChecker;
+    public static TodoFactory<? extends Todo> getFromIdentifier(Identifier identifier) {
+        for (TodoFactory<? extends Todo> todoFactory : TODO_FACTORIES) {
+            if (todoFactory.isValid(identifier)) return todoFactory;
         }
         return null;
     }
 
     public static boolean add(Identifier identifier, int need) {
-        TodoChecker<? extends Todo> checker = getFromIdentifier(identifier);
+        TodoFactory<? extends Todo> checker = getFromIdentifier(identifier);
         if (checker == null) return false;
-        Todo todo = checker.instantiate(client, identifier);
+        Todo todo = checker.create(client, identifier);
         todoList.add(new TodoEntry(todo, 0, need));
         return true;
     }

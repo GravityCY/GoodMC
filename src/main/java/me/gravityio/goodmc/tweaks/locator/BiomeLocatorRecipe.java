@@ -5,11 +5,13 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.LegacySmithingRecipe;
 import net.minecraft.recipe.SmithingRecipe;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-public class BiomeLocatorRecipe extends SmithingRecipe {
+public class BiomeLocatorRecipe extends LegacySmithingRecipe {
 
     public BiomeLocatorRecipe(Identifier id) {
         super(id, Ingredient.ofItems(Items.COMPASS), Ingredient.ofItems(LocatorTweak.BIOME_TATTERED_MAP), LocatorTweak.STACK_BIOME_COMPASS);
@@ -22,7 +24,7 @@ public class BiomeLocatorRecipe extends SmithingRecipe {
     }
 
     @Override
-    public ItemStack craft(Inventory inventory) {
-        return this.getOutput().copy();
+    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
+        return this.getOutput(null).copy();
     }
 }

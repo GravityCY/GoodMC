@@ -1,6 +1,6 @@
 accessWidener v1 named
 
-accessible field net/minecraft/screen/SmithingScreenHandler currentRecipe Lnet/minecraft/recipe/SmithingRecipe;
+# Compass Angle Predicate Provider
 accessible class net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator
 accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator <init> ()V
 accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator update (JD)V
@@ -8,3 +8,9 @@ accessible method net/minecraft/client/item/CompassAnglePredicateProvider$AngleI
 accessible field net/minecraft/client/item/CompassAnglePredicateProvider$AngleInterpolator value D
 
 accessible field net/minecraft/block/entity/ShulkerBoxBlockEntity animationStage Lnet/minecraft/block/entity/ShulkerBoxBlockEntity$AnimationStage;
+
+# Legacy Smithing Screen
+accessible field net/minecraft/screen/LegacySmithingScreenHandler currentRecipe Lnet/minecraft/recipe/LegacySmithingRecipe;
+
+# Entry List Widget
+accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry

@@ -1,7 +1,9 @@
 package me.gravityio.goodmc.mixin.mod.locator.client;
 
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.ForgingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.LegacySmithingScreen;
 import net.minecraft.client.gui.screen.ingame.SmithingScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -26,10 +28,10 @@ public abstract class BetterSmithingScreenMixin<T extends ForgingScreenHandler> 
     @Inject(method = "drawBackground", at = @At("TAIL"))
     private void onRenderBackground(MatrixStack matrices, float delta, int mouseX, int mouseY, CallbackInfo ci) {
         ForgingScreen<T> self = (ForgingScreen<T>) (Object) this;
-        if (!(self instanceof SmithingScreen)) return;
+        if (!(self instanceof LegacySmithingScreen)) return;
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
         if (!this.handler.getSlot(1).hasStack())
-            this.drawTexture(matrices, i+76, j+49, 181, 23, 16, 12);
+            DrawableHelper.drawTexture(matrices, i+76, j+49, 181, 23, 16, 12);
     }
 }

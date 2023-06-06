@@ -13,9 +13,10 @@
     "better_loot.StructurePieceMixin",
     "better_loot.StructureStartMixin",
     "events.ForgingScreenHandlerMixins$ForgingScreenHandlerMixin",
-    "events.ForgingScreenHandlerMixins$SmithingScreenHandlerMixin",
+    "events.ForgingScreenHandlerMixins$LegacySmithingScreenHandlerMixin",
     "events.ItemStackMixin",
-    "events.MinecraftServerMixin"
+    "events.MinecraftServerMixin",
+    "events.TestMixin"
   ],
   "client": [
     "better_compass.client.CustomCompassAngleMixin",

@@ -33,7 +33,7 @@ public class TodoWidget extends EntryListWidget.Entry<TodoWidget> {
         int vx = (int) range(0, 1, sx, ex, (float)this.count / this.need);
         stack.scale(0.5f, 0.5f, 1);
         this.renderable.render(stack, x, y + entryHeight / 2);
-        DrawableHelper.drawCenteredText(stack, textRenderer, this.count + " / " + this.need, 0, 0, this.count >= this.need ? 0xff00ff00 : 0xffff0000);
+        DrawableHelper.drawCenteredTextWithShadow(stack, textRenderer, this.count + " / " + this.need, 0, 0, this.count >= this.need ? 0xff00ff00 : 0xffff0000);
         DrawableHelper.fill(stack, sx, y + 22, vx, y + 23, 0xffffffff);
         stack.pop();
     }

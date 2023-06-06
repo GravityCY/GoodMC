@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.mixin.mod.better_shulkers;
 
-import me.gravityio.enchantableblocks.mixins.interfaces.IEnchantableBlock;
+import me.gravityio.enchantablebe.mixins.interfaces.IEnchantableBE;
 import me.gravityio.goodmc.lib.TriFunction;
 import me.gravityio.goodmc.lib.helper.EnchantmentUtils;
 import me.gravityio.goodmc.tweaks.better_shulkers.BetterShulkersRegistry;
@@ -39,7 +39,7 @@ public abstract class OpenShulkerMixin {
     @Inject(method="onSlotClick", at = @At("HEAD"), cancellable = true)
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
         if (!(player instanceof ServerPlayerEntity serverPlayer) ||button != GLFW.GLFW_MOUSE_BUTTON_2 || this.type == null || !BetterShulkersRegistry.isAllowedScreen(this.type)) return;
-        if (!(this.slots.get(0).inventory instanceof ShulkerBoxBlockEntity shulkerBox) || !(shulkerBox instanceof IEnchantableBlock enchantableBlock) || !EnchantmentUtils.hasEnchantment(BetterShulkersTweak.SHULKER_RECURSION, enchantableBlock.getEnchantments())) return;
+        if (!(this.slots.get(0).inventory instanceof ShulkerBoxBlockEntity shulkerBox) || !(shulkerBox instanceof IEnchantableBE enchantableBlock) || !EnchantmentUtils.hasEnchantment(BetterShulkersTweak.SHULKER_RECURSION, enchantableBlock.getEnchantments())) return;
         int size = this.slots.size();
         ItemStack stack = slotIndex >= 0 && slotIndex < size - serverPlayer.getInventory().main.size() ? this.slots.get(slotIndex).getStack() : ItemStack.EMPTY;
         if (stack.isEmpty() || !ShulkerUtils.isShulker(stack)) return;

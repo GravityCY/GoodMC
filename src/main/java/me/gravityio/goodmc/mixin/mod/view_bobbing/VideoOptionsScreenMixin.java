@@ -5,8 +5,8 @@ import me.gravityio.goodmc.GoodMC;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
-import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.OptionListWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.Window;
 import net.minecraft.text.Text;
@@ -20,14 +20,15 @@ import static me.gravityio.goodmc.client.tweaks.ClientTweaks.VIEW_BOBBING;
 
 @Mixin(VideoOptionsScreen.class)
 public class VideoOptionsScreenMixin extends GameOptionsScreen {
-    @Shadow private ButtonListWidget list;
+    @Shadow private OptionListWidget list;
 
     public VideoOptionsScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
     }
 
     @Inject(method = "init", at = @At("TAIL"))
-    private void onInit(CallbackInfo ci) {
+    private void onInit(CallbackInfo ci)
+    {
         this.list.addSingleOptionEntry(VIEW_BOBBING.viewBobbingStrength);
     }
 

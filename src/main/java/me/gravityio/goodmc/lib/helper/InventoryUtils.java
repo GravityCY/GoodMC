@@ -22,7 +22,7 @@ public class InventoryUtils {
                     int total = other.getCount() + original.getCount();
                     if (total < original.getMaxCount()) return true;
                     else if (other.getCount() < original.getMaxCount()) return true;
-                }
+                }   
             }
         }
         return false;
