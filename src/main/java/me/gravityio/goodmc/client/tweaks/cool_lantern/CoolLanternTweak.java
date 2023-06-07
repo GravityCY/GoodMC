@@ -23,6 +23,8 @@ public class CoolLanternTweak implements IClientTweak {
 
     private MinecraftClient client;
     private final LanternArmRenderable lanternArmRenderable = ArmRenderableRegistry.register(new LanternArmRenderable());
+    private final KeybindWrapper selectLightBind = KeybindManager.register(KeybindWrapper.of("key.goodmc.select_light", GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
+
     private int prevSlot = -1;
     private boolean isLightItem(ItemStack stack) {
         return stack.isOf(Items.SOUL_LANTERN) || stack.isOf(Items.LANTERN) || stack.isOf(Items.TORCH);
@@ -72,19 +74,18 @@ public class CoolLanternTweak implements IClientTweak {
     @Override
     public void onInit(MinecraftClient client) {
         this.client = client;
-        KeybindWrapper selectLight = KeybindManager.register(KeybindWrapper.of("key.goodmc.select_light", GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
-        selectLight.setWhilePressedCallback(() -> {
+        selectLightBind.setWhilePressedCallback(() -> {
             if (!GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             if (!hasPrevSlot()) equip();
             else unequip();
             if (prevSlot == -2) unequip();
         });
-        selectLight.setOnPressedCallback(() -> {
+        selectLightBind.setOnPressedCallback(() -> {
             if (GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             if (hasPrevSlot()) return;
             equip();
         });
-        selectLight.setOnReleaseCallback(() -> {
+        selectLightBind.setOnReleaseCallback(() -> {
             if (GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             unequip();
         });

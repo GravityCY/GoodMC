@@ -153,8 +153,8 @@ public class LocatorTweak implements IServerTweak {
     public void onTick() {}
 
     // DONE: SOMEHOW DUPLICATING 2ND SLOT // I forgor to set biome tattered map to only chest loot tables...
-    private ActionResult onCraft(Recipe<?> recipe, ItemStack stack, PlayerEntity player) {
-        if (!(recipe instanceof SmithingRecipe) || (!(player instanceof ServerPlayerEntity serverPlayer))) return ActionResult.PASS;
+    private void onCraft(Recipe<?> recipe, ItemStack stack, PlayerEntity player) {
+        if (!(recipe instanceof SmithingRecipe) || (!(player instanceof ServerPlayerEntity serverPlayer))) return;
         ILocatorPlayer locatorPlayer = (ILocatorPlayer) player;
         if (recipe.getId() == BIOME_RECIPE_ID) {
             Identifier dimensionKey = serverPlayer.getWorld().getRegistryKey().getValue();
@@ -190,8 +190,6 @@ public class LocatorTweak implements IServerTweak {
             StructureLocatable.setPointsTo(stack, dimensionKey, structureKey);
             StructureLocatable.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         }
-
-        return ActionResult.SUCCESS;
     }
 
     /**
