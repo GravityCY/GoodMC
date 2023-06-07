@@ -38,10 +38,12 @@ dependencies {
 	// Fabric API / Loader
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+
 	// Mod Menu
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 	// Cloth Config
 	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
+
 	// Enchantable Blocks - Locally Built https://github.com/GravityCY/EnchantableBlockEntities
 	modImplementation("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
 	include("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
