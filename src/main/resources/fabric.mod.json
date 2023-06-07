@@ -4,12 +4,10 @@
   "version": "${version}",
   "name": "GoodMC",
   "description": "minecraft is now good",
-  "authors": [
-    "GravityIO"
-  ],
+  "authors": [ "GravityIO" ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/GravityCY/GoodMC",
+    "issues": "https://github.com/GravityCY/GoodMC/issues"
   },
   "accessWidener": "goodmc.accesswidener",
   "license": "MIT",

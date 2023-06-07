@@ -126,8 +126,8 @@ public class LocatorTweak implements IServerTweak {
         GoodEvents.ON_CRAFT.register(this::onCraft);
         GoodMC.CONFIG_HOLDER.registerSaveListener(this::onSave);
 
-        initVanillaRegistries();
         initDefaultItems();
+        initVanillaRegistries();
         GoodEvents.ON_MISSING_TRANSLATION.register((key) -> {
             String newString = MissingTranslation.get(key);
             if (newString == null) {
@@ -281,10 +281,11 @@ public class LocatorTweak implements IServerTweak {
 
     private void initDefaultItems() {
         // SET THE LORE OF THE DEFAULT ITEM STACKS TO BE COPIED FOR CREATIVE MENU // SMITHING TABLE
-        GoodItemHelper.setLore(STACK_STRUCTURE_COMPASS, Text.translatable("item.goodmc.compass.structure.lore.unlocated").setStyle(LORE_STYLE));
         GoodItemHelper.setLore(STACK_STRUCTURE_TATTERED, Text.translatable("item.goodmc.structure_tattered_map.lore").setStyle(LORE_STYLE));
-        GoodItemHelper.setLore(STACK_BIOME_COMPASS, Text.translatable("item.goodmc.compass.biome.lore.unlocated").setStyle(LORE_STYLE));
         GoodItemHelper.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
+
+        GoodItemHelper.setLore(STACK_STRUCTURE_COMPASS, Text.translatable("item.goodmc.compass.structure.lore.unlocated").setStyle(LORE_STYLE));
+        GoodItemHelper.setLore(STACK_BIOME_COMPASS, Text.translatable("item.goodmc.compass.biome.lore.unlocated").setStyle(LORE_STYLE));
     }
 
     /**
