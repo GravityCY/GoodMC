@@ -9,7 +9,6 @@
     "sources": "https://github.com/GravityCY/GoodMC",
     "issues": "https://github.com/GravityCY/GoodMC/issues"
   },
-  "accessWidener": "goodmc.accesswidener",
   "license": "MIT",
   "icon": "assets/goodmc/icon.png",
   "environment": "*",
@@ -30,6 +29,7 @@
       "me.gravityio.goodmc.integration.ReinforcedShulkersIntegration"
     ]
   },
+  "accessWidener": "goodmc.accesswidener",
   "mixins": [
     "goodmc.mixins.json"
   ],
