@@ -1,11 +1,11 @@
 package me.gravityio.goodmc.mixin.mod.locator;
 
-import me.gravityio.goodmc.lib.better_compass.BiomeLocatable.BiomeRegistry;
-import me.gravityio.goodmc.lib.better_compass.StructureLocatable.StructureRegistry;
-import me.gravityio.goodmc.lib.helper.NbtUtils;
+import me.gravityio.goodlib.helper.GoodNbtHelper;
 import me.gravityio.goodmc.mixin.interfaces.ILocatorPlayer;
 import me.gravityio.goodmc.tweaks.locator.LocatorPlayerData;
 import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.impl.BiomeLocatable;
+import me.gravityio.goodmc.tweaks.locator.impl.StructureLocatable;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,18 +33,18 @@ public abstract class PlayerLocatorMixin extends LivingEntity implements ILocato
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     public void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        NbtCompound strMap = NbtUtils.fromMap(this.playerData.excludedStructures, Identifier::toString, ARRAYLIST_OF_IDS_TO_NBT_ELEMENT);
-        NbtCompound biomeMap = NbtUtils.fromMap(this.playerData.excludedBiomes, Identifier::toString, ARRAYLIST_OF_IDS_TO_NBT_ELEMENT);
+        NbtCompound strMap = GoodNbtHelper.fromMap(this.playerData.excludedStructures, Identifier::toString, ARRAYLIST_OF_IDS_TO_NBT_ELEMENT);
+        NbtCompound biomeMap = GoodNbtHelper.fromMap(this.playerData.excludedBiomes, Identifier::toString, ARRAYLIST_OF_IDS_TO_NBT_ELEMENT);
         nbt.put(STRUCTURE_EXCLUSIONS_KEY, strMap);
         nbt.put(BIOME_EXCLUSIONS_KEY, biomeMap);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     public void readCustomFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        NbtUtils.toMap(nbt.getCompound(STRUCTURE_EXCLUSIONS_KEY), this.playerData.excludedStructures, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
-        NbtUtils.toMap(nbt.getCompound(BIOME_EXCLUSIONS_KEY), this.playerData.excludedBiomes, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
-        this.playerData.availableStructures = LocatorTweak.getAvailable(StructureRegistry.getDimensionStructures(), this.playerData.excludedStructures);
-        this.playerData.availableBiomes = LocatorTweak.getAvailable(BiomeRegistry.getDimensionBiomes(), this.playerData.excludedBiomes);
+        GoodNbtHelper.toMap(nbt.getCompound(STRUCTURE_EXCLUSIONS_KEY), this.playerData.excludedStructures, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
+        GoodNbtHelper.toMap(nbt.getCompound(BIOME_EXCLUSIONS_KEY), this.playerData.excludedBiomes, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
+        this.playerData.availableStructures = LocatorTweak.getAvailable(StructureLocatable.StructureRegistry.getDimensionStructures(), this.playerData.excludedStructures);
+        this.playerData.availableBiomes = LocatorTweak.getAvailable(BiomeLocatable.BiomeRegistry.getDimensionBiomes(), this.playerData.excludedBiomes);
     }
 
     @Override

@@ -32,13 +32,12 @@ repositories {
 
 dependencies {
 	// To change the versions see the gradle.properties file
-
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+
 	// Fabric API / Loader
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-
 	// Mod Menu
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 	// Cloth Config
@@ -46,6 +45,9 @@ dependencies {
 	// Enchantable Blocks - Locally Built https://github.com/GravityCY/EnchantableBlockEntities
 	modImplementation("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
 	include("me.gravityio:enchantable-be:${project.enchantable_blocks_version}")
+	// Good Lib - Locally Built https://github.com/GravityCY/GoodLib
+	modImplementation("me.gravityio:goodlib:${project.good_lib_version}")
+	include("me.gravityio:goodlib:${project.good_lib_version}")
 
 	// Reinforced Shulkers
 	modCompileOnly("atonkish.reinfcore:reinforced-core:${project.reinf_core_version}") {

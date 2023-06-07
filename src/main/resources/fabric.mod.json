@@ -33,8 +33,7 @@
     ]
   },
   "mixins": [
-    "goodmc.mixins.json",
-    "lib.mixins.json"
+    "goodmc.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

@@ -1,8 +1,8 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
 import me.gravityio.enchantablebe.mixins.interfaces.IEnchantableBE;
+import me.gravityio.goodlib.helper.GoodItemHelper;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.item_inventory.NbtInventory;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -98,7 +98,7 @@ public class ShulkerUtils {
      * @return {@link Map}
      */
     public static Map<Integer, ItemStack> getOrderedInventory(ItemStack stack) {
-        NbtList list = NbtInventory.getNbtInventory(stack);
+        NbtList list = GoodItemHelper.NbtInventory.getNbtInventory(stack);
         Map<Integer, ItemStack> items = new HashMap<>();
         for (int i = 0; i < list.size(); i++)
         {
@@ -118,7 +118,7 @@ public class ShulkerUtils {
      * @return
      */
     public static ItemStack[] getUnorderedInventory(ItemStack stack) {
-        NbtList list = NbtInventory.getNbtInventory(stack);
+        NbtList list = GoodItemHelper.NbtInventory.getNbtInventory(stack);
         ItemStack[] items = new ItemStack[list.size()];
         for (int i = 0; i < items.length; i++) {
             items[i] = ItemStack.fromNbt(list.getCompound(i));

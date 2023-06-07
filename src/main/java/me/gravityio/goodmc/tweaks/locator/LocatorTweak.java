@@ -1,21 +1,21 @@
 package me.gravityio.goodmc.tweaks.locator;
 
+import me.gravityio.goodlib.events.GoodEvents;
+import me.gravityio.goodlib.helper.GoodItemHelper;
+import me.gravityio.goodlib.lib.BetterLootRegistry;
+import me.gravityio.goodlib.lib.BetterRecipeRegistry;
+import me.gravityio.goodlib.lib.MissingTranslation;
+import me.gravityio.goodlib.util.LookupMap;
 import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.BetterItems;
-import me.gravityio.goodmc.lib.LookupMap;
-import me.gravityio.goodmc.lib.MissingTranslation;
-import me.gravityio.goodmc.lib.StringUtils;
-import me.gravityio.goodmc.lib.better_compass.BiomeLocatable;
-import me.gravityio.goodmc.lib.better_compass.BiomeLocatable.BiomeRegistry;
-import me.gravityio.goodmc.lib.better_compass.StructureLocatable;
-import me.gravityio.goodmc.lib.better_compass.StructureLocatable.StructureRegistry;
-import me.gravityio.goodmc.lib.better_loot.BetterLootRegistry;
-import me.gravityio.goodmc.lib.better_recipes.BetterRecipeRegistry;
-import me.gravityio.goodmc.lib.events.ModEvents;
-import me.gravityio.goodmc.lib.helper.ItemUtils;
 import me.gravityio.goodmc.mixin.interfaces.ILocatorPlayer;
 import me.gravityio.goodmc.tweaks.IServerTweak;
+import me.gravityio.goodmc.tweaks.locator.impl.BiomeLocatable;
+import me.gravityio.goodmc.tweaks.locator.impl.LocatableRegistry;
+import me.gravityio.goodmc.tweaks.locator.impl.LocatableType;
+import me.gravityio.goodmc.tweaks.locator.impl.StructureLocatable;
+import me.gravityio.goodmc.tweaks.locator.recipe.BiomeLocatorRecipe;
+import me.gravityio.goodmc.tweaks.locator.recipe.StructureLocatorRecipe;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
@@ -45,6 +45,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.Structure;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -122,26 +123,24 @@ public class LocatorTweak implements IServerTweak {
         BiomeLocatable.UPDATE_DISTANCE = GoodConfig.INSTANCE.locator.biome.update_distance;
         BiomeLocatable.RADIUS = GoodConfig.INSTANCE.locator.biome.radius;
 
-        ModEvents.ON_BEFORE_CRAFT.register(this::onCraft);
-        ModEvents.ON_CRAFT.register(this::onCraft);
-
+        GoodEvents.ON_CRAFT.register(this::onCraft);
         GoodMC.CONFIG_HOLDER.registerSaveListener(this::onSave);
+
         initVanillaRegistries();
         initDefaultItems();
-        ModEvents.ON_MISSING_TRANSLATION.register((key, newText) -> {
-            // structure.minecraft.the_name
-            // biome.minecraft.the_name
+        GoodEvents.ON_MISSING_TRANSLATION.register((key) -> {
             String newString = MissingTranslation.get(key);
             if (newString == null) {
-                if (!key.matches("^(structure|biome)\\..*")) return ActionResult.PASS;
+                if (!key.matches("^(structure|biome)\\..*")) return null;
                 newString = MissingTranslation.add(key, formatPointKey(key));
             } else {
                 newString = MissingTranslation.get(key);
             }
-            newText.append(newString);
-            return ActionResult.SUCCESS;
+            return newString;
         });
         BetterLootRegistry.registerLoot(BetterLootRegistry.ALL, new Identifier(MOD_ID, "structures/tattered_map"));
+        LocatableRegistry.register(LocatableType.MOVEMENT_LOCATABLE, new StructureLocatable());
+        LocatableRegistry.register(LocatableType.MOVEMENT_LOCATABLE, new BiomeLocatable());
     }
 
     @Override
@@ -163,15 +162,15 @@ public class LocatorTweak implements IServerTweak {
             List<Identifier> availableBiomesList = availableBiomesMap.get(dimensionKey);
             boolean empty = availableBiomesList.isEmpty();
             if (empty)
-                availableBiomesList = BiomeRegistry.getBiomes(dimensionKey);
+                availableBiomesList = BiomeLocatable.BiomeRegistry.getBiomes(dimensionKey);
             Identifier biomeKey = availableBiomesList.get(random.nextInt(availableBiomesList.size()));
             if (!empty)
                 locatorPlayer.addExcludedBiome(dimensionKey, biomeKey);
             String key = String.format("biome.%s.%s",biomeKey.getNamespace(), biomeKey.getPath());
             MutableText loreText = Text.translatable(key).setStyle(LORE_STYLE);
             MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
-            ItemUtils.setLore(stack, loreText);
-            BetterItems.setHotbarTooltip(stack, hotbarText);
+            GoodItemHelper.setLore(stack, loreText);
+            GoodItemHelper.setHotbarTooltip(stack, hotbarText);
             BiomeLocatable.setPointsTo(stack, dimensionKey, biomeKey);
             BiomeLocatable.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         } else if (recipe.getId() == STRUCTURE_RECIPE_ID) {
@@ -180,14 +179,14 @@ public class LocatorTweak implements IServerTweak {
             List<Identifier> availableStructuresList = availableStructuresMap.get(dimensionKey);
             boolean empty = availableStructuresList.isEmpty();
             if (empty)
-                availableStructuresList = StructureRegistry.getStructures(dimensionKey);
+                availableStructuresList = StructureLocatable.StructureRegistry.getStructures(dimensionKey);
             Identifier structureKey = availableStructuresList.get(random.nextInt(availableStructuresList.size()));
             if (!empty)
                 locatorPlayer.addExcludedStructure(dimensionKey, structureKey);
             MutableText loreText = Text.translatable(String.format("structure.%s.%s", structureKey.getNamespace(), structureKey.getPath())).setStyle(LORE_STYLE);
             MutableText hotbarText = loreText.copy().setStyle(HOTBAR_STYLE);
-            ItemUtils.setLore(stack, loreText);
-            BetterItems.setHotbarTooltip(stack, hotbarText);
+            GoodItemHelper.setLore(stack, loreText);
+            GoodItemHelper.setHotbarTooltip(stack, hotbarText);
             StructureLocatable.setPointsTo(stack, dimensionKey, structureKey);
             StructureLocatable.updateLocator(stack, serverPlayer.getWorld(), serverPlayer);
         }
@@ -201,7 +200,6 @@ public class LocatorTweak implements IServerTweak {
      */
     private ActionResult onSave(ConfigHolder<GoodConfig> holder, GoodConfig config) {
         initLocatableRegistry();
-
         GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure UPDATE_DISTANCE to {}", config.locator.structure.update_distance);
         GoodMC.LOGGER.debug("[LocatorTweak] Setting new Structure RADIUS to {}", config.locator.structure.radius);
         GoodMC.LOGGER.debug("[LocatorTweak] Setting new Biome UPDATE_DISTANCE to {}", config.locator.biome.update_distance);
@@ -241,27 +239,27 @@ public class LocatorTweak implements IServerTweak {
         BetterRecipeRegistry.register(RecipeType.SMITHING, STRUCTURE_LOCATOR_RECIPE, BIOME_LOCATOR_RECIPE);
     }
     private void initStructureRegistry() {
-        StructureRegistry.clear();
+        StructureLocatable.StructureRegistry.clear();
         GoodMC.LOGGER.debug("[LocatorTweak] Initializing Structure Registry");
         this.server.getWorlds().forEach(serverWorld -> {
             Identifier dimension = serverWorld.getRegistryKey().getValue();
             List<Identifier> structures = getStructuresInDimension(serverWorld);
             for (Identifier structure : structures) {
                 if (GoodConfig.INSTANCE.locator.structure.exclusions.contains(structure.toString())) continue;
-                StructureRegistry.registerStructure(dimension, structure);
+                StructureLocatable.StructureRegistry.registerStructure(dimension, structure);
             }
         });
         prevStrConf = GoodConfig.INSTANCE.locator.structure.exclusions;
     }
     private void initBiomeRegistry() {
-        BiomeRegistry.clear();
+        BiomeLocatable.BiomeRegistry.clear();
         GoodMC.LOGGER.debug("[LocatorTweak] Initializing Biome Registry");
         this.server.getWorlds().forEach(serverWorld -> {
             Identifier dimension = serverWorld.getRegistryKey().getValue();
             List<Identifier> biomes = getBiomesInDimension(serverWorld);
             for (Identifier biome: biomes) {
                 if (GoodConfig.INSTANCE.locator.biome.exclusions.contains(biome.toString())) continue;
-                BiomeRegistry.registerBiome(dimension, biome);
+                BiomeLocatable.BiomeRegistry.registerBiome(dimension, biome);
             }
         });
         prevBiomeConf = GoodConfig.INSTANCE.locator.biome.exclusions;
@@ -283,10 +281,10 @@ public class LocatorTweak implements IServerTweak {
 
     private void initDefaultItems() {
         // SET THE LORE OF THE DEFAULT ITEM STACKS TO BE COPIED FOR CREATIVE MENU // SMITHING TABLE
-        ItemUtils.setLore(STACK_STRUCTURE_COMPASS, Text.translatable("item.goodmc.compass.structure.lore.unlocated").setStyle(LORE_STYLE));
-        ItemUtils.setLore(STACK_STRUCTURE_TATTERED, Text.translatable("item.goodmc.structure_tattered_map.lore").setStyle(LORE_STYLE));
-        ItemUtils.setLore(STACK_BIOME_COMPASS, Text.translatable("item.goodmc.compass.biome.lore.unlocated").setStyle(LORE_STYLE));
-        ItemUtils.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
+        GoodItemHelper.setLore(STACK_STRUCTURE_COMPASS, Text.translatable("item.goodmc.compass.structure.lore.unlocated").setStyle(LORE_STYLE));
+        GoodItemHelper.setLore(STACK_STRUCTURE_TATTERED, Text.translatable("item.goodmc.structure_tattered_map.lore").setStyle(LORE_STYLE));
+        GoodItemHelper.setLore(STACK_BIOME_COMPASS, Text.translatable("item.goodmc.compass.biome.lore.unlocated").setStyle(LORE_STYLE));
+        GoodItemHelper.setLore(STACK_BIOME_TATTERED, Text.translatable("item.goodmc.biome_tattered_map.lore").setStyle(LORE_STYLE));
     }
 
     /**

@@ -2,9 +2,10 @@ package me.gravityio.goodmc.client.tweaks.todo_list;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.gravityio.goodlib.lib.keybinds.KeybindManager;
+import me.gravityio.goodlib.lib.keybinds.KeybindWrapper;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import me.gravityio.goodmc.lib.keybinds.KeyBind;
-import me.gravityio.goodmc.lib.keybinds.KeybindManager;
+import me.gravityio.goodmc.client.tweaks.todo_list.gui.TodoListWidget;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -73,7 +74,7 @@ public class TodoListTweak implements IClientTweak {
         this.client = client;
         TodoRegistry.setClient(client);
         TodoRegistry.add(new Identifier("minecraft:stone"), 64);
-        KeybindManager.register(KeyBind.of("key.goodmc.todo", GLFW.GLFW_KEY_Y, CATEGORY,  () -> doRender = !doRender));
+        KeybindManager.register(KeybindWrapper.of("key.goodmc.todo", GLFW.GLFW_KEY_Y, CATEGORY,  () -> doRender = !doRender));
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(todoCommand));
         HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
             if (!doRender || TodoRegistry.todoList.isEmpty()) return;

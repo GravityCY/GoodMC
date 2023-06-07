@@ -1,7 +1,7 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
 import me.gravityio.goodmc.GoodMC;
-import me.gravityio.goodmc.lib.TriFunction;
+import me.gravityio.goodmc.utils.TriFunction;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;

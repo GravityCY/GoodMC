@@ -1,7 +1,8 @@
 package me.gravityio.goodmc.tweaks.better_shulkers;
 
-import me.gravityio.goodmc.lib.item_inventory.ItemInventory;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import me.gravityio.goodlib.helper.GoodItemHelper;
+import me.gravityio.goodlib.items.ItemInventory;
+import me.gravityio.goodlib.items.NbtInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -27,7 +28,8 @@ public class ContainedItemInventory extends ItemInventory {
         return inventoryMap.get(stack);
     }
 
-    public static ContainedItemInventory create(int size, ItemStack inventoryStack, Slot parentInventoryStackSlot, Supplier<Boolean> parentCanPlayerUseSupplier) {
+    public static ContainedItemInventory create(final int size, final ItemStack inventoryStack,
+                                                final Slot parentInventoryStackSlot, final Supplier<Boolean> parentCanPlayerUseSupplier) {
         ContainedItemInventory inventory = new ContainedItemInventory(size, inventoryStack, parentInventoryStackSlot, parentCanPlayerUseSupplier);
         inventoryMap.put(inventoryStack, inventory);
         return inventory;
@@ -37,6 +39,12 @@ public class ContainedItemInventory extends ItemInventory {
         super(inventoryStack, size);
         this.parentCanPlayerUseSupplier = parentCanPlayerUseSupplier;
         this.parentInventoryStackSlot = parentInventoryStackSlot;
+    }
+
+    @Override
+    protected void setupInventory() {
+        super.nbtInventory = new NbtInventory(GoodItemHelper.NbtInventory.getOrCreateNbtInventory(inventoryStack));
+        GoodItemHelper.NbtInventory.getOrderedInventory(inventoryStack).forEach(super.stacks::set);
     }
 
     @Override

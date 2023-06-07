@@ -3,7 +3,6 @@ package me.gravityio.goodmc.client;
 import me.gravityio.goodmc.GoodMC;
 import me.gravityio.goodmc.client.tweaks.ClientTweaks;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import me.gravityio.goodmc.lib.keybinds.KeybindManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -38,11 +37,7 @@ public class GoodClientMC implements ClientModInitializer {
             GoodMC.LOGGER.debug("[Client] Initialized Tweak: '{}'!", iTweak.getClass().getSimpleName());
 
         });
-        KeybindManager.init();
-        ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
-            ClientTweaks.tweaks.forEach(IClientTweak::onTick);
-            KeybindManager.tick();
-        });
+        ClientTickEvents.END_CLIENT_TICK.register(a -> ClientTweaks.tweaks.forEach(IClientTweak::onTick));
         GoodMC.LOGGER.info("[Client] Initialized.");
     }
 }

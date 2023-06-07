@@ -1,10 +1,10 @@
 package me.gravityio.goodmc.client.tweaks.cool_lantern;
 
+import me.gravityio.goodlib.lib.arm_renderable.ArmRenderableRegistry;
+import me.gravityio.goodlib.lib.keybinds.KeybindManager;
+import me.gravityio.goodlib.lib.keybinds.KeybindWrapper;
 import me.gravityio.goodmc.GoodConfig;
 import me.gravityio.goodmc.client.tweaks.IClientTweak;
-import me.gravityio.goodmc.lib.arm_renderable.ArmRenderableRegistry;
-import me.gravityio.goodmc.lib.keybinds.KeyBind;
-import me.gravityio.goodmc.lib.keybinds.KeybindManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -72,7 +72,7 @@ public class CoolLanternTweak implements IClientTweak {
     @Override
     public void onInit(MinecraftClient client) {
         this.client = client;
-        KeyBind selectLight = KeybindManager.register(KeyBind.of("key.goodmc.select_light", GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
+        KeybindWrapper selectLight = KeybindManager.register(KeybindWrapper.of("key.goodmc.select_light", GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
         selectLight.setWhilePressedCallback(() -> {
             if (!GoodConfig.INSTANCE.lantern.lantern_toggle) return;
             if (!hasPrevSlot()) equip();
@@ -91,27 +91,6 @@ public class CoolLanternTweak implements IClientTweak {
     }
 
     @Override
-    public void onTick()
-    {
-//        if (GoodConfig.INSTANCE.lantern_toggle) {
-//            while (selectLight.bind.wasPressed()) {
-//                if (prevSlot == -1) {
-//                    prevSlot = equipLightItem(client);
-//                } else {
-//                    swapSlot(client, prevSlot, 40);
-//                    prevSlot = -1;
-//                }
-//            }
-//        } else {
-//            if (selectLight.bind.isPressed()) {
-//                if (prevSlot == -1) {
-//                    prevSlot = equipLightItem(client);
-//                }
-//            } else if (prevSlot != -1) {
-//                swapSlot(client, prevSlot, 40);
-//                prevSlot = -1;
-//            }
-//        }
-    }
+    public void onTick() { }
 
 }

@@ -12,6 +12,7 @@
     "better_shulkers.ShulkerAffinityMixin",
     "better_shulkers.ShulkerBlockEntityRecursionMixin",
     "better_shulkers.ShulkerSlotRecursionMixin",
+    "locator.LocatableMixin",
     "locator.PlayerLocatorMixin",
     "mob_grows.LivingEntityMixin",
     "mob_grows.PassiveEntityMixin"

@@ -1,6 +1,6 @@
 package me.gravityio.goodmc.tweaks.locator;
 
-import me.gravityio.goodmc.lib.helper.NbtUtils;
+import me.gravityio.goodlib.helper.GoodNbtHelper;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
@@ -14,8 +14,8 @@ import java.util.function.Function;
 
 public class LocatorPlayerData {
 
-    public static Function<List<Identifier>, NbtElement> ARRAYLIST_OF_IDS_TO_NBT_ELEMENT = (list) -> NbtUtils.fromList(list, identifier -> NbtString.of(identifier.toString()));
-    public static Function<NbtElement, List<Identifier>> NBT_LIST_OF_IDS_TO_ARRAYLIST = (nbtList) -> NbtUtils.toList((NbtList)nbtList, new ArrayList<>(), (elem) -> new Identifier(elem.asString()));
+    public static Function<List<Identifier>, NbtElement> ARRAYLIST_OF_IDS_TO_NBT_ELEMENT = (list) -> GoodNbtHelper.fromList(list, identifier -> NbtString.of(identifier.toString()));
+    public static Function<NbtElement, List<Identifier>> NBT_LIST_OF_IDS_TO_ARRAYLIST = (nbtList) -> GoodNbtHelper.toList((NbtList)nbtList, new ArrayList<>(), (elem) -> new Identifier(elem.asString()));
     public static final String STRUCTURE_EXCLUSIONS_KEY = "StructureExclusions";
     public static final String BIOME_EXCLUSIONS_KEY = "BiomeExclusions";
 
