@@ -2,6 +2,7 @@ package me.gravityio.goodmc.tweaks.locator;
 
 import me.gravityio.goodlib.events.GoodEvents;
 import me.gravityio.goodlib.helper.GoodItemHelper;
+import me.gravityio.goodlib.helper.GoodStringHelper;
 import me.gravityio.goodlib.lib.BetterLootRegistry;
 import me.gravityio.goodlib.lib.BetterRecipeRegistry;
 import me.gravityio.goodlib.lib.MissingTranslation;
@@ -215,7 +216,6 @@ public class LocatorTweak implements IServerTweak {
     private boolean hasBiomeConfigChanged() {
         return !GoodConfig.INSTANCE.locator.biome.exclusions.equals(prevBiomeConf);
     }
-
     private void initVanillaRegistries() {
         // Vanilla Registries
         Registry.register(Registries.SOUND_EVENT, SOUND_STRUCTURE_LOCATED.getId(), SOUND_STRUCTURE_LOCATED);
@@ -319,13 +319,13 @@ public class LocatorTweak implements IServerTweak {
     private static String formatPointKey(String pointKey) {
         int slash = pointKey.lastIndexOf('/');
         if (slash != -1)
-            return StringUtils.capitalize(pointKey.substring(slash + 1).replace("_", " "));
+            return GoodStringHelper.capitalize(pointKey.substring(slash + 1).replace("_", " "));
 
         int dot = pointKey.lastIndexOf('.');
         if (dot != -1)
-            return StringUtils.capitalize(pointKey.substring(dot + 1).replace("_", " "));
+            return GoodStringHelper.capitalize(pointKey.substring(dot + 1).replace("_", " "));
 
-        return StringUtils.capitalize(pointKey.replace("_", " "));
+        return GoodStringHelper.capitalize(pointKey.replace("_", " "));
     }
 
     /**
