@@ -3,7 +3,7 @@ package me.gravityio.goodmc.mixin.mod.locator;
 import me.gravityio.goodlib.helper.GoodNbtHelper;
 import me.gravityio.goodmc.mixin.interfaces.ILocatorPlayer;
 import me.gravityio.goodmc.tweaks.locator.LocatorPlayerData;
-import me.gravityio.goodmc.tweaks.locator.LocatorTweak;
+import me.gravityio.goodmc.tweaks.locator.LocatorUtils;
 import me.gravityio.goodmc.tweaks.locator.impl.BiomeLocatable;
 import me.gravityio.goodmc.tweaks.locator.impl.StructureLocatable;
 import net.minecraft.entity.EntityType;
@@ -43,8 +43,8 @@ public abstract class PlayerLocatorMixin extends LivingEntity implements ILocato
     public void readCustomFromNbt(NbtCompound nbt, CallbackInfo ci) {
         GoodNbtHelper.toMap(nbt.getCompound(STRUCTURE_EXCLUSIONS_KEY), this.playerData.excludedStructures, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
         GoodNbtHelper.toMap(nbt.getCompound(BIOME_EXCLUSIONS_KEY), this.playerData.excludedBiomes, Identifier::new, NBT_LIST_OF_IDS_TO_ARRAYLIST);
-        this.playerData.availableStructures = LocatorTweak.getAvailable(StructureLocatable.StructureRegistry.getDimensionStructures(), this.playerData.excludedStructures);
-        this.playerData.availableBiomes = LocatorTweak.getAvailable(BiomeLocatable.BiomeRegistry.getDimensionBiomes(), this.playerData.excludedBiomes);
+        this.playerData.availableStructures = LocatorUtils.Helper.getAvailable(StructureLocatable.StructureRegistry.getDimensionStructures(), this.playerData.excludedStructures);
+        this.playerData.availableBiomes = LocatorUtils.Helper.getAvailable(BiomeLocatable.BiomeRegistry.getDimensionBiomes(), this.playerData.excludedBiomes);
     }
 
     @Override

@@ -14,3 +14,7 @@ accessible field net/minecraft/screen/LegacySmithingScreenHandler currentRecipe 
 
 # Entry List Widget
 accessible class net/minecraft/client/gui/widget/EntryListWidget$Entry
+
+# Biome Access
+#accessible method net/minecraft/world/biome/source/BiomeAccess method_38106 (JIIIDDD)D
+#accessible field net/minecraft/world/biome/source/BiomeAccess seed J

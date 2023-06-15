@@ -1,6 +1,7 @@
 package me.gravityio.goodmc;
 
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
+import me.gravityio.goodmc.dev.DevThings;
 import me.gravityio.goodmc.tweaks.IServerTweak;
 import me.gravityio.goodmc.tweaks.ServerTweaks;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -9,6 +10,7 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,7 @@ public class GoodMC implements ModInitializer, PreLaunchEntrypoint {
     public static final String MOD_ID = "goodmc";
     public static Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static ConfigHolder<GoodConfig> CONFIG_HOLDER;
+    public static boolean DEV = false;
 
     @Override
     public void onPreLaunch() {
@@ -57,6 +60,9 @@ public class GoodMC implements ModInitializer, PreLaunchEntrypoint {
 
     @Override
     public void onInitialize() {
+        DEV = FabricLoader.getInstance().isDevelopmentEnvironment();
+        if (DEV)
+            DevThings.init();
         GoodMC.LOGGER.info("[Common] Initializing...");
         GoodMC.LOGGER.debug("[Common] Set to Debug Mode." );
 

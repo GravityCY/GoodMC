@@ -11,5 +11,6 @@ public interface ILocatable{
      * @return {@link Boolean boolean}
      */
     boolean isLocatable(ItemStack compass, ServerPlayerEntity player);
-    void locate(ItemStack compass, ServerPlayerEntity player);
+    boolean locate(ItemStack compass, ServerPlayerEntity player);
+
 }

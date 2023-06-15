@@ -43,11 +43,8 @@ public class GoodConfig implements ConfigData {
         public Structure structure = new Structure();
         public static class Biome {
             @ConfigEntry.Gui.Tooltip
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 4)
-            public int radius = 2;
-            @ConfigEntry.Gui.Tooltip
-            @ConfigEntry.BoundedDiscrete(min = 50, max = 500)
-            public int update_distance = 250;
+            @ConfigEntry.BoundedDiscrete(min = 6, max = 10)
+            public int radius = 8;
             @ConfigEntry.Gui.Tooltip
             public List<String> exclusions = List.of(
                     "minecraft:the_void",
@@ -58,11 +55,8 @@ public class GoodConfig implements ConfigData {
         }
         public static class Structure {
             @ConfigEntry.Gui.Tooltip
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 4)
-            public int radius = 1;
-            @ConfigEntry.Gui.Tooltip
-            @ConfigEntry.BoundedDiscrete(min = 50, max = 500)
-            public int update_distance = 200;
+            @ConfigEntry.BoundedDiscrete(min = 2, max = 6)
+            public int radius = 4;
             @ConfigEntry.Gui.Tooltip
             public List<String> exclusions = List.of(
                     "minecraft:mineshaft",
